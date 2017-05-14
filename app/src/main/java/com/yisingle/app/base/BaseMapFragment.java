@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.TextureMapView;
+import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.Circle;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -16,6 +18,7 @@ import com.yisingle.app.R;
 import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.view.MarkerBuilder;
+import com.yisingle.app.utils.DisplayUtil;
 
 import java.lang.reflect.Field;
 
@@ -48,8 +51,11 @@ public abstract class BaseMapFragment extends BaseFrament implements SensorEvent
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
             aMap = mapView.getMap();
-            aMap.setOnMapLoadedListener(() -> initMapLoad());
+            aMap.setOnMapLoadedListener(() -> {
+                initMapLoad();
+            });
         }
+        ;
 
     }
 
@@ -157,5 +163,14 @@ public abstract class BaseMapFragment extends BaseFrament implements SensorEvent
                     R.mipmap.icon_me_location);
             centerMarker = MarkerBuilder.getCenterMarkerToMapView(bitmap, aMap);
         }
+    }
+
+    protected void setMapUiSetting() {
+
+        UiSettings uiSettings = aMap.getUiSettings();//实例化UiSettings类对象
+        uiSettings.setZoomControlsEnabled(false);//设置是否允许显示缩放按钮
+        uiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置Logo在底部右下角
+        uiSettings.setLogoBottomMargin(DisplayUtil.dip2px(getContext(), 110));//设置Logo距离底部120dp;
+
     }
 }

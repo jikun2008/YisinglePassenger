@@ -151,7 +151,7 @@ public class AMapLocationHelper {
             locationClient.onDestroy();
             locationClient = null;
             locationOption = null;
-            onLocationGetListener=null;
+            onLocationGetListener = null;
         }
     }
 
@@ -210,6 +210,15 @@ public class AMapLocationHelper {
 
     public void setOnLocationGetListener(OnLocationGetListener onLocationGetListener) {
         this.onLocationGetListener = onLocationGetListener;
+    }
+
+    public static abstract class OnLocationGetListeneAdapter implements OnLocationGetListener {
+
+
+        @Override
+        public void onLocationGetFail(AMapLocation loc) {
+
+        }
     }
 
     public interface OnLocationGetListener {

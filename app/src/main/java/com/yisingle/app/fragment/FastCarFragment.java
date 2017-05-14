@@ -1,14 +1,10 @@
 package com.yisingle.app.fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.widget.Button;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.orhanobut.logger.Logger;
 import com.yisingle.app.R;
@@ -17,12 +13,10 @@ import com.yisingle.app.event.LocationEvent;
 import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created by jikun on 17/5/10.
@@ -32,8 +26,6 @@ public class FastCarFragment extends BaseMapFragment {
     @BindView(R.id.textureMapView)
     TextureMapView textureMapView;
 
-    @BindView(R.id.test)
-    Button test;
 
     private AMapLocationHelper aMapLocationHelper;
 
@@ -48,17 +40,20 @@ public class FastCarFragment extends BaseMapFragment {
         //initViews比initMapCreate先执行
 
 
-        EventBus.getDefault().register(this);
+    }
 
-
+    @Override
+    protected boolean isregisterEventBus() {
+        return true;
     }
 
     @Override
     public void initMapLoad() {
+        setMapUiSetting();
         //这个是在获取地图amap的回调方法
         aMapLocationHelper = new AMapLocationHelper(getContext());
         aMapLocationHelper.startSingleLocate();
-        aMapLocationHelper.setOnLocationGetListener(new AMapLocationHelper.OnLocationGetListener() {
+        aMapLocationHelper.setOnLocationGetListener(new AMapLocationHelper.OnLocationGetListeneAdapter() {
             @Override
             public void onLocationGetSuccess(AMapLocation location) {
 
@@ -68,10 +63,6 @@ public class FastCarFragment extends BaseMapFragment {
 
             }
 
-            @Override
-            public void onLocationGetFail(AMapLocation loc) {
-
-            }
         });
 
         addCenterMarkToMap();
@@ -112,9 +103,8 @@ public class FastCarFragment extends BaseMapFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
-
         textureMapView = null;
+        aMapLocationHelper.destroyLocation();
 
 
     }
@@ -127,16 +117,5 @@ public class FastCarFragment extends BaseMapFragment {
         }
     }
 
-
-    @OnClick(R.id.test)
-    public void test() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                R.mipmap.ic_launcher);
-
-        locMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
-
-        EventBus.getDefault().post(new LocationEvent(LocationEvent.Code.SUCCESS, null));
-
-    }
 
 }

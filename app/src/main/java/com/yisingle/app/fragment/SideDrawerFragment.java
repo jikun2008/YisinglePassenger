@@ -35,6 +35,11 @@ public class SideDrawerFragment extends BaseFrament {
 
     }
 
+    @Override
+    protected boolean isregisterEventBus() {
+        return false;
+    }
+
 
     public static SideDrawerFragment newInstance() {
 
