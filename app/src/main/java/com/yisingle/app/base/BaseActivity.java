@@ -51,6 +51,7 @@ public abstract class BaseActivity extends SupportActivity {
      * @param title    标题
      * @param backFlag 是否显示返回按钮
      */
+    @SuppressWarnings("unused")
     protected void setTitle(String title, boolean backFlag) {
         if (findViewById(R.id.titleBar) == null) return;
         ((TextView) findViewById(R.id.tv_title)).setText(title);

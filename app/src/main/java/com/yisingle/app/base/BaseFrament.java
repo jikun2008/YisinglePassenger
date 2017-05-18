@@ -18,6 +18,7 @@ import me.yokeyword.fragmentation.SupportFragment;
  * Created by jikun on 17/5/9.
  */
 
+
 public abstract class BaseFrament extends SupportFragment {
 
 
@@ -27,7 +28,7 @@ public abstract class BaseFrament extends SupportFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = null;
+        View view;
         if (getContentViewLayoutID() != 0) {
             view = inflater.inflate(getContentViewLayoutID(), container, false);
 

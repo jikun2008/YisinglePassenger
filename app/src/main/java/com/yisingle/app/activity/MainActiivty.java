@@ -5,6 +5,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.yisingle.app.R;
@@ -26,6 +27,7 @@ import butterknife.BindView;
  * Created by jikun on 17/5/5.
  */
 
+
 public class MainActiivty extends BaseActivity {
 
 
@@ -44,6 +46,7 @@ public class MainActiivty extends BaseActivity {
         return R.layout.activity_main;
     }
 
+
     @Override
     protected void initViews(Bundle savedInstanceState) {
         initTabRecyclerView();
@@ -61,6 +64,7 @@ public class MainActiivty extends BaseActivity {
             loadRootFragment(R.id.fl_container, FastCarFragment.newInstance());
         } else {
             // 这里库已经做了Fragment恢复,所有不需要额外的处理了, 不会出现重叠问题
+            Log.e("dothing", "dothing");
         }
 
         startLocationService();
@@ -70,7 +74,7 @@ public class MainActiivty extends BaseActivity {
 
     private void initTabRecyclerView() {
 
-        dataList.add(new MainTabData("快车",true));
+        dataList.add(new MainTabData("快车", true));
         dataList.add(new MainTabData("专车"));
         dataList.add(new MainTabData("公交"));
         dataList.add(new MainTabData("代驾"));

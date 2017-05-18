@@ -1,9 +1,5 @@
 package com.yisingle.app.receiver;
 
-/**
- * Created by jikun on 17/5/12.
- */
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 /**
  * 定位收取广播器
  */
+
 public class LocationReceiver extends BroadcastReceiver {
 
     public static String LOCATION = "Loction_event";

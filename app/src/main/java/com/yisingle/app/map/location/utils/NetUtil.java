@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 
 public class NetUtil {
 
+
     private static class Holder {
         public static NetUtil instance = new NetUtil();
     }
@@ -21,9 +22,10 @@ public class NetUtil {
 
     /**
      * 是否手机信号可连接
-     * @param context
-     * @return
+     * @param context context
+     * @return  是否手机信号可连接
      */
+
     public boolean isMobileAva(Context context) {
 
         boolean hasMobileCon = false;
@@ -45,9 +47,10 @@ public class NetUtil {
 
     /**
      * 是否wifi可连接
-     * @param context
-     * @return
+     * @param context context
+     * @return 是否wifi可连接
      */
+
     public boolean isWifiCon(Context context) {
         boolean hasWifoCon = false;
 

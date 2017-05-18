@@ -1,11 +1,13 @@
 package com.yisingle.baselibray.baseadapter.viewholder;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 /**
  * ViewHolder操作子视图的实现类
  */
+@SuppressWarnings({"CanBeFinal", "UnusedAssignment", "UnusedParameters", "WeakerAccess"})
 public class ViewHolderImpl {
 
     /**
@@ -42,6 +45,7 @@ public class ViewHolderImpl {
     /**
      * 根据id查找view
      */
+    @SuppressWarnings("unchecked")
     public <T extends View> T findViewById(int viewId) {
         View target = mCahceViews.get(viewId);
         if (target == null) {
@@ -52,8 +56,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId
-     * @param stringId
+     * @param viewId  viewId
+     * @param stringId  stringId
      */
     public void setText(int viewId, int stringId) {
         TextView textView = findViewById(viewId);
@@ -71,8 +75,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId
-     * @param color
+     * @param viewId  viewId
+     * @param color   color
      */
     public void setBackgroundColor(int viewId, int color) {
         View target = findViewById(viewId);
@@ -84,9 +88,15 @@ public class ViewHolderImpl {
         target.setBackgroundResource(resId);
     }
 
+    @SuppressLint("ObsoleteSdkInt")
+    @SuppressWarnings("deprecation")
     public void setBackgroundDrawable(int viewId, Drawable drawable) {
         View target = findViewById(viewId);
-        target.setBackgroundDrawable(drawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            target.setBackground(drawable);
+        } else {
+            target.setBackgroundDrawable(drawable);
+        }
     }
 
     @TargetApi(16)
@@ -96,7 +106,7 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId
+     * @param viewId  viewId
      */
     public void setImageUrl(Context aty, int viewId, String url) {
         ImageView target = findViewById(viewId);
@@ -135,8 +145,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId
-     * @param checked
+     * @param viewId  viewId
+     * @param checked  checked
      */
     public void setChecked(int viewId, boolean checked) {
         Checkable checkable = findViewById(viewId);
@@ -181,8 +191,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId
-     * @param listener
+     * @param viewId  viewId
+     * @param listener  listener
      */
     public void setOnClickListener(int viewId, View.OnClickListener listener) {
         View view = findViewById(viewId);

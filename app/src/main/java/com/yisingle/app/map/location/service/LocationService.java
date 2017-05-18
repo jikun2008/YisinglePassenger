@@ -21,6 +21,7 @@ import com.yisingle.bind.IGuardAidlInterface;
  * 定位Service功能
  */
 
+
 public class LocationService extends BaseNoticService implements AMapLocationHelper.OnLocationGetListener {
 
 
@@ -46,6 +47,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     public IBinder onBind(Intent intent) {
         return new GuardAidlImpl();
     }
+
 
 
     class GuardAidlImpl extends IGuardAidlInterface.Stub {
@@ -111,7 +113,11 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
 
         //
         if (mIsWifiCloseable) {
-            mWifiAutoCloseDelegate.onLocateFail(getApplicationContext(), loc.getErrorCode(),
+            int code = -99999;
+            if (null != loc) {
+                code = loc.getErrorCode();
+            }
+            mWifiAutoCloseDelegate.onLocateFail(getApplicationContext(), code,
                     PowerManagerUtil.getInstance().isScreenOn(getApplicationContext()),
                     NetUtil.getInstance().isWifiCon(getApplicationContext()));
         }

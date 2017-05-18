@@ -56,7 +56,7 @@ public class LocationStatusManager {
     /**
      * reset到默认状态
      *
-     * @param context
+     * @param context context
      */
     public void resetToInit(Context context) {
         this.mPirorLocatableOnScreen = false;
@@ -110,15 +110,15 @@ public class LocationStatusManager {
     /**
      * 如果isLocable，则存入正确的过期时间，否则存默认值
      *
-     * @param context
-     * @param isLocable
+     * @param context context
+     * @param isLocable isLocable
      */
     public void saveStateInner(Context context, boolean isLocable) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFER_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(IS_LOCABLE_KEY, isLocable);
         editor.putLong(LOCALBLE_KEY_EXPIRE_TIME_KEY, isLocable ? System.currentTimeMillis() : DEF_PRIOR_TIME_VAL);
-        editor.commit();
+        editor.apply();
     }
 
 

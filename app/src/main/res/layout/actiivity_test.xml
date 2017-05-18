@@ -2,8 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
+    android:id="@+id/main"
     android:layout_height="match_parent"
     tools:context="com.yisingle.app.activity.TestActivity">
 
@@ -19,18 +19,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginLeft="52dp"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="69dp"
-        android:text="button1"
+        tools:text="button1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="136dp"
         app:layout_constraintLeft_toRightOf="@+id/button1"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,12 +37,11 @@
 
 
     <Button
-        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="88dp"
+        android:layout_marginStart="88dp"
         android:layout_marginTop="102dp"
-        android:text="button3"
+        tools:text="button3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button1" />
 
@@ -53,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:onClick="onApplyClick"
-        android:text="Apply"
+        tools:text="Apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/resetButton" />
@@ -63,7 +61,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:onClick="onResetClick"
-        android:text="Reset"
+        tools:text="Reset"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/applyButton"
         app:layout_constraintRight_toRightOf="parent" />

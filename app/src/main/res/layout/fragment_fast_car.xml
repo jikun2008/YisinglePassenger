@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,10 +19,11 @@
     </com.amap.api.maps.TextureMapView>
 
     <ImageView
+        android:id="@+id/iv_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
-        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginStart="@dimen/dimen_10dp"
         android:src="@mipmap/im_loction_return_nomarl"
         app:layout_constraintBottom_toTopOf="@+id/ll_bottom"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -64,8 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="出发地"
-                android:text="我的位置"
+                android:text="@string/my_location"
                 android:textColor="@color/black_text"
                 android:textSize="@dimen/dimen_14sp" />
 
@@ -74,8 +73,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="60dp"
-            android:background="@color/gray_line"></View>
+            android:layout_marginStart="60dp"
+            android:background="@color/gray_line"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,8 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="目的地"
-                android:text="你要去哪里"
+                android:text="@string/where_are_go"
                 android:textColor="@color/gray_text"
                 android:textSize="@dimen/dimen_14sp" />
         </LinearLayout>

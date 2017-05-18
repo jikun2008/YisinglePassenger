@@ -13,6 +13,7 @@ import java.lang.annotation.RetentionPolicy;
  * Created by jikun on 17/5/12.
  */
 
+@SuppressWarnings("unused")
 public class LocationEvent implements Parcelable {
 
 

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 /**
  * 适用于RecyclerView的ViewHolder
  */
+@SuppressWarnings({"unused", "CanBeFinal", "UnusedReturnValue"})
 public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     /**
      * ViewHolder实现类,桥接模式适配AbsListView与RecyclerView的二维变化
@@ -20,7 +21,7 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     ViewHolderImpl mHolderImpl;
 
     /**
-     * @param itemView
+     * @param itemView itemView
      */
     public RecyclerViewHolder(View itemView) {
         super(itemView);
@@ -32,9 +33,9 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * @param viewId
-     * @param <T>
-     * @return
+     * @param viewId  viewId
+     * @param <T>  T
+     * @return   T extends View
      */
     public <T extends View> T get(int viewId) {
         return mHolderImpl.findViewById(viewId);
@@ -60,8 +61,8 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * @param viewId
-     * @param color
+     * @param viewId  viewId
+     * @param color   color
      */
     public RecyclerViewHolder setBackgroundColor(int viewId, int color) {
         mHolderImpl.setBackgroundColor(viewId, color);

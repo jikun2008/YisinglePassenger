@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 
 
+
 public class SideDrawerFragment extends BaseFrament {
     @BindView(R.id.recyclerView)
     RecyclerView recycleView;

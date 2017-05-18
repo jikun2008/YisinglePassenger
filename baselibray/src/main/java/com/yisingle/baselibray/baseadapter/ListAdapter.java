@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * ListView的通用adapter
  */
+@SuppressWarnings({"unused", "CanBeFinal", "SameReturnValue"})
 public abstract class ListAdapter<D> extends BaseAdapter implements DataHelper<D> {
 
     protected List<D> mDataSet;

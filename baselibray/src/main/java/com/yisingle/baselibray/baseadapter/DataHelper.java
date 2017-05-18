@@ -5,6 +5,7 @@ import java.util.List;
 /**
 
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public interface DataHelper<D> {
 
     D getItem(int position);

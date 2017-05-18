@@ -22,6 +22,7 @@ import java.util.List;
  * Created by jikun on 17/5/11.
  */
 
+
 public class GuardService extends BaseNoticService {
     //需要守护的定位服务的名称
     private final String locationServiceName = "com.yisingle.app.map.location.service.LocationService";
@@ -37,10 +38,10 @@ public class GuardService extends BaseNoticService {
     @Override
     public void onCreate() {
         super.onCreate();
-        /**
-         * 开始绑定LocationService开始守护LocationService
-         * 当mInnerConnection收到LocationService断开了连接那么重新打开LocationService
-         */
+
+        //开始绑定LocationService开始守护LocationService
+        //当mInnerConnection收到LocationService断开了连接那么重新打开LocationService
+
         Log.e("1", "测试代码：GuardService-------onCreate");
         startBind();
     }

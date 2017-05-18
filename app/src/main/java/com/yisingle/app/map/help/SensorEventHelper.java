@@ -9,8 +9,7 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.amap.api.location.AMapLocation;
-
+@SuppressWarnings("unused")
 public class SensorEventHelper implements SensorEventListener {
 
     private SensorManager mSensorManager;
@@ -21,6 +20,7 @@ public class SensorEventHelper implements SensorEventListener {
     private Context mContext;
 
     private OnRotationListener onRotationListener;
+
 
     public SensorEventHelper(Context context) {
         mContext = context;
@@ -68,6 +68,7 @@ public class SensorEventHelper implements SensorEventListener {
         this.onRotationListener = onRotationListener;
     }
 
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (System.currentTimeMillis() - lastTime < TIME_SENSOR) {
@@ -100,7 +101,7 @@ public class SensorEventHelper implements SensorEventListener {
     /**
      * 获取当前屏幕旋转角度
      *
-     * @param context
+     * @param context  context
      * @return 0表示是竖屏; 90表示是左横屏; 180表示是反向竖屏; 270表示是右横屏
      */
     public static int getScreenRotationOnPhone(Context context) {

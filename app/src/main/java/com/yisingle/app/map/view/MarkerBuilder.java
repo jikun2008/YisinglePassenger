@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Circle;
 import com.amap.api.maps.model.CircleOptions;
@@ -12,13 +13,17 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jikun on 17/5/12.
  */
 
+@SuppressWarnings("unused")
 public class MarkerBuilder {
 
-    public static final String LOCATION_MARKER_FLAG = "mylocation";
+    private static final String LOCATION_MARKER_FLAG = "mylocation";
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
@@ -29,8 +34,7 @@ public class MarkerBuilder {
         options.strokeColor(STROKE_COLOR);
         options.center(latlng);
         options.radius(radius);
-        Circle circle = aMap.addCircle(options);
-        return circle;
+        return aMap.addCircle(options);
     }
 
 
@@ -45,15 +49,38 @@ public class MarkerBuilder {
         return mLocMarker;
     }
 
-    public static Marker getCenterMarkerToMapView(Bitmap bitmap, AMap aMap) {
+    public static Marker getCenterMarkerToMapView(BitmapDescriptor bitmapDescriptor, AMap aMap) {
         LatLng latLng = aMap.getCameraPosition().target;
         Point screenPosition = aMap.getProjection().toScreenLocation(latLng);
-        Marker marker = aMap.addMarker(new MarkerOptions()
-                .anchor(0.5f, 0.5f)
-                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+        MarkerOptions options = new MarkerOptions();
+        options.icon(bitmapDescriptor);
+        options.anchor(0.5f, 1.0f);
+        Marker marker = aMap.addMarker(options);
         //设置Marker在屏幕上,不跟随地图移动
         marker.setPositionByPixels(screenPosition.x, screenPosition.y);
         marker.setZIndex(1);
+        return marker;
+    }
+
+    public static Marker getCenterMarkerToMapView(List<Bitmap> bitmapList, AMap aMap) {
+
+        ArrayList<BitmapDescriptor> list = new ArrayList<>();
+        for (Bitmap bimap : bitmapList) {
+            list.add(BitmapDescriptorFactory.fromBitmap(bimap));
+        }
+        LatLng latLng = aMap.getCameraPosition().target;
+        Point screenPosition = aMap.getProjection().toScreenLocation(latLng);
+        MarkerOptions options = new MarkerOptions();
+        options.icons(list);
+
+
+        options.anchor(0.5f, 1.0f);
+        Marker marker = aMap.addMarker(options);
+        //设置Marker在屏幕上,不跟随地图移动
+        marker.setPositionByPixels(screenPosition.x, screenPosition.y);
+        marker.setZIndex(1);
+        marker.setPeriod(5);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
+
         return marker;
     }
 }

@@ -2,6 +2,7 @@ package com.yisingle.app.map.location.utils;
 
 import android.content.Context;
 import android.os.PowerManager;
+import android.view.WindowManager;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadFactory;
@@ -11,7 +12,9 @@ import java.util.concurrent.ThreadFactory;
  * 获得PARTIAL_WAKE_LOCK	， 保证在息屏状体下，CPU可以正常运行
  */
 
+
 public class PowerManagerUtil {
+
     private static class Holder {
         public static PowerManagerUtil instance = new PowerManagerUtil();
     }
@@ -43,8 +46,9 @@ public class PowerManagerUtil {
     /**
      * 判断屏幕是否处于点亮状态
      *
-     * @param context
+     * @param context context
      */
+
     public boolean isScreenOn(final Context context) {
         try {
             Method isScreenMethod = PowerManager.class.getMethod("isScreenOn",
@@ -52,8 +56,8 @@ public class PowerManagerUtil {
             if (pm == null) {
                 pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             }
-            boolean screenState = (Boolean) isScreenMethod.invoke(pm);
-            return screenState;
+            return (Boolean) isScreenMethod.invoke(pm);
+
         } catch (Exception e) {
             return true;
         }
@@ -63,10 +67,11 @@ public class PowerManagerUtil {
     /**
      * 唤醒屏幕
      */
+
     public void wakeUpScreen(final Context context) {
 
         try {
-            acquirePowerLock(context, PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK);
+            acquirePowerLock(context, PowerManager.ACQUIRE_CAUSES_WAKEUP | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } catch (Exception e) {
             throw e;
         }
@@ -75,8 +80,9 @@ public class PowerManagerUtil {
     /**
      * 根据levelAndFlags，获得PowerManager的WaveLock
      * 利用worker thread去获得锁，以免阻塞主线程
-     * @param context
-     * @param levelAndFlags
+     *
+     * @param context context
+     * @param levelAndFlags levelAndFlags
      */
     private void acquirePowerLock(final Context context, final int levelAndFlags) {
         if (context == null) {
@@ -96,22 +102,19 @@ public class PowerManagerUtil {
             mInnerThreadFactory = new InnerThreadFactory();
         }
 
-        mInnerThreadFactory.newThread(new Runnable() {
-            @Override
-            public void run() {
-                if (pm == null) {
-                    pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                }
-
-                if (pmLock != null) { // release
-                    pmLock.release();
-                    pmLock = null;
-                }
-
-                pmLock = pm.newWakeLock(levelAndFlags, "MyTag");
-                pmLock.acquire();
-                pmLock.release();
+        mInnerThreadFactory.newThread(() -> {
+            if (pm == null) {
+                pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             }
+
+            if (pmLock != null) { // release
+                pmLock.release();
+                pmLock = null;
+            }
+
+            pmLock = pm.newWakeLock(levelAndFlags, "MyTag");
+            pmLock.acquire();
+            pmLock.release();
         }).start();
     }
 
@@ -120,6 +123,7 @@ public class PowerManagerUtil {
      * 线程工厂
      */
     private class InnerThreadFactory implements ThreadFactory {
+
         @Override
         public Thread newThread(Runnable runnable) {
             return new Thread(runnable);

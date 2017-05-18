@@ -1,5 +1,6 @@
 package com.yisingle.app.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -16,9 +17,10 @@ import butterknife.BindView;
  * Created by jikun on 17/5/9.
  */
 
+
 public class TestActivity extends BaseActivity {
 
-    @BindView(R2.id.main)
+    @BindView(R.id.main)
     public ConstraintLayout constraintLayout;
     private ConstraintSet applyConstraintSet = new ConstraintSet();
     private ConstraintSet resetConstraintSet = new ConstraintSet();

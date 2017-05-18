@@ -8,19 +8,18 @@ import com.amap.api.location.AMapLocation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.internal.Utils;
-
 /**
  * Created by liangchao_suxun on 17/1/19.
  */
+
 
 public class WifiAutoCloseDelegate implements IWifiAutoCloseDelegate {
 
     /**
      * 请根据后台数据自行添加。此处只针对小米手机
      *
-     * @param context
-     * @return
+     * @param context  context
+     * @return 是否成功
      */
     @Override
     public boolean isUseful(Context context) {

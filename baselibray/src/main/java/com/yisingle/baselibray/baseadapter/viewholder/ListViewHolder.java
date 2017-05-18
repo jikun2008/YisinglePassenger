@@ -15,15 +15,14 @@ import android.widget.AdapterView;
 /**
  * ListViewHolder
  */
+@SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
 public class ListViewHolder {
     /**
      * ViewHolder实现类,桥接模式适配AbsListView与RecyclerView的二维变化
      */
     ViewHolderImpl mHolderImpl;
 
-    /**
-     * @param itemView
-     */
+
     ListViewHolder(View itemView) {
         mHolderImpl = new ViewHolderImpl(itemView);
     }
@@ -42,10 +41,10 @@ public class ListViewHolder {
     /**
      * 获取GodViewHolder
      *
-     * @param convertView
-     * @param parent
-     * @param layoutId
-     * @return
+     * @param convertView   convertView
+     * @param parent    parent
+     * @param layoutId  layoutId
+     * @return   ListViewHolder
      */
     public static ListViewHolder get(View convertView, ViewGroup parent, int layoutId) {
         ListViewHolder viewHolder;
@@ -80,8 +79,8 @@ public class ListViewHolder {
     }
 
     /**
-     * @param viewId
-     * @param color
+     * @param viewId viewId
+     * @param color color
      */
     public ListViewHolder setBackgroundColor(int viewId, int color) {
         mHolderImpl.setBackgroundColor(viewId, color);

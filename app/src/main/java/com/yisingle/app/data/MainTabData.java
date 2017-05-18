@@ -4,6 +4,7 @@ package com.yisingle.app.data;
  * Created by jikun on 17/5/14.
  */
 
+@SuppressWarnings("unused")
 public class MainTabData {
     private String title;
     private boolean isChoose;

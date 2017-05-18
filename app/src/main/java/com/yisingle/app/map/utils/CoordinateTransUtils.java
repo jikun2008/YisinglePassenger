@@ -10,7 +10,6 @@ import com.amap.api.maps.model.LatLng;
 public class CoordinateTransUtils {
 
     public static LatLng changToLatLng(AMapLocation loc) {
-        LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-        return latLng;
+        return new LatLng(loc.getLatitude(), loc.getLongitude());
     }
 }

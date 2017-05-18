@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * RecyclerView的通用Adapter
  */
+@SuppressWarnings({"unused", "CanBeFinal"})
 public abstract class RecyclerAdapter<D> extends RecyclerView.Adapter<RecyclerViewHolder> implements DataHelper<D> {
 
     protected List<D> mDataSet;

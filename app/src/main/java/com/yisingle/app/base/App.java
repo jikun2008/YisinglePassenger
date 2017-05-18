@@ -2,7 +2,6 @@ package com.yisingle.app.base;
 
 import android.app.Application;
 
-import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 
 /**
@@ -10,7 +9,7 @@ import com.orhanobut.logger.Logger;
  */
 
 public class App extends Application {
-    private String TAG = "YI_SINGLE";
+
 
     @Override
     public void onCreate() {

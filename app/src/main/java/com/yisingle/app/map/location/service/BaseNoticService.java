@@ -1,5 +1,6 @@
 package com.yisingle.app.map.location.service;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
@@ -11,12 +12,13 @@ import android.support.annotation.Nullable;
  * Created by jikun on 17/5/11.
  */
 
+
 public class BaseNoticService extends Service {
     /**
      * i
      * startForeground的 noti_id
      */
-    private static int NOTI_ID = 123321;
+    private int NOTI_ID = 123321;
 
     @Nullable
     @Override
@@ -51,14 +53,15 @@ public class BaseNoticService extends Service {
 
     }
 
-    public void unApplyNotiKeepMech() {
+
+    protected void unApplyNotiKeepMech() {
         stopForeground(true);
     }
 
 
-    public static Notification buildNotification(Context context) {
+    private static Notification buildNotification(Context context) {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setContentText("service");
-        return builder.getNotification();
+        return builder.build();
     }
 }
