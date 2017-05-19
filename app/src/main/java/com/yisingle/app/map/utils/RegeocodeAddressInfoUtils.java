@@ -30,8 +30,8 @@ public class RegeocodeAddressInfoUtils {
      * 获取简单位置名称，详细名称会去掉省市县乡的信息
      * 例如   全名：四川省成都市武侯区桂溪街道天府一街   返回的是天府一街
      *
-     * @param regeocodeAddress  regeocodeAddress
-     * @return  String
+     * @param regeocodeAddress regeocodeAddress
+     * @return String
      */
     public static String getSimpleSitename(RegeocodeAddress regeocodeAddress) {
         String name = new StringBuilder()
@@ -42,7 +42,8 @@ public class RegeocodeAddressInfoUtils {
                 //所在区（县）名称:
                 .append(regeocodeAddress.getDistrict())
                 //乡镇名称:
-                .append(regeocodeAddress.getTownship()).toString();
+                .append(regeocodeAddress.getTownship())
+                .toString();
 
 
         String address = regeocodeAddress.getFormatAddress().replace(name, "");

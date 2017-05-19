@@ -1,6 +1,5 @@
 package com.yisingle.app.activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -8,7 +7,6 @@ import android.transition.TransitionManager;
 import android.view.View;
 
 import com.yisingle.app.R;
-import com.yisingle.app.R2;
 import com.yisingle.app.base.BaseActivity;
 
 import butterknife.BindView;

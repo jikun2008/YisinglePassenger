@@ -2,6 +2,7 @@ package com.yisingle.app.map.location.utils;
 
 import android.content.Context;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.view.WindowManager;
 
 import java.lang.reflect.Method;
@@ -68,20 +69,18 @@ public class PowerManagerUtil {
      * 唤醒屏幕
      */
 
-    public void wakeUpScreen(final Context context) {
+    public void wakeUpScreen(final Context context) throws Exception {
 
-        try {
-            acquirePowerLock(context, PowerManager.ACQUIRE_CAUSES_WAKEUP | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } catch (Exception e) {
-            throw e;
-        }
+
+        acquirePowerLock(context, PowerManager.ACQUIRE_CAUSES_WAKEUP | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
     }
 
     /**
      * 根据levelAndFlags，获得PowerManager的WaveLock
      * 利用worker thread去获得锁，以免阻塞主线程
      *
-     * @param context context
+     * @param context       context
      * @param levelAndFlags levelAndFlags
      */
     private void acquirePowerLock(final Context context, final int levelAndFlags) {
@@ -125,7 +124,7 @@ public class PowerManagerUtil {
     private class InnerThreadFactory implements ThreadFactory {
 
         @Override
-        public Thread newThread(Runnable runnable) {
+        public Thread newThread(@NonNull Runnable runnable) {
             return new Thread(runnable);
         }
     }
