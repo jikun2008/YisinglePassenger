@@ -69,7 +69,7 @@ public class PowerManagerUtil {
      * 唤醒屏幕
      */
 
-    public void wakeUpScreen(final Context context) throws Exception {
+    public void wakeUpScreen(final Context context) {
 
 
         acquirePowerLock(context, PowerManager.ACQUIRE_CAUSES_WAKEUP | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

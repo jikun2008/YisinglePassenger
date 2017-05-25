@@ -5,6 +5,7 @@
     android:id="@+id/titleBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:paddingBottom="@dimen/dimen_8dp"
     android:paddingTop="@dimen/dimen_8dp">
 

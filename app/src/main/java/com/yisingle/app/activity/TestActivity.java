@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
+import com.yisingle.app.base.BasePresenter;
 
 import butterknife.BindView;
 
@@ -34,6 +35,16 @@ public class TestActivity extends BaseActivity {
         resetConstraintSet.clone(constraintLayout);
         applyConstraintSet.clone(constraintLayout);
 
+    }
+
+    @Override
+    protected boolean isregisterEventBus() {
+        return false;
+    }
+
+    @Override
+    protected BasePresenter createPresenter() {
+        return null;
     }
 
     public void onApplyClick(View view) {

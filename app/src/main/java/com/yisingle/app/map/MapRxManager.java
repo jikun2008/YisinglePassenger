@@ -1,4 +1,4 @@
-package com.yisingle.app.rx;
+package com.yisingle.app.map;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers;
  */
 
 
-public class MapRxUtils {
+public class MapRxManager {
 
     public static GeocodeSearch geocodeSearch;
 

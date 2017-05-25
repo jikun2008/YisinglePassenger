@@ -1,4 +1,4 @@
-package com.yisingle.app.map.location.service;
+package com.yisingle.app.service;
 
 import android.app.Service;
 import android.content.ComponentName;

@@ -1,20 +1,29 @@
 package com.yisingle.app.base;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yisingle.app.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import me.yokeyword.fragmentation.SupportActivity;
 
 /**
  * Created by jikun on 17/5/4.
  */
 
-public abstract class BaseActivity extends SupportActivity {
+public abstract class BaseActivity<P extends BasePresenter> extends SupportActivity implements BaseView {
+
+
+    private P mPresenter;
+    private Unbinder butterKnife;
 
 
     @Override
@@ -28,7 +37,12 @@ public abstract class BaseActivity extends SupportActivity {
         } else {
             throw new IllegalArgumentException("You must return a right contentView layout resource Id");
         }
-        ButterKnife.bind(this);
+
+        butterKnife = ButterKnife.bind(this);
+        mPresenter = createPresenter();
+        if (isregisterEventBus()) {
+            EventBus.getDefault().register(this);
+        }
         initViews(savedInstanceState);
     }
 
@@ -46,6 +60,45 @@ public abstract class BaseActivity extends SupportActivity {
      */
     protected abstract void initViews(Bundle savedInstanceState);
 
+
+    protected abstract boolean isregisterEventBus();
+
+
+    protected abstract P createPresenter();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+        if (null != mPresenter) {
+            mPresenter.onDestory();
+        }
+        butterKnife.unbind();
+
+    }
+
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void toast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
 
     /**
      * @param title    标题

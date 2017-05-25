@@ -6,6 +6,7 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 
 /**
  * Created by jikun on 17/5/16.
+ * 获取简单逆地理返回的名称
  */
 
 public class RegeocodeAddressInfoUtils {

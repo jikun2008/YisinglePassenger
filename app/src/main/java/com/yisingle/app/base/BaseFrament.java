@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,10 +20,11 @@ import me.yokeyword.fragmentation.SupportFragment;
  */
 
 
-public abstract class BaseFrament extends SupportFragment {
+public abstract class BaseFrament<P extends BasePresenter> extends SupportFragment implements BaseView {
 
 
-    private Unbinder unbinder;
+    private P mPresenter;
+    private Unbinder butterKnife;
 
     @Nullable
     @Override
@@ -43,15 +45,21 @@ public abstract class BaseFrament extends SupportFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (isregisterEventBus()) {
-            EventBus.getDefault().register(this);
-        }
-        unbinder = ButterKnife.bind(this, view);
+
+        butterKnife = ButterKnife.bind(this, view);
+        mPresenter=createPresenter();
         initViews(savedInstanceState);
 
 
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (isregisterEventBus()) {
+            EventBus.getDefault().register(this);
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -59,7 +67,10 @@ public abstract class BaseFrament extends SupportFragment {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-        unbinder.unbind();
+        if (null != mPresenter) {
+            mPresenter.onDestory();
+        }
+        butterKnife.unbind();
     }
 
     /**
@@ -75,7 +86,29 @@ public abstract class BaseFrament extends SupportFragment {
      */
     protected abstract void initViews(Bundle savedInstanceState);
 
+
+    protected abstract P createPresenter();
+
     protected abstract boolean isregisterEventBus();
 
 
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void toast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void dismissLoading() {
+
+    }
 }

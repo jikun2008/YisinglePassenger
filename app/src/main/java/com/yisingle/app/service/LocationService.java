@@ -1,4 +1,4 @@
-package com.yisingle.app.map.location.service;
+package com.yisingle.app.service;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import com.yisingle.app.map.location.utils.PowerManagerUtil;
 import com.yisingle.app.map.location.utils.WifiAutoCloseDelegate;
 import com.yisingle.app.receiver.LocationReceiver;
 import com.yisingle.bind.IGuardAidlInterface;
+
 
 /**
  * Created by jikun on 17/5/11.
@@ -47,7 +48,6 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     public IBinder onBind(Intent intent) {
         return new GuardAidlImpl();
     }
-
 
 
     class GuardAidlImpl extends IGuardAidlInterface.Stub {

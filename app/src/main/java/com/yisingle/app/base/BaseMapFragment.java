@@ -8,8 +8,8 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.UiSettings;
-import com.yisingle.app.map.help.CenterMarkerHelper;
-import com.yisingle.app.map.help.LocationMarkerHelper;
+import com.yisingle.app.map.view.CenterMapMarkerView;
+import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.utils.DisplayUtil;
 
 import java.lang.reflect.Field;
@@ -22,8 +22,8 @@ public abstract class BaseMapFragment extends BaseFrament {
     private TextureMapView mapView;
     protected AMap aMap;
 
-    protected LocationMarkerHelper locationMarkerHelper;
-    protected CenterMarkerHelper centerMarkerHelper;
+    protected LocationMapMarkerView locationMapMarkerView;
+    protected CenterMapMarkerView centerMapMarkerView;
 
 
     protected abstract TextureMapView getTextureMapView();
@@ -43,33 +43,6 @@ public abstract class BaseMapFragment extends BaseFrament {
         }
 
 
-    }
-
-
-    protected void initCenterMarkerHelper() {
-        centerMarkerHelper = new CenterMarkerHelper(getContext());
-        centerMarkerHelper.initMarkInfoWindowAdapter(aMap);
-        centerMarkerHelper.addCenterMarkToMap(aMap);
-    }
-
-
-    private void destroyCenterMarkerHelper() {
-        if (null != centerMarkerHelper) {
-            centerMarkerHelper.destroy();
-        }
-
-    }
-
-    protected void initLocationMarkerHelper() {
-        locationMarkerHelper = new LocationMarkerHelper(getContext());
-
-    }
-
-
-    private void destroyLocationMarkerHelper() {
-        if (null != locationMarkerHelper) {
-            locationMarkerHelper.destroy();
-        }
     }
 
 
@@ -115,8 +88,12 @@ public abstract class BaseMapFragment extends BaseFrament {
     public void onDestroy() {
         super.onDestroy();
 
-        destroyCenterMarkerHelper();
-        destroyLocationMarkerHelper();
+        if (null != locationMapMarkerView) {
+            locationMapMarkerView.removeMarkerViewFromMap();
+        }
+        if (null != centerMapMarkerView) {
+            centerMapMarkerView.removeMarkerViewFromMap();
+        }
         mapView.onDestroy();
 
     }
@@ -145,12 +122,12 @@ public abstract class BaseMapFragment extends BaseFrament {
 
     }
 
-    @SuppressWarnings("unused")
+
     public AMap getaMap() {
         return aMap;
     }
 
-    @SuppressWarnings("unused")
+
     public void setaMap(AMap aMap) {
         this.aMap = aMap;
     }

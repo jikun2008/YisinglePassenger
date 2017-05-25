@@ -1,4 +1,4 @@
-package com.amap.library;
+package com.map.library;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

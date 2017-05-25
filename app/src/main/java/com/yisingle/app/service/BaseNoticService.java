@@ -1,6 +1,5 @@
-package com.yisingle.app.map.location.service;
+package com.yisingle.app.service;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;

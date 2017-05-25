@@ -10,11 +10,13 @@ import android.widget.FrameLayout;
 
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
+import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.MainTabData;
 import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
-import com.yisingle.app.map.location.service.GuardService;
-import com.yisingle.app.map.location.service.LocationService;
+
+import com.yisingle.app.service.GuardService;
+import com.yisingle.app.service.LocationService;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -70,6 +72,16 @@ public class MainActiivty extends BaseActivity {
         startLocationService();
 
 
+    }
+
+    @Override
+    protected boolean isregisterEventBus() {
+        return false;
+    }
+
+    @Override
+    protected BasePresenter createPresenter() {
+        return null;
     }
 
     private void initTabRecyclerView() {

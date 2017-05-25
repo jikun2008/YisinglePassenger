@@ -1,4 +1,4 @@
-package com.yisingle.app.map.utils;
+package com.yisingle.app.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+
+import java.util.ArrayList;
 
 /**
  * Created by jikun on 17/5/12.
@@ -84,4 +86,23 @@ public class BitMapUtils {
     public static BitmapDescriptor combineCenterBitmapDescriptor(Bitmap background, float percent) {
         return BitmapDescriptorFactory.fromBitmap(combineCenterBitmap(background, percent));
     }
+
+    /**
+     * 获取多个BitmapDescriptor的列表
+     * 用来设置给Marker进行gif动画
+     *
+     * @return 返回中心Marker的动画效果图片组
+     */
+    public static ArrayList<BitmapDescriptor> getMultipleBitmapDescriptorList(Bitmap bitmap) {
+        ArrayList<BitmapDescriptor> list = new ArrayList<>();
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0f));
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.2f));
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.4f));
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.6f));
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.8f));
+        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.9f));
+        return list;
+
+    }
 }
+

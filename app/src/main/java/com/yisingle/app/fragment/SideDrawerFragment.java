@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseFrament;
+import com.yisingle.app.base.BasePresenter;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-
 
 
 public class SideDrawerFragment extends BaseFrament {
@@ -34,6 +34,11 @@ public class SideDrawerFragment extends BaseFrament {
 
         initRecycleView();
 
+    }
+
+    @Override
+    protected BasePresenter createPresenter() {
+        return null;
     }
 
     @Override

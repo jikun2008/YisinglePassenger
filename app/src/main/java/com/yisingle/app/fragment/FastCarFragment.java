@@ -14,11 +14,15 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.orhanobut.logger.Logger;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseMapFragment;
+import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.event.LocationEvent;
+import com.yisingle.app.map.MapRxManager;
 import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.RegeocodeAddressInfoUtils;
-import com.yisingle.app.rx.MapRxUtils;
+import com.yisingle.app.map.view.CenterMapMarkerView;
+import com.yisingle.app.map.view.LocationMapMarkerView;
+
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -60,6 +64,11 @@ public class FastCarFragment extends BaseMapFragment {
     }
 
     @Override
+    protected BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
     protected boolean isregisterEventBus() {
         return true;
     }
@@ -68,8 +77,8 @@ public class FastCarFragment extends BaseMapFragment {
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
 
-        if (null != locationMarkerHelper && null != locationMarkerHelper.getLocMarker()) {
-            LatLng latLng = locationMarkerHelper.getLocMarker().getPosition();
+        if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
+            LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
             aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         }
 
@@ -80,8 +89,9 @@ public class FastCarFragment extends BaseMapFragment {
     @Override
     public void initMapLoad() {
         setMapUiSetting();
-        initCenterMarkerHelper();
-        initLocationMarkerHelper();
+        locationMapMarkerView = new LocationMapMarkerView(getContext());
+        centerMapMarkerView = new CenterMapMarkerView(getContext());
+        centerMapMarkerView.addMarkViewToMap(getaMap());
 
 
         aMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
@@ -91,8 +101,10 @@ public class FastCarFragment extends BaseMapFragment {
             public void onCameraChange(CameraPosition cameraPosition) {
                 if (!isMapMove) {
                     tv_start_place.setText("正在获取上车点");
-                    centerMarkerHelper.stopFrameAnimation();
-                    centerMarkerHelper.hideInfoWindow();
+
+                    centerMapMarkerView.stopInfoWindowLoading();
+                    centerMapMarkerView.hideInfoWindow();
+                    centerMapMarkerView.stopFrameAnimation();
                 }
                 isMapMove = true;
 
@@ -103,24 +115,26 @@ public class FastCarFragment extends BaseMapFragment {
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
                 isMapMove = false;
 
-                centerMarkerHelper.startFrameAnimation(5);
+                centerMapMarkerView.showInfoWindowLoading();
+                centerMapMarkerView.startFrameAnimation(5);
 
-                MapRxUtils.getRegeocodeAddressObservable(getContext(), cameraPosition.target.latitude, cameraPosition.target.longitude)
+                MapRxManager.getRegeocodeAddressObservable(getContext(), cameraPosition.target.latitude, cameraPosition.target.longitude)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<RegeocodeAddress>() {
                             @Override
                             public void onCompleted() {
-//
+                                centerMapMarkerView.stopInfoWindowLoading();
+                                centerMapMarkerView.stopFrameAnimation();
 
-                                centerMarkerHelper.stopFrameAnimation();
 
                             }
 
                             @Override
                             public void onError(Throwable e) {
-//                                Log.e("测试代码", "测试代码--onError=" + e.toString());
+                                //Log.e("测试代码", "测试代码--onError=" + e.toString());
                                 tv_start_place.setText("你从哪出发");
-                                centerMarkerHelper.stopFrameAnimation();
+                                centerMapMarkerView.stopInfoWindowLoading();
+                                centerMapMarkerView.stopFrameAnimation();
 
                             }
 
@@ -128,7 +142,7 @@ public class FastCarFragment extends BaseMapFragment {
                             public void onNext(RegeocodeAddress regeocodeAddress) {
                                 Log.e("测试代码", "测试代码\n" + RegeocodeAddressInfoUtils.getRegeocodeAddress(regeocodeAddress));
                                 tv_start_place.setText(RegeocodeAddressInfoUtils.getSimpleSitename(regeocodeAddress));
-                                centerMarkerHelper.showInfoWindowCompleteData(regeocodeAddress.getFormatAddress());
+
                             }
                         });
 
@@ -142,7 +156,12 @@ public class FastCarFragment extends BaseMapFragment {
             public void onLocationGetSuccess(AMapLocation location) {
 
 
-                locationMarkerHelper.setLocationMarkerPosition(location, aMap);
+                if (locationMapMarkerView.isAddMarkViewToMap()) {
+                    locationMapMarkerView.setMarkerViewPosition(location);
+                } else {
+                    locationMapMarkerView.addMarkerViewToMap(location, aMap);
+                }
+
                 LatLng latLng = CoordinateTransUtils.changToLatLng(location);
                 aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
 
@@ -182,7 +201,13 @@ public class FastCarFragment extends BaseMapFragment {
     public void onLocationEventAccept(LocationEvent event) {
         Logger.e("onLocationEventAccept()");
         if (event.getCode() == LocationEvent.Code.SUCCESS) {
-            locationMarkerHelper.setLocationMarkerPosition(event.getMapLocation(), aMap);
+            if (null == locationMapMarkerView) return;
+            if (locationMapMarkerView.isAddMarkViewToMap()) {
+                locationMapMarkerView.setMarkerViewPosition(event.getMapLocation());
+            } else {
+                locationMapMarkerView.addMarkerViewToMap(event.getMapLocation(), aMap);
+            }
+
         }
     }
 

@@ -1,4 +1,4 @@
-package com.amap.library;
+package com.map.library;
 
 import org.junit.Test;
 
