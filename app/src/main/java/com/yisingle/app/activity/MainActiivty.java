@@ -12,6 +12,7 @@ import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.MainTabData;
+import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
 
@@ -110,6 +111,9 @@ public class MainActiivty extends BaseActivity {
 
         tab_recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((position, item) -> {
+
+            LocationNameQueryDialogFragment fragment=new LocationNameQueryDialogFragment();
+            fragment.show(getSupportFragmentManager(),"1312");
 
 
             for (MainTabData mainTabData : dataList) {

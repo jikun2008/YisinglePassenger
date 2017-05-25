@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
     /**
      * 初始化一些Dialog信息
      */
-    private void initDialog() {
+    protected void initDialog() {
         setStyle(DialogFragment.STYLE_NO_TITLE, 0);// 设置Dialog为无标题模式
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);// 设置Dialog为无标题模式
         Window window = getDialog().getWindow();
@@ -102,6 +103,17 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);// 隐藏软键盘
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));// 设置Dialog背景色为透明
         }
+
+
+    }
+
+    private void test(){
+        Window window = getDialog().getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.gravity = Gravity.BOTTOM; // 紧贴底部
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT; // 宽度持平
+        window.setAttributes(lp);
     }
 
 
