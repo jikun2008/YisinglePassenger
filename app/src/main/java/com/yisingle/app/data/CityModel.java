@@ -6,18 +6,18 @@ import com.amap.api.maps.offlinemap.OfflineMapCity;
  * Created by jikun on 17/5/25.
  */
 
-public class CityData {
+public class CityModel {
     private String adcode;
     private String city;
     private String code;
     private String jianpin;
     private String pinyin;
 
-    public CityData() {
+    public CityModel() {
 
     }
 
-    public CityData(OfflineMapCity mapCity) {
+    public CityModel(OfflineMapCity mapCity) {
         if (mapCity == null) {
             return;
         }
@@ -29,8 +29,8 @@ public class CityData {
         this.type = 0;
     }
 
-    public static CityData createGroupModel(char groupChar) {
-        CityData res = new CityData();
+    public static CityModel createGroupModel(char groupChar) {
+        CityModel res = new CityModel();
         res.city = String.valueOf(groupChar);
         res.type = 1;
         return res;

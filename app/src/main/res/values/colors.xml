@@ -9,4 +9,5 @@
     <color name="gray_line">#E1E1E1</color>
     <color name="orange_text">#EB834A</color>
     <color name="grey_main_text">#8A8A8A</color>
+    <color name="hint_grey_text">#cdcdcd</color>
 </resources>

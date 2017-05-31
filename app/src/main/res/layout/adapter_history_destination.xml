@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/start_des_place_selector"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingRight="@dimen/dimen_6dp"
+        android:paddingLeft="@dimen/dimen_16dp">
+
+        <ImageView
+            android:id="@+id/iv_icon_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_destination_home"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_destination_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:lines="1"
+            android:textColor="@color/black_text"
+            android:textSize="@dimen/dimen_14sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintLeft_toRightOf="@+id/iv_icon_head"
+            tools:text="家" />
+
+        <TextView
+            android:id="@+id/tv_destination_allname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginTop="1dp"
+            android:lines="1"
+            android:textColor="@color/gray_text"
+            android:textSize="@dimen/dimen_12sp"
+            app:layout_constraintLeft_toRightOf="@+id/iv_icon_head"
+            app:layout_constraintTop_toBottomOf="@+id/guideline"
+            tools:text="天府广场1231312" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="30dp" />
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

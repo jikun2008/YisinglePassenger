@@ -12,10 +12,15 @@
     <dimen name="dimen_20dp">20dp</dimen>
     <dimen name="dimen_28dp">28dp</dimen>
 
+    <dimen name="dimen_44dp">44dp</dimen>
+    <dimen name="dimen_50dp">50dp</dimen>
+
 
     <dimen name="dimen_8sp">8sp</dimen>
     <dimen name="dimen_10sp">10sp</dimen>
     <dimen name="dimen_12sp">12sp</dimen>
     <dimen name="dimen_14sp">14sp</dimen>
+    <dimen name="dimen_16sp">16sp</dimen>
+    <dimen name="dimen_18sp">18sp</dimen>
 
 </resources>
