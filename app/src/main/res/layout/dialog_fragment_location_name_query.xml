@@ -18,7 +18,7 @@
 
         <Button
             android:id="@+id/bt_choose_city"
-            android:layout_width="68dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
@@ -26,7 +26,8 @@
             android:drawableRight="@drawable/title_arrow_selector"
             android:paddingLeft="@dimen/dimen_12dp"
             android:paddingRight="@dimen/dimen_12dp"
-            android:text="成都"
+            tools:text="成都市"
+            android:minWidth="90dp"
             android:textColor="@color/black_text"
             android:textSize="@dimen/dimen_14sp" />
 
@@ -57,6 +58,22 @@
 
     </RelativeLayout>
 
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_title"></FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -65,6 +82,7 @@
         android:layout_marginRight="@dimen/dimen_10dp"
         android:layout_marginTop="@dimen/dimen_10dp"
         android:background="@android:color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.45"
 

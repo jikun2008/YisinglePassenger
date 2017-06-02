@@ -1,6 +1,12 @@
 package com.yisingle.app.map.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
@@ -8,11 +14,6 @@ import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.google.gson.Gson;
 import com.yisingle.app.data.CityModel;
 import com.yisingle.app.utils.ShareprefUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 
 /**
  * Created by liangchao_suxun on 2017/4/27.
@@ -115,10 +116,7 @@ public class CityUtil {
         if (mHotCities != null && mHotCities.size() > 0) {
             for (CityModel item : oriCityList) {
                 if (mHotCities.contains(item.getCity())) {
-                    if (res.size() == 0) {
-                        res.add(CityModel.createGroupModel(HOT_CITY_CHAR));
-                    }
-                    res.add(item);
+                    res.add(CityModel.createHotCityModel(item));
                     continue;
                 }
             }
@@ -127,14 +125,6 @@ public class CityUtil {
         char currChar = ' ';
         for (CityModel item : oriCityList) {
             try {
-                char groupChar = item.getPinyin().charAt(0);
-
-                if (groupChar != currChar) {
-                    CityModel groupModel = CityModel.createGroupModel(groupChar);
-                    res.add(groupModel);
-                    currChar = groupChar;
-                }
-
                 res.add(item);
             } catch (Exception e) {
                 continue;
