@@ -15,7 +15,6 @@ import com.yisingle.app.data.MainTabData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
-
 import com.yisingle.app.service.GuardService;
 import com.yisingle.app.service.LocationService;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
@@ -62,6 +61,8 @@ public class MainActiivty extends BaseActivity {
                 drawer_layout.openDrawer(GravityCompat.START);
             }
         });
+
+
         if (savedInstanceState == null) {
             loadRootFragment(R.id.fl_menu, SideDrawerFragment.newInstance());
             loadRootFragment(R.id.fl_container, FastCarFragment.newInstance());
@@ -111,9 +112,6 @@ public class MainActiivty extends BaseActivity {
 
         tab_recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((position, item) -> {
-
-            LocationNameQueryDialogFragment fragment=new LocationNameQueryDialogFragment();
-            fragment.show(getSupportFragmentManager(),"1312");
 
 
             for (MainTabData mainTabData : dataList) {

@@ -3,12 +3,15 @@ package com.yisingle.baselibray.baseadapter.viewholder;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
+
+import com.yisingle.baselibray.R;
 
 /**
  * 适用于RecyclerView的ViewHolder
@@ -33,9 +36,9 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * @param viewId  viewId
-     * @param <T>  T
-     * @return   T extends View
+     * @param viewId viewId
+     * @param <T>    T
+     * @return T extends View
      */
     public <T extends View> T get(int viewId) {
         return mHolderImpl.findViewById(viewId);
@@ -61,8 +64,8 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * @param viewId  viewId
-     * @param color   color
+     * @param viewId viewId
+     * @param color  color
      */
     public RecyclerViewHolder setBackgroundColor(int viewId, int color) {
         mHolderImpl.setBackgroundColor(viewId, color);
@@ -121,6 +124,12 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
     @TargetApi(16)
     public RecyclerViewHolder setImageAlpha(int viewId, int alpha) {
         mHolderImpl.setImageAlpha(viewId, alpha);
+        return this;
+    }
+
+
+    public RecyclerViewHolder setDrawableLeft(int viewId, Drawable drawable) {
+        mHolderImpl.setDrawableLeft(viewId, drawable); //设置左图标
         return this;
     }
 

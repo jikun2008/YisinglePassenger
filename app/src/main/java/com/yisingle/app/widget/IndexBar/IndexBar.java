@@ -12,6 +12,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -33,7 +35,7 @@ import java.util.List;
  * 时间： 16/09/04.
  */
 
-public class IndexBar extends View {
+    public class IndexBar extends View {
     private static final String TAG = "zxt/IndexBar";
 
     //#在最后面（默认的数据源）

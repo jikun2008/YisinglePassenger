@@ -10,9 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseDialogFragment;
@@ -40,6 +44,14 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.bt_choose_city)
     Button bt_choose_city;
+    @BindView(R.id.et_city_name)
+    EditText et_city_name;
+    @BindView(R.id.et_destination_name)
+    EditText et_destination_name;
+
+    private CityChooseFragment cityChooseFragment;
+
+    private HisDestinationFragment hisDestinationFragment;
 
     @Override
     protected int getContentViewLayoutID() {
@@ -51,7 +63,17 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.Dialog_FullScreen);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);//设置不挤压窗口
 
+    }
+
+
+    private void showCityEditText(boolean isshow) {
+        bt_choose_city.setVisibility(isshow ? View.GONE : View.VISIBLE);
+        et_city_name.setVisibility(isshow ? View.VISIBLE : View.GONE);
+        if (isshow) {
+            et_city_name.requestFocus();
+        }
     }
 
     @Override
@@ -64,6 +86,9 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
         showHisDestinationFragment();
 
 
+        et_city_name.addTextChangedListener(mTextWatcher);
+
+
     }
 
 
@@ -72,15 +97,19 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
         FragmentManager fragmentManager = getChildFragmentManager();
 
         if (null == fragmentManager.findFragmentByTag(tag)) {
-            CityChooseFragment cityChooseFragment = CityChooseFragment.newInstance();
+            cityChooseFragment = CityChooseFragment.newInstance();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.frameLayout, cityChooseFragment, tag)
                     .commitAllowingStateLoss();
+            showCityEditText(true);
+            hisDestinationFragment = null;
+
 
             cityChooseFragment.setOnChooseCityListener((fragment, cityModel) -> {
                 Log.e("测试代码", "测试代码cityModel=" + cityModel.toString());
                 showHisDestinationFragment();
                 bt_choose_city.setText(cityModel.getCity());
+
             });
         }
 
@@ -90,10 +119,12 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
         String tag = HisDestinationFragment.class.getSimpleName();
         FragmentManager fragmentManager = getChildFragmentManager();
         if (null == fragmentManager.findFragmentByTag(tag)) {
-            HisDestinationFragment hisDestinationFragment = HisDestinationFragment.newInstance();
+            hisDestinationFragment = HisDestinationFragment.newInstance();
             fragmentManager.beginTransaction()
                     .replace(R.id.frameLayout, hisDestinationFragment, tag)
                     .commitAllowingStateLoss();
+            showCityEditText(false);
+            cityChooseFragment = null;
         }
 
     }
@@ -119,6 +150,31 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     public void closeDialog() {
         dismissAllowingStateLoss();
     }
+
+    @OnClick(R.id.et_destination_name)
+    public void choosHisDestinationFragment() {
+        showHisDestinationFragment();
+    }
+
+
+    private TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (null != cityChooseFragment && null != s) {
+                cityChooseFragment.reshDataByfilterStr(s.toString());
+            }
+        }
+    };
 
 
 }

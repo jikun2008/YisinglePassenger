@@ -97,6 +97,19 @@ public class CityUtil {
 
     public static char HOT_CITY_CHAR = '#';
 
+
+    public static CityModel getLocationCityModel(Context context, String cityCode) {
+        ArrayList<CityModel> oriCityList = getCitiesFromOfflineCities(context);
+        CityModel cityModel = null;
+        for (CityModel item : oriCityList) {
+            if (cityCode.equals(item.getCode())) {
+                cityModel = item;
+                break;
+            }
+        }
+        return cityModel;
+    }
+
     public static ArrayList<CityModel> getGroupCityList(Context context) {
         return getGroupCityList(context, null);
     }

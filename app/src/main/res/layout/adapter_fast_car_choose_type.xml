@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_choose_normal_car"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_centerInParent="true"
+    android:layout_weight="1"
+    android:background="@drawable/start_des_place_selector"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/tv_fast_car_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawablePadding="@dimen/dimen_6dp"
+        android:textColor="@drawable/text_main_selector"
+        tools:drawableLeft="@drawable/fast_car_average_type"
+        tools:text="普通型" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@+id/tv_fast_car_average"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/tv_fast_car_average"
+        android:background="@drawable/fast_car_choose_line" />
+
+</RelativeLayout>

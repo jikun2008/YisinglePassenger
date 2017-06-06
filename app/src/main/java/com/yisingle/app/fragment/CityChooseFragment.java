@@ -2,16 +2,19 @@ package com.yisingle.app.fragment;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseFrament;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.CityModel;
 import com.yisingle.app.decoration.SuspensionDecoration;
+import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.utils.CityUtil;
 import com.yisingle.app.widget.IndexBar.IndexBar;
 import com.yisingle.app.widget.IndexBar.helper.GaoDeCityIIndexBarDataHelper;
@@ -28,6 +31,9 @@ import butterknife.BindView;
 
 public class CityChooseFragment extends BaseFrament {
 
+
+    @BindView(R.id.tv_choose_city)
+    TextView tv_choose_city;
 
     @BindView(R.id.tvSideBarHint)
     TextView tvSideBarHint;
@@ -49,6 +55,8 @@ public class CityChooseFragment extends BaseFrament {
 
     private OnChooseCityListener onChooseCityListener;
 
+    private CityModel currentLoctionCityModel;
+
 
     public OnChooseCityListener getOnChooseCityListener() {
         return onChooseCityListener;
@@ -64,12 +72,20 @@ public class CityChooseFragment extends BaseFrament {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
     protected void initViews(Bundle savedInstanceState) {
 
         initRecyclerView();
         initIndexBar(linearLayoutManager);
 
         initdata();
+
+        initLocationCityData();
     }
 
     public static CityChooseFragment newInstance() {
@@ -134,6 +150,26 @@ public class CityChooseFragment extends BaseFrament {
 
         adapter.refreshWithNewData(groupedCityList);
         suspensionDecoration.setmDatas(groupedCityList);
+
+
+    }
+
+    private void initLocationCityData() {
+        AMapLocation location = AMapLocationHelper.getLastKnownLocation(getContext());
+        if (null != location && null != location.getCityCode()) {
+            currentLoctionCityModel = CityUtil.getLocationCityModel(getContext(), location.getCityCode());
+            if (null != currentLoctionCityModel) {
+                tv_choose_city.setText("当前城市:" + currentLoctionCityModel.getCity());
+            }
+        }
+
+        tv_choose_city.setOnClickListener(v -> {
+            if (null != currentLoctionCityModel) {
+                onChooseCityListener.onChooseCity(CityChooseFragment.this, currentLoctionCityModel);
+            }
+
+        });
+
     }
 
     @Override
@@ -151,5 +187,10 @@ public class CityChooseFragment extends BaseFrament {
         void onChooseCity(CityChooseFragment fragment, CityModel cityModel);
 
 
+    }
+
+    public void reshDataByfilterStr(String filterStr) {
+        groupedCityList = CityUtil.getGroupCityList(getContext(), filterStr);
+        adapter.refreshWithNewData(groupedCityList);
     }
 }

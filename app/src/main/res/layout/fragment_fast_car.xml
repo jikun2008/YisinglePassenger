@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -29,14 +30,14 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/ll_bottom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_10dp"
         android:layout_marginLeft="@dimen/dimen_10dp"
         android:layout_marginRight="@dimen/dimen_10dp"
-        android:background="@drawable/start_des_place_ll_selector"
+        android:background="@android:color/transparent"
         android:orientation="vertical"
         android:padding="1px"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,64 +45,142 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
+            android:id="@+id/ll_no_choose_des"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/start_des_place_selector"
-            android:clickable="true"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:background="@drawable/start_des_place_ll_selector"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/ll_start"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/start_des_place_selector"
+                android:clickable="true"
+                android:orientation="horizontal">
 
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dimen_18dp"
-                android:layout_marginRight="@dimen/dimen_18dp"
-                android:src="@mipmap/icon_green" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_18dp"
+                    android:layout_marginRight="@dimen/dimen_18dp"
+                    android:src="@mipmap/icon_green" />
 
-            <TextView
-                android:id="@+id/tv_start_place"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/my_location"
-                android:textColor="@color/black_text"
-                android:textSize="@dimen/dimen_14sp" />
+                <TextView
+                    android:id="@+id/tv_start_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/my_location"
+                    android:textColor="@color/black_text"
+                    android:textSize="@dimen/dimen_14sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginStart="60dp"
+                android:background="@color/gray_line" />
+
+            <LinearLayout
+                android:id="@+id/ll_end"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/start_des_place_selector"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dimen_18dp"
+                    android:layout_marginRight="@dimen/dimen_18dp"
+                    android:src="@mipmap/icon_orange" />
+
+                <TextView
+                    android:id="@+id/tv_destination_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/where_are_go"
+                    android:textColor="@color/gray_text"
+                    android:textSize="@dimen/dimen_14sp" />
+            </LinearLayout>
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginStart="60dp"
-            android:background="@color/gray_line"/>
 
         <LinearLayout
+            android:id="@+id/ll_have_choose_des"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/start_des_place_selector"
-            android:clickable="true"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dimen_18dp"
-                android:layout_marginRight="@dimen/dimen_18dp"
-                android:src="@mipmap/icon_orange" />
 
-            <TextView
-                android:id="@+id/tv_destination_place"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_choose_car_type"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@android:color/white"
+                tools:listitem="@layout/adapter_fast_car_choose_type" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/gray_line" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_price"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/where_are_go"
-                android:textColor="@color/gray_text"
-                android:textSize="@dimen/dimen_14sp" />
+                android:background="@android:color/white"
+                tools:layout_height="80dp"
+                tools:listitem="@layout/adapter_fast_car_price" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/gray_line" />
+
+            <RelativeLayout
+                android:id="@+id/rl_change_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50dp"
+                android:background="@drawable/start_des_place_selector"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawableLeft="@mipmap/change_passenger"
+                    android:text="换乘车人" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_line" />
+            </RelativeLayout>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50dp"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:background="@color/bt_start_call"
+                android:text="呼叫快车、"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 
 </android.support.constraint.ConstraintLayout>

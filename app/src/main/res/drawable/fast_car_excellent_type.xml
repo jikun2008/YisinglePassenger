@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@mipmap/fast_car_excellent_type_normal" android:state_selected="false"></item>
+
+    <item android:drawable="@mipmap/fast_car_excellent_type_selected" android:state_selected="true"></item>
+
+</selector>

@@ -16,34 +16,64 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/bt_choose_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:drawableRight="@drawable/title_arrow_selector"
-            android:paddingLeft="@dimen/dimen_12dp"
-            android:paddingRight="@dimen/dimen_12dp"
-            tools:text="成都市"
-            android:minWidth="90dp"
-            android:textColor="@color/black_text"
-            android:textSize="@dimen/dimen_14sp" />
-
-        <EditText
-            android:id="@+id/et_destination_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/bt_cancle"
-            android:layout_toRightOf="@+id/bt_choose_city"
-            android:background="@android:color/white"
-            android:hint="你从哪儿出发"
-            android:inputType="text"
-            android:textColor="@color/black_text"
-            android:textColorHint="@color/hint_grey_text"
-            android:textCursorDrawable="@color/orange_text"
-            android:textSize="@dimen/dimen_14sp" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bt_choose_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/title_arrow_selector"
+                android:minWidth="90dp"
+                android:drawablePadding="@dimen/dimen_6dp"
+                android:paddingLeft="@dimen/dimen_12dp"
+                android:paddingRight="@dimen/dimen_12dp"
+                android:textColor="@color/black_text"
+                android:textSize="@dimen/dimen_14sp"
+                android:visibility="visible"
+                tools:text="成都市" />
+
+            <EditText
+                android:id="@+id/et_city_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:hint="城市中文名或拼音"
+                android:inputType="text"
+                android:paddingLeft="@dimen/dimen_10dp"
+                android:visibility="gone"
+                tools:visibility="gone"
+                android:minWidth="90dp"
+                android:paddingRight="@dimen/dimen_16dp"
+                android:textColor="@color/black_text"
+                android:textColorHint="@color/hint_grey_text"
+                android:textCursorDrawable="@color/orange_text"
+                android:textSize="@dimen/dimen_14sp" />
+
+            <EditText
+                android:id="@+id/et_destination_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/bt_choose_city"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:background="@android:color/white"
+                android:hint="你从哪儿出发"
+                android:inputType="text"
+                android:paddingLeft="@dimen/dimen_16dp"
+                android:textColor="@color/black_text"
+                android:textColorHint="@color/hint_grey_text"
+                android:textCursorDrawable="@color/orange_text"
+                android:textSize="@dimen/dimen_14sp" />
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/bt_cancle"

@@ -1,7 +1,13 @@
 package com.yisingle.app.fragment;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -15,6 +21,8 @@ import com.orhanobut.logger.Logger;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseMapFragment;
 import com.yisingle.app.base.BasePresenter;
+import com.yisingle.app.data.FastCarTypeData;
+import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.LocationEvent;
 import com.yisingle.app.map.MapRxManager;
 import com.yisingle.app.map.help.AMapLocationHelper;
@@ -22,10 +30,14 @@ import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.RegeocodeAddressInfoUtils;
 import com.yisingle.app.map.view.CenterMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView;
-
+import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
+import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -45,6 +57,20 @@ public class FastCarFragment extends BaseMapFragment {
     @BindView(R.id.tv_destination_place)
     TextView tv_destination_place;
 
+    @BindView(R.id.ll_no_choose_des)
+    LinearLayout ll_no_choose_des;
+
+
+    @BindView(R.id.recyclerView_choose_car_type)
+    RecyclerView recyclerView_choose_car_type;
+    List<FastCarTypeData> fastCarTypeListData;
+    RecyclerAdapter<FastCarTypeData> choose_car_type_adapter;
+
+
+    @BindView(R.id.recyclerView_price)
+    RecyclerView recyclerView_price;
+    RecyclerAdapter<FastCarTypeData> price_adapter;
+
     private boolean isMapMove = false;
 
 
@@ -59,6 +85,10 @@ public class FastCarFragment extends BaseMapFragment {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         //initViews比initMapCreate先执行
+
+        initChooseCarTypeRecyclerView();
+
+        initPriceRecyclerView();
 
 
     }
@@ -79,7 +109,9 @@ public class FastCarFragment extends BaseMapFragment {
 
         if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
             LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
-            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+
+
+            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
         }
 
 
@@ -209,7 +241,103 @@ public class FastCarFragment extends BaseMapFragment {
             }
 
         }
+
+
     }
 
+    @OnClick({R.id.ll_end, R.id.ll_start})
+
+    public void chooseWhere(View view) {
+        LocationNameQueryDialogFragment fragment = new LocationNameQueryDialogFragment();
+        switch (view.getId()) {
+
+            case R.id.ll_start:
+                fragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
+                break;
+            case R.id.ll_end:
+
+                fragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
+                break;
+        }
+
+    }
+
+
+    private void initChooseCarTypeRecyclerView() {
+        fastCarTypeListData = new ArrayList<>();
+        fastCarTypeListData.add(FastCarTypeData.createNormalTypeData(true, "普通"));
+        fastCarTypeListData.add(FastCarTypeData.createExcellentTypeData(false, "优享型"));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        recyclerView_choose_car_type.addItemDecoration(new DividerItemDecoration(getContext(), GridLayoutManager.VERTICAL));
+
+        recyclerView_choose_car_type.setLayoutManager(gridLayoutManager);
+
+        choose_car_type_adapter = new RecyclerAdapter<FastCarTypeData>(fastCarTypeListData, R.layout.adapter_fast_car_choose_type) {
+            @Override
+            protected void onBindData(RecyclerViewHolder holder, int position, FastCarTypeData item) {
+
+                Drawable drawable = getResources().getDrawable(item.getTypeIcon());
+                holder.setDrawableLeft(R.id.tv_fast_car_average, drawable);
+                holder.setText(R.id.tv_fast_car_average, item.getTypeName());
+                holder.setSelected(R.id.tv_fast_car_average, item.isselector());
+                holder.setVisibility(R.id.view_line, item.isselector() ? View.VISIBLE : View.GONE);
+                holder.setSelected(R.id.view_line, item.isselector());
+
+            }
+        };
+
+        recyclerView_choose_car_type.setAdapter(choose_car_type_adapter);
+        choose_car_type_adapter.setOnItemClickListener((position, item) -> {
+            for (int i = 0; i < fastCarTypeListData.size(); i++) {
+                if (i == position) {
+                    fastCarTypeListData.get(i).setIsselector(true);
+                } else {
+                    fastCarTypeListData.get(i).setIsselector(false);
+                }
+            }
+
+            choose_car_type_adapter.notifyDataSetChanged();
+        });
+
+
+    }
+
+    private void initPriceRecyclerView() {
+
+
+        List<FastCarTypeData> dataList = new ArrayList<>();
+        dataList.add(FastCarTypeData.createNormalTypeData(true, "普通"));
+        dataList.add(FastCarTypeData.createExcellentTypeData(false, "优享型"));
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+
+        recyclerView_price.setLayoutManager(gridLayoutManager);
+
+        price_adapter = new RecyclerAdapter<FastCarTypeData>(dataList, R.layout.adapter_fast_car_price) {
+            @Override
+            protected void onBindData(RecyclerViewHolder holder, int position, FastCarTypeData item) {
+
+            }
+        };
+
+        recyclerView_price.setAdapter(price_adapter);
+
+        price_adapter.setOnItemClickListener((position, item) -> {
+            Log.e("123", "123");
+
+        });
+
+
+    }
 
 }

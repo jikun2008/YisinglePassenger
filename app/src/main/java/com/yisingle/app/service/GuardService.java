@@ -25,7 +25,7 @@ import java.util.List;
 
 public class GuardService extends BaseNoticService {
     //需要守护的定位服务的名称
-    private final String locationServiceName = "com.yisingle.app.map.location.service.LocationService";
+    private final String locationServiceName = "com.yisingle.app.service.LocationService";
 
     private ServiceConnection mInnerConnection;
 

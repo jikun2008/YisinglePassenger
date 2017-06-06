@@ -25,48 +25,54 @@
 
 
     <!-- 自定义权限 -->
-    <uses-permission android:name="com.yisingle.app.map.location.service.GuardService" />
-    <uses-permission android:name="com.yisingle.app.map.location.service.LocationService" />
-    <uses-permission android:name="com.yisingle.app.receiver.LocationReceiver" />
+    <uses-permission android:name="com.yisingle.app.service.GuardService.permission" />
+    <uses-permission android:name="com.yisingle.app.service.LocationService.permission" />
+    <uses-permission android:name="com.yisingle.app.receiver.LocationReceiver.permission" />
 
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="e3b687e72db21b4f298091114cfd8748" />
 
-        <activity android:name=".activity.MainActiivty">
+        <activity
+            android:name=".activity.MainActiivty"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
         <service
-            android:name=".map.location.service.GuardService"
-            android:permission="com.yisingle.app.map.location.service.GuardService"
+            android:name=".service.GuardService"
+            android:permission="com.yisingle.app.service.GuardService.permission"
             android:process=":guard">
             <intent-filter>
                 <action android:name="com.yisingle.app.map.location.service.GuardService" />
             </intent-filter>
         </service>
         <service
-            android:name=".map.location.service.LocationService"
-            android:permission="com.yisingle.app.map.location.service.LocationService"
+            android:name=".service.LocationService"
+            android:permission="com.yisingle.app.service.LocationService.permission"
             android:process=":location">
             <intent-filter>
-                <action android:name="com.yisingle.app.map.location.service.LocationService" />
+                <action android:name="com.yisingle.app.service.LocationService" />
             </intent-filter>
         </service>
 
@@ -74,7 +80,7 @@
             android:name=".receiver.LocationReceiver"
             android:enabled="true"
             android:exported="true"
-            android:permission="com.yisingle.app.receiver.LocationReceiver">
+            android:permission="com.yisingle.app.receiver.LocationReceiver.permission">
             <intent-filter>
                 <action android:name="com.broadcast.location.receiver" />
             </intent-filter>

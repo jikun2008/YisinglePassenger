@@ -11,6 +11,7 @@ import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,8 +57,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId  viewId
-     * @param stringId  stringId
+     * @param viewId   viewId
+     * @param stringId stringId
      */
     public void setText(int viewId, int stringId) {
         TextView textView = findViewById(viewId);
@@ -75,8 +76,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId  viewId
-     * @param color   color
+     * @param viewId viewId
+     * @param color  color
      */
     public void setBackgroundColor(int viewId, int color) {
         View target = findViewById(viewId);
@@ -106,7 +107,7 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId  viewId
+     * @param viewId viewId
      */
     public void setImageUrl(Context aty, int viewId, String url) {
         ImageView target = findViewById(viewId);
@@ -144,9 +145,25 @@ public class ViewHolderImpl {
         target.setImageAlpha(alpha);
     }
 
+    public void setDrawableLeft(int viewId, Drawable drawable) {
+
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        View view = findViewById(viewId);
+        if (view instanceof TextView) {
+            TextView textview = (TextView) view;
+            textview.setCompoundDrawables(drawable, null, null, null); //设置左图标
+        } else if (view instanceof Button) {
+            Button button = (Button) view;
+            button.setCompoundDrawables(drawable, null, null, null); //设置左图标
+        } else {
+
+        }
+
+    }
+
     /**
      * @param viewId  viewId
-     * @param checked  checked
+     * @param checked checked
      */
     public void setChecked(int viewId, boolean checked) {
         Checkable checkable = findViewById(viewId);
@@ -191,8 +208,8 @@ public class ViewHolderImpl {
     }
 
     /**
-     * @param viewId  viewId
-     * @param listener  listener
+     * @param viewId   viewId
+     * @param listener listener
      */
     public void setOnClickListener(int viewId, View.OnClickListener listener) {
         View view = findViewById(viewId);
