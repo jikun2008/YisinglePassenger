@@ -3,6 +3,7 @@ package com.yisingle.baselibray.baseadapter.viewholder;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -53,13 +54,18 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public RecyclerViewHolder setText(int viewId, String text) {
+    public RecyclerViewHolder setText(int viewId, CharSequence text) {
         mHolderImpl.setText(viewId, text);
         return this;
     }
 
     public RecyclerViewHolder setTextColor(int viewId, int color) {
         mHolderImpl.setTextColor(viewId, color);
+        return this;
+    }
+
+    public RecyclerViewHolder setTextColor(int viewId, ColorStateList colors ) {
+        mHolderImpl.setTextColor(viewId, colors);
         return this;
     }
 

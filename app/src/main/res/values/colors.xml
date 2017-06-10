@@ -12,4 +12,5 @@
     <color name="hint_grey_text">#cdcdcd</color>
     <color name="index_grey_text">#606060</color>
     <color name="bt_start_call">#393B49</color>
+    <color name="bt_start_call_pressed">#393A49</color>
 </resources>

@@ -1,15 +1,8 @@
 package com.yisingle.app.dialog;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,20 +11,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.amap.api.maps.model.LatLng;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseDialogFragment;
 import com.yisingle.app.base.BasePresenter;
-import com.yisingle.app.data.CityModel;
-import com.yisingle.app.data.HisDestinationData;
-import com.yisingle.app.decoration.HisDestinationItemDecoration;
 import com.yisingle.app.fragment.CityChooseFragment;
 import com.yisingle.app.fragment.HisDestinationFragment;
 import com.yisingle.app.map.help.AMapLocationHelper;
-import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
-import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,6 +34,9 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     EditText et_city_name;
     @BindView(R.id.et_destination_name)
     EditText et_destination_name;
+
+
+    private OnChoosePlaceListener<ChooseData> onChoosePlaceListener;
 
     private CityChooseFragment cityChooseFragment;
 
@@ -88,6 +77,8 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
 
         et_city_name.addTextChangedListener(mTextWatcher);
 
+        et_destination_name.addTextChangedListener(mdesTextWatcher);
+
 
     }
 
@@ -124,6 +115,12 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
                     .replace(R.id.frameLayout, hisDestinationFragment, tag)
                     .commitAllowingStateLoss();
             showCityEditText(false);
+            hisDestinationFragment.setChoosePlaceListener(hisDestinationData -> {
+
+                onChoosePlaceListener.onchoose(new ChooseData(hisDestinationData.getLatLng(), hisDestinationData.getName()));
+                dismissAllowingStateLoss();
+
+            });
             cityChooseFragment = null;
         }
 
@@ -175,6 +172,69 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
             }
         }
     };
+
+    private TextWatcher mdesTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (null != hisDestinationFragment && null != s) {
+
+                String city = bt_choose_city.getText().toString();
+                hisDestinationFragment.reshdata(city, s.toString());
+
+            }
+        }
+    };
+
+
+    public OnChoosePlaceListener<ChooseData> getOnChoosePlaceListener() {
+        return onChoosePlaceListener;
+    }
+
+    public void setOnChoosePlaceListener(OnChoosePlaceListener<ChooseData> onChoosePlaceListener) {
+        this.onChoosePlaceListener = onChoosePlaceListener;
+    }
+
+    public interface OnChoosePlaceListener<T> {
+        void onchoose(T t);
+
+    }
+
+
+    public class ChooseData {
+        private LatLng latLng;
+        private String name;
+
+        public ChooseData(LatLng latLng, String name) {
+            this.latLng = latLng;
+            this.name = name;
+        }
+
+        public LatLng getLatLng() {
+            return latLng;
+        }
+
+        public void setLatLng(LatLng latLng) {
+            this.latLng = latLng;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 
 
 }

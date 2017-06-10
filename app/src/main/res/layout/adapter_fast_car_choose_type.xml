@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:drawablePadding="@dimen/dimen_6dp"
-        android:textColor="@drawable/text_main_selector"
+        android:textColor="@color/text_main_selector"
         tools:drawableLeft="@drawable/fast_car_average_type"
         tools:text="普通型" />
 

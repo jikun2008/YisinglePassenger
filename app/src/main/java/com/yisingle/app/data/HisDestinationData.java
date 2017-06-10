@@ -2,6 +2,7 @@ package com.yisingle.app.data;
 
 import android.support.annotation.DrawableRes;
 
+import com.amap.api.maps.model.LatLng;
 import com.yisingle.app.R;
 
 /**
@@ -11,9 +12,16 @@ import com.yisingle.app.R;
 public class HisDestinationData {
     private String name;
     private String allName;
-    private
+    private int icon;
+    private LatLng latLng;
 
-    int icon;
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+    }
 
     public String getName() {
         return name;
@@ -39,24 +47,25 @@ public class HisDestinationData {
         this.icon = icon;
     }
 
-    public HisDestinationData(String name, String allName, @DrawableRes int icon) {
+    public HisDestinationData(String name, String allName, LatLng latLng, @DrawableRes int icon) {
         this.name = name;
         this.allName = allName;
+        this.latLng = latLng;
         this.icon = icon;
     }
 
-    public static HisDestinationData createNormalHisDestinationData(String name, String allName) {
-        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, R.mipmap.icon_destination_history);
+    public static HisDestinationData createNormalHisDestinationData(String name, String allName, LatLng latLng) {
+        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, latLng, R.mipmap.icon_destination_history);
         return hisDestinationData;
     }
 
-    public static HisDestinationData createHomeHisDestinationData(String name, String allName) {
-        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, R.mipmap.icon_destination_home);
+    public static HisDestinationData createHomeHisDestinationData(String name, String allName, LatLng latLng) {
+        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, latLng, R.mipmap.icon_destination_home);
         return hisDestinationData;
     }
 
-    public static HisDestinationData createCompanyHisDestinationData(String name, String allName) {
-        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, R.mipmap.icon_destination_company);
+    public static HisDestinationData createCompanyHisDestinationData(String name, String allName, LatLng latLng) {
+        HisDestinationData hisDestinationData = new HisDestinationData(name, allName, latLng, R.mipmap.icon_destination_company);
         return hisDestinationData;
     }
 

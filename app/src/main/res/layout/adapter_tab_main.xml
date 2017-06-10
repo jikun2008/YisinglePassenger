@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textColor="@drawable/text_main_selector"
+        android:textColor="@color/text_main_selector"
         android:textSize="@dimen/dimen_14sp"
         tools:text="快车" />
 

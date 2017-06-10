@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -65,12 +66,17 @@ public class ViewHolderImpl {
         textView.setText(stringId);
     }
 
-    public void setText(int viewId, String text) {
+    public void setText(int viewId, CharSequence text) {
         TextView textView = findViewById(viewId);
         textView.setText(text);
     }
 
     public void setTextColor(int viewId, int color) {
+        TextView textView = findViewById(viewId);
+        textView.setTextColor(color);
+    }
+
+    public void setTextColor(int viewId, ColorStateList color) {
         TextView textView = findViewById(viewId);
         textView.setTextColor(color);
     }

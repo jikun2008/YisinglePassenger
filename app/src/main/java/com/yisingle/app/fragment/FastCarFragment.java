@@ -1,10 +1,12 @@
 package com.yisingle.app.fragment;
 
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import com.orhanobut.logger.Logger;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseMapFragment;
 import com.yisingle.app.base.BasePresenter;
+import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.LocationEvent;
@@ -30,6 +33,7 @@ import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.RegeocodeAddressInfoUtils;
 import com.yisingle.app.map.view.CenterMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView;
+import com.yisingle.app.utils.SpannableStringUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -60,6 +64,9 @@ public class FastCarFragment extends BaseMapFragment {
     @BindView(R.id.ll_no_choose_des)
     LinearLayout ll_no_choose_des;
 
+    @BindView(R.id.ll_have_choose_des)
+    LinearLayout ll_have_choose_des;
+
 
     @BindView(R.id.recyclerView_choose_car_type)
     RecyclerView recyclerView_choose_car_type;
@@ -69,13 +76,32 @@ public class FastCarFragment extends BaseMapFragment {
 
     @BindView(R.id.recyclerView_price)
     RecyclerView recyclerView_price;
-    RecyclerAdapter<FastCarTypeData> price_adapter;
+    List<FastCarPriceData> fastCarPriceDataList;
+    RecyclerAdapter<FastCarPriceData> price_adapter;
+
+    LocationNameQueryDialogFragment locationNameQueryDialogFragment;
+
+    private int wichViewChoose = 0;
+
+
+    private final float zoom = 16;
 
     private boolean isMapMove = false;
+
+    private LatLng startLatLng;
+
+    private LatLng endLatLng;
 
 
     private AMapLocationHelper aMapLocationHelper;
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        textureMapView = null;
+        aMapLocationHelper.destroyLocation();
+    }
 
     @Override
     protected int getContentViewLayoutID() {
@@ -89,6 +115,11 @@ public class FastCarFragment extends BaseMapFragment {
         initChooseCarTypeRecyclerView();
 
         initPriceRecyclerView();
+
+        reshPriceData(false);
+
+
+        showNoHaveDes();
 
 
     }
@@ -104,16 +135,31 @@ public class FastCarFragment extends BaseMapFragment {
     }
 
 
+    private void showHaveDes() {
+        ll_have_choose_des.setVisibility(View.VISIBLE);
+        ll_no_choose_des.setVisibility(View.GONE);
+
+    }
+
+    private void showNoHaveDes() {
+        ll_have_choose_des.setVisibility(View.GONE);
+        ll_no_choose_des.setVisibility(View.VISIBLE);
+
+    }
+
+
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
-
         if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
             LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
-
-
-            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            loctionToMapViewByPosition(latLng);
         }
+    }
 
+    private void loctionToMapViewByPosition(LatLng latLng) {
+
+
+        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
 
     }
 
@@ -195,7 +241,7 @@ public class FastCarFragment extends BaseMapFragment {
                 }
 
                 LatLng latLng = CoordinateTransUtils.changToLatLng(location);
-                aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+                loctionToMapViewByPosition(latLng);
 
 
             }
@@ -207,9 +253,7 @@ public class FastCarFragment extends BaseMapFragment {
 
 
     public static FastCarFragment newInstance() {
-
         Bundle args = new Bundle();
-
         FastCarFragment fragment = new FastCarFragment();
         fragment.setArguments(args);
         return fragment;
@@ -221,13 +265,6 @@ public class FastCarFragment extends BaseMapFragment {
         return textureMapView;
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        textureMapView = null;
-        aMapLocationHelper.destroyLocation();
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocationEventAccept(LocationEvent event) {
@@ -246,19 +283,38 @@ public class FastCarFragment extends BaseMapFragment {
     }
 
     @OnClick({R.id.ll_end, R.id.ll_start})
-
     public void chooseWhere(View view) {
-        LocationNameQueryDialogFragment fragment = new LocationNameQueryDialogFragment();
+        if (null == locationNameQueryDialogFragment) {
+            locationNameQueryDialogFragment = new LocationNameQueryDialogFragment();
+            locationNameQueryDialogFragment.setOnChoosePlaceListener(chooseData -> {
+                if (wichViewChoose == R.id.ll_start) {
+
+                    loctionToMapViewByPosition(chooseData.getLatLng());
+
+                } else if (wichViewChoose == R.id.ll_end) {
+
+                    startLatLng = locationMapMarkerView.getLocMarker().getPosition();
+                    endLatLng = chooseData.getLatLng();
+
+                    // TODO: 17/6/10 显示地图的路径
+                }
+            });
+        }
+
         switch (view.getId()) {
 
             case R.id.ll_start:
-                fragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
+                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
+
+                wichViewChoose = R.id.ll_start;
+                // loctionToMapViewByPosition(latLng);
                 break;
             case R.id.ll_end:
-
-                fragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
+                wichViewChoose = R.id.ll_end;
+                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
                 break;
         }
+
 
     }
 
@@ -302,30 +358,56 @@ public class FastCarFragment extends BaseMapFragment {
             }
 
             choose_car_type_adapter.notifyDataSetChanged();
+
+            if (position == 0) {
+                reshPriceData(false);
+            } else {
+                reshPriceData(true);
+            }
+
         });
 
 
     }
 
+
     private void initPriceRecyclerView() {
 
 
-        List<FastCarTypeData> dataList = new ArrayList<>();
-        dataList.add(FastCarTypeData.createNormalTypeData(true, "普通"));
-        dataList.add(FastCarTypeData.createExcellentTypeData(false, "优享型"));
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2) {
+        price_adapter = new RecyclerAdapter<FastCarPriceData>(null, R.layout.adapter_fast_car_price) {
             @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
+            protected void onBindData(RecyclerViewHolder holder, int position, FastCarPriceData item) {
 
-        recyclerView_price.setLayoutManager(gridLayoutManager);
+                if (item.getType() == FastCarPriceData.PriceType.NOCarpooling || item.getType() == FastCarPriceData.PriceType.Carpooling) {
 
-        price_adapter = new RecyclerAdapter<FastCarTypeData>(dataList, R.layout.adapter_fast_car_price) {
-            @Override
-            protected void onBindData(RecyclerViewHolder holder, int position, FastCarTypeData item) {
+                    ColorStateList colorStateList = getResources().getColorStateList(R.color.text_main_selector);
+                    holder.setTextColor(R.id.tv_normal_car_price, colorStateList);
+                    holder.setTextColor(R.id.tv_type, colorStateList);
+                } else {
+
+
+                    holder.setTextColor(R.id.tv_normal_car_price, getResources().getColor(R.color.black_text));
+                    holder.setTextColor(R.id.tv_type, getResources().getColor(R.color.gray_text));
+                }
+
+                holder.setText(R.id.tv_type, item.getTypeName());
+                holder.setSelected(R.id.tv_type, item.isselector());
+
+                SpannableStringBuilder spannableStringBuilder = new SpannableStringUtils.Builder()
+                        .append("约")
+                        .append(item.getPrice()).setBold().setFontProportion(2)
+                        .append("元").create();
+                holder.setText(R.id.tv_normal_car_price, spannableStringBuilder);
+
+                holder.setSelected(R.id.tv_normal_car_price, item.isselector());
+
+                SpannableStringBuilder discont = new SpannableStringUtils.Builder()
+                        .append("优惠卷已抵扣")
+                        .append(item.getDiscountPrice()).setForegroundColor(getResources().getColor(R.color.orange_text))
+                        .append("元").create();
+
+                holder.setText(R.id.tv_discount, discont);
+
 
             }
         };
@@ -333,10 +415,49 @@ public class FastCarFragment extends BaseMapFragment {
         recyclerView_price.setAdapter(price_adapter);
 
         price_adapter.setOnItemClickListener((position, item) -> {
-            Log.e("123", "123");
+            for (int i = 0; i < fastCarPriceDataList.size(); i++) {
+                if (i == position) {
+                    fastCarPriceDataList.get(i).setIsselector(true);
+                } else {
+                    fastCarPriceDataList.get(i).setIsselector(false);
+                }
+            }
+
+            price_adapter.notifyDataSetChanged();
 
         });
 
+
+    }
+
+    private void reshPriceData(boolean isExcellentCar) {
+
+        GridLayoutManager gridLayoutManager = null;
+        if (isExcellentCar) {
+            gridLayoutManager = new GridLayoutManager(getContext(), 1) {
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
+            fastCarPriceDataList = new ArrayList<>();
+            fastCarPriceDataList.add(FastCarPriceData.createExcellentPriceData(false, "精选好司机，车大品质优", "9.99", "5.46"));
+
+        } else {
+            gridLayoutManager = new GridLayoutManager(getContext(), 2) {
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
+            fastCarPriceDataList = new ArrayList<>();
+            fastCarPriceDataList.add(FastCarPriceData.createCarpoolingPriceData(true, "拼车", "6.66", "5.00"));
+            fastCarPriceDataList.add(FastCarPriceData.createNOCarpoolingPriceData(false, "不拼车", "8.88", "5.32"));
+        }
+
+
+        recyclerView_price.setLayoutManager(gridLayoutManager);
+        price_adapter.refreshWithNewData(fastCarPriceDataList);
 
     }
 

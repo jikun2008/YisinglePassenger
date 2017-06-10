@@ -172,12 +172,14 @@
 
 
             <Button
+                android:id="@+id/bt_start_user_car"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_50dp"
                 android:layout_marginTop="@dimen/dimen_4dp"
-                android:background="@color/bt_start_call"
-                android:text="呼叫快车、"
-                android:textColor="@android:color/white" />
+                android:background="@drawable/bt_start_call_selector"
+                android:text="呼叫快车"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/dimen_18sp" />
         </LinearLayout>
 
     </FrameLayout>
