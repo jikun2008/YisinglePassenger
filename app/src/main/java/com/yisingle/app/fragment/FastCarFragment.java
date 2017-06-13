@@ -298,7 +298,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     public void addLoctionCenterMarkerViewToMap() {
         isNoCamraChange = false;
-        locationMapMarkerView.addMarkViewToMap(getaMap(), true);
+        locationMapMarkerView.addMarkViewToMap(getaMap(), false);
         centerMapMarkerView.addMarkViewToMap(getaMap());
     }
 

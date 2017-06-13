@@ -44,7 +44,7 @@ public class LocationMapMarkerView extends BaseMapMarkerView implements SensorEv
                 Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
                         R.mipmap.navi_map_gps_locked);
 
-                currentMarker = MarkerBuilder.getAddMarkerToMapView(latLng,
+                currentMarker = MarkerBuilder.getLocationToMapView(latLng,
                         bitmap, aMap);
                 if (isMove) {
                     moveToCamera(aMap, latLng);

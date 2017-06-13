@@ -161,11 +161,7 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
     }
 
 
-    private BitmapDescriptor getStartBitmapDescriptor() {
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                R.mipmap.icon_start);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
+
 
     private BitmapDescriptor getSingleBitmapDescriptor() {
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),

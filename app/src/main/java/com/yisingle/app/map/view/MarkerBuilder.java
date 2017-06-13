@@ -28,24 +28,28 @@ public class MarkerBuilder {
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
 
+    private static final float zIndex = 5f;
+
     public static Circle getAddCircleToMapView(LatLng latlng, double radius, AMap aMap) {
         CircleOptions options = new CircleOptions();
         options.strokeWidth(1f);
         options.fillColor(FILL_COLOR);
         options.strokeColor(STROKE_COLOR);
+        options.zIndex(zIndex);
         options.center(latlng);
         options.radius(radius);
         return aMap.addCircle(options);
     }
 
 
-    public static Marker getTextToMapView(String text, LatLng latlng, AMap aMap,int size) {
+    public static Marker getTextToMapView(String text, LatLng latlng, AMap aMap, int size) {
 
 
         Bitmap bitmap = GLFont.getImage(text, size);
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0f, 0f);
+        options.zIndex(zIndex);
         options.position(latlng);
         Marker mLocMarker = aMap.addMarker(options);
         mLocMarker.setTitle("text");
@@ -53,12 +57,25 @@ public class MarkerBuilder {
     }
 
 
+    public static Marker getLocationToMapView(LatLng latlng, Bitmap bitmap, AMap aMap) {
+
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        options.anchor(0.5f, 0.5f);
+        options.position(latlng);
+        options.zIndex(0);
+        Marker mLocMarker = aMap.addMarker(options);
+        mLocMarker.setTitle(LOCATION_MARKER_FLAG);
+        return mLocMarker;
+    }
+
     public static Marker getAddMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap) {
 
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0.5f, 0.5f);
         options.position(latlng);
+        options.zIndex(zIndex);
         Marker mLocMarker = aMap.addMarker(options);
         mLocMarker.setTitle(LOCATION_MARKER_FLAG);
         return mLocMarker;
@@ -69,6 +86,7 @@ public class MarkerBuilder {
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0.5f, 1);
         options.position(latlng);
+        options.zIndex(zIndex);
         Marker marker = aMap.addMarker(options);
         marker.setTitle("start");
         return marker;
@@ -80,10 +98,10 @@ public class MarkerBuilder {
         MarkerOptions options = new MarkerOptions();
         options.icon(bitmapDescriptor);
         options.anchor(0.5f, 1.0f);
+        options.zIndex(zIndex);
         Marker marker = aMap.addMarker(options);
         //设置Marker在屏幕上,不跟随地图移动
         marker.setPositionByPixels(screenPosition.x, screenPosition.y);
-        marker.setZIndex(1);
         return marker;
     }
 
@@ -97,13 +115,12 @@ public class MarkerBuilder {
         Point screenPosition = aMap.getProjection().toScreenLocation(latLng);
         MarkerOptions options = new MarkerOptions();
         options.icons(list);
-
+        options.zIndex(zIndex);
 
         options.anchor(0.5f, 1.0f);
         Marker marker = aMap.addMarker(options);
         //设置Marker在屏幕上,不跟随地图移动
         marker.setPositionByPixels(screenPosition.x, screenPosition.y);
-        marker.setZIndex(1);
         marker.setPeriod(5);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
 
         return marker;
