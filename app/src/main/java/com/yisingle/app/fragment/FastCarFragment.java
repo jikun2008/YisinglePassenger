@@ -7,32 +7,28 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
-import com.orhanobut.logger.Logger;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseMapFragment;
-import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
+import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.LocationEvent;
-import com.yisingle.app.map.MapRxManager;
-import com.yisingle.app.map.help.AMapLocationHelper;
-import com.yisingle.app.map.utils.CoordinateTransUtils;
-import com.yisingle.app.map.utils.RegeocodeAddressInfoUtils;
 import com.yisingle.app.map.view.CenterMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView;
+import com.yisingle.app.map.view.StartAndEndPointMarkerView;
+import com.yisingle.app.mvp.IFastCar;
+import com.yisingle.app.mvp.presenter.FastCarPresenter;
 import com.yisingle.app.utils.SpannableStringUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
@@ -45,15 +41,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by jikun on 17/5/10.
  */
 
 
-public class FastCarFragment extends BaseMapFragment {
+public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implements IFastCar.FastCarView, AMap.OnCameraChangeListener {
     @BindView(R.id.textureMapView)
     TextureMapView textureMapView;
     @BindView(R.id.tv_start_place)
@@ -81,26 +75,27 @@ public class FastCarFragment extends BaseMapFragment {
 
     LocationNameQueryDialogFragment locationNameQueryDialogFragment;
 
-    private int wichViewChoose = 0;
-
-
-    private final float zoom = 16;
 
     private boolean isMapMove = false;
 
-    private LatLng startLatLng;
-
-    private LatLng endLatLng;
+    private boolean isNoCamraChange = false;
 
 
-    private AMapLocationHelper aMapLocationHelper;
+    private StartAndEndPointMarkerView startAndEndPointMarkerView;
+
+    protected LocationMapMarkerView locationMapMarkerView;
+    protected CenterMapMarkerView centerMapMarkerView;
+
+    private MapPointData startMapPointData;
+
+    private MapPointData endMapPointData;
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         textureMapView = null;
-        aMapLocationHelper.destroyLocation();
+        removeMarkerViewFromMap();
     }
 
     @Override
@@ -112,26 +107,74 @@ public class FastCarFragment extends BaseMapFragment {
     protected void initViews(Bundle savedInstanceState) {
         //initViews比initMapCreate先执行
 
+
         initChooseCarTypeRecyclerView();
 
         initPriceRecyclerView();
 
         reshPriceData(false);
 
-
         showNoHaveDes();
 
 
     }
 
+
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    public void onCameraChange(CameraPosition cameraPosition) {
+        if (isNoCamraChange) {
+            return;
+        }
+        if (!isMapMove) {
+            tv_start_place.setText("正在获取上车点");
+
+            centerMapMarkerView.stopInfoWindowLoading();
+            centerMapMarkerView.hideInfoWindow();
+            centerMapMarkerView.stopFrameAnimation();
+        }
+        isMapMove = true;
     }
 
     @Override
+    public void onCameraChangeFinish(CameraPosition cameraPosition) {
+        isMapMove = false;
+        if (isNoCamraChange) {
+            return;
+        }
+
+
+        mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target);
+    }
+
+    @Override
+    public void showLoading() {
+        centerMapMarkerView.showInfoWindowLoading();
+        centerMapMarkerView.startFrameAnimation(5);
+    }
+
+    @Override
+    public void dismissLoading() {
+        centerMapMarkerView.stopInfoWindowLoading();
+        centerMapMarkerView.stopFrameAnimation();
+    }
+
+    @Override
+    public void onError() {
+        tv_start_place.setText("你从哪出发");
+        centerMapMarkerView.stopInfoWindowLoading();
+        centerMapMarkerView.stopFrameAnimation();
+    }
+
+    @Override
+    public void onAddressSuccess(RegeocodeAddress regeocodeAddress, String simpleAddress, LatLng latLng) {
+        tv_start_place.setText(simpleAddress);
+        startMapPointData = MapPointData.createStartMapPointData(simpleAddress, latLng);
+    }
+
+
+    @Override
     protected boolean isregisterEventBus() {
-        return true;
+        return false;
     }
 
 
@@ -150,16 +193,20 @@ public class FastCarFragment extends BaseMapFragment {
 
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
-        if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
-            LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
-            loctionToMapViewByPosition(latLng);
+        if (startMapPointData != null && endMapPointData != null) {
+            startAndEndPointMarkerView.moveToCamera(getaMap());
+        } else {
+            if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
+                LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
+                loctionToMapViewByPosition(latLng);
+            }
         }
+
     }
 
     private void loctionToMapViewByPosition(LatLng latLng) {
 
-
-        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
+        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));//zoom - 缩放级别，[3-20]。
 
     }
 
@@ -167,86 +214,11 @@ public class FastCarFragment extends BaseMapFragment {
     @Override
     public void initMapLoad() {
         setMapUiSetting();
+        startAndEndPointMarkerView = new StartAndEndPointMarkerView(getContext(), 40);
         locationMapMarkerView = new LocationMapMarkerView(getContext());
         centerMapMarkerView = new CenterMapMarkerView(getContext());
-        centerMapMarkerView.addMarkViewToMap(getaMap());
-
-
-        aMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
-
-
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                if (!isMapMove) {
-                    tv_start_place.setText("正在获取上车点");
-
-                    centerMapMarkerView.stopInfoWindowLoading();
-                    centerMapMarkerView.hideInfoWindow();
-                    centerMapMarkerView.stopFrameAnimation();
-                }
-                isMapMove = true;
-
-
-            }
-
-            @Override
-            public void onCameraChangeFinish(CameraPosition cameraPosition) {
-                isMapMove = false;
-
-                centerMapMarkerView.showInfoWindowLoading();
-                centerMapMarkerView.startFrameAnimation(5);
-
-                MapRxManager.getRegeocodeAddressObservable(getContext(), cameraPosition.target.latitude, cameraPosition.target.longitude)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<RegeocodeAddress>() {
-                            @Override
-                            public void onCompleted() {
-                                centerMapMarkerView.stopInfoWindowLoading();
-                                centerMapMarkerView.stopFrameAnimation();
-
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                //Log.e("测试代码", "测试代码--onError=" + e.toString());
-                                tv_start_place.setText("你从哪出发");
-                                centerMapMarkerView.stopInfoWindowLoading();
-                                centerMapMarkerView.stopFrameAnimation();
-
-                            }
-
-                            @Override
-                            public void onNext(RegeocodeAddress regeocodeAddress) {
-                                Log.e("测试代码", "测试代码\n" + RegeocodeAddressInfoUtils.getRegeocodeAddress(regeocodeAddress));
-                                tv_start_place.setText(RegeocodeAddressInfoUtils.getSimpleSitename(regeocodeAddress));
-
-                            }
-                        });
-
-            }
-        });
-
-        //这个是在获取地图amap的回调方法
-        aMapLocationHelper = new AMapLocationHelper(getContext());
-        aMapLocationHelper.startSingleLocate(new AMapLocationHelper.OnLocationGetListeneAdapter() {
-            @Override
-            public void onLocationGetSuccess(AMapLocation location) {
-
-
-                if (locationMapMarkerView.isAddMarkViewToMap()) {
-                    locationMapMarkerView.setMarkerViewPosition(location);
-                } else {
-                    locationMapMarkerView.addMarkerViewToMap(location, aMap);
-                }
-
-                LatLng latLng = CoordinateTransUtils.changToLatLng(location);
-                loctionToMapViewByPosition(latLng);
-
-
-            }
-
-        });
+        addLoctionCenterMarkerViewToMap();
+        aMap.setOnCameraChangeListener(this);
 
 
     }
@@ -261,6 +233,11 @@ public class FastCarFragment extends BaseMapFragment {
 
 
     @Override
+    protected FastCarPresenter createPresenter() {
+        return new FastCarPresenter(this);
+    }
+
+    @Override
     protected TextureMapView getTextureMapView() {
         return textureMapView;
     }
@@ -268,54 +245,84 @@ public class FastCarFragment extends BaseMapFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocationEventAccept(LocationEvent event) {
-        Logger.e("onLocationEventAccept()");
-        if (event.getCode() == LocationEvent.Code.SUCCESS) {
-            if (null == locationMapMarkerView) return;
-            if (locationMapMarkerView.isAddMarkViewToMap()) {
-                locationMapMarkerView.setMarkerViewPosition(event.getMapLocation());
-            } else {
-                locationMapMarkerView.addMarkerViewToMap(event.getMapLocation(), aMap);
-            }
+//        Logger.e("onLocationEventAccept()");
+//        if (event.getCode() == LocationEvent.Code.SUCCESS) {
+//            if (null == locationMapMarkerView) return;
+//            if (locationMapMarkerView.isAddMarkViewToMap()) {
+//                locationMapMarkerView.setMarkerViewPosition(event.getMapLocation());
+//            } else {
+//                locationMapMarkerView.addMarkViewToMap(event.getMapLocation(), aMap);
+//            }
+//
+//        }
+    }
 
+    @OnClick({R.id.ll_end, R.id.ll_start})
+    public void chooseWhere(View view) {
+        locationNameQueryDialogFragment = new LocationNameQueryDialogFragment();
+        locationNameQueryDialogFragment.setOnChoosePlaceListener((chooseData, callBackcode) -> {
+            switch (callBackcode) {
+                case 1:
+                    loctionToMapViewByPosition(chooseData.getLatLng());
+                    break;
+                case 2:
+
+                    if (startMapPointData != null) {
+
+
+                        endMapPointData = MapPointData.createEndMapPointData(chooseData.getName(), chooseData.getLatLng());
+                        removeMarkerViewFromMap();
+
+                        addLoctionStartAndEndMarkerViewToMap(startMapPointData, endMapPointData, aMap);
+
+                        tv_destination_place.setText(chooseData.getName());
+                        showHaveDes();
+                    }
+                    break;
+            }
+        });
+
+        switch (view.getId()) {
+
+            case R.id.ll_start:
+                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName(), 1);
+                break;
+            case R.id.ll_end:
+                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName(), 2);
+                break;
         }
 
 
     }
 
-    @OnClick({R.id.ll_end, R.id.ll_start})
-    public void chooseWhere(View view) {
-        if (null == locationNameQueryDialogFragment) {
-            locationNameQueryDialogFragment = new LocationNameQueryDialogFragment();
-            locationNameQueryDialogFragment.setOnChoosePlaceListener(chooseData -> {
-                if (wichViewChoose == R.id.ll_start) {
 
-                    loctionToMapViewByPosition(chooseData.getLatLng());
+    public void addLoctionCenterMarkerViewToMap() {
+        isNoCamraChange = false;
+        locationMapMarkerView.addMarkViewToMap(getaMap(), true);
+        centerMapMarkerView.addMarkViewToMap(getaMap());
+    }
 
-                } else if (wichViewChoose == R.id.ll_end) {
 
-                    startLatLng = locationMapMarkerView.getLocMarker().getPosition();
-                    endLatLng = chooseData.getLatLng();
+    public void addLoctionStartAndEndMarkerViewToMap(MapPointData startData, MapPointData endData, AMap aMap) {
+        isNoCamraChange = true;
+        locationMapMarkerView.addMarkViewToMap(aMap, false);
+        startAndEndPointMarkerView.addMarkViewToMap(startData, endData, aMap);
+        startAndEndPointMarkerView.moveToCamera(aMap);
 
-                    // TODO: 17/6/10 显示地图的路径
-                }
-            });
+
+    }
+
+    public void removeMarkerViewFromMap() {
+        if (null != locationMapMarkerView) {
+            locationMapMarkerView.removeMarkerViewFromMap();
         }
-
-        switch (view.getId()) {
-
-            case R.id.ll_start:
-                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
-
-                wichViewChoose = R.id.ll_start;
-                // loctionToMapViewByPosition(latLng);
-                break;
-            case R.id.ll_end:
-                wichViewChoose = R.id.ll_end;
-                locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName());
-                break;
+        if (null != centerMapMarkerView) {
+            centerMapMarkerView.removeMarkerViewFromMap();
         }
-
-
+        if (null != startAndEndPointMarkerView) {
+            startAndEndPointMarkerView.removeMarkerViewFromMap();
+        }
+        getaMap().clear();
     }
 
 
@@ -461,4 +468,13 @@ public class FastCarFragment extends BaseMapFragment {
 
     }
 
+    @Override
+    public boolean onBackPressedSupport() {
+        endMapPointData = null;
+        removeMarkerViewFromMap();
+        addLoctionCenterMarkerViewToMap();
+        showNoHaveDes();
+
+        return super.onBackPressedSupport();
+    }
 }

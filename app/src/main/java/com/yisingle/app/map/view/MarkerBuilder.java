@@ -12,6 +12,7 @@ import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.yisingle.app.utils.GLFont;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,20 @@ public class MarkerBuilder {
     }
 
 
+    public static Marker getTextToMapView(String text, LatLng latlng, AMap aMap,int size) {
+
+
+        Bitmap bitmap = GLFont.getImage(text, size);
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        options.anchor(0f, 0f);
+        options.position(latlng);
+        Marker mLocMarker = aMap.addMarker(options);
+        mLocMarker.setTitle("text");
+        return mLocMarker;
+    }
+
+
     public static Marker getAddMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap) {
 
         MarkerOptions options = new MarkerOptions();
@@ -47,6 +62,16 @@ public class MarkerBuilder {
         Marker mLocMarker = aMap.addMarker(options);
         mLocMarker.setTitle(LOCATION_MARKER_FLAG);
         return mLocMarker;
+    }
+
+    public static Marker getStartMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap) {
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        options.anchor(0.5f, 1);
+        options.position(latlng);
+        Marker marker = aMap.addMarker(options);
+        marker.setTitle("start");
+        return marker;
     }
 
     public static Marker getCenterMarkerToMapView(BitmapDescriptor bitmapDescriptor, AMap aMap) {

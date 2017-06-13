@@ -39,6 +39,8 @@ public class HisDestinationFragment extends BaseFrament {
 
     private List<HisDestinationData> dataList = new ArrayList<>();
 
+    private int code;
+
     @Override
     protected int getContentViewLayoutID() {
         return R.layout.fragment_hisdestination;
@@ -48,12 +50,18 @@ public class HisDestinationFragment extends BaseFrament {
     protected void initViews(Bundle savedInstanceState) {
         testData();
         initRecyclerView();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            code = bundle.getInt("code");
+        }
+
     }
 
-    public static HisDestinationFragment newInstance() {
+    public static HisDestinationFragment newInstance(int code) {
 
         Bundle args = new Bundle();
 
+        args.putInt("code", code);
         HisDestinationFragment fragment = new HisDestinationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -99,7 +107,7 @@ public class HisDestinationFragment extends BaseFrament {
 
         adapter.setOnItemClickListener((position, item) -> {
             if (null != choosePlaceListener) {
-                choosePlaceListener.onchoose(dataList.get(position));
+                choosePlaceListener.onchoose(dataList.get(position), code);
             }
         });
 

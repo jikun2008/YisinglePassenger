@@ -8,8 +8,6 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.UiSettings;
-import com.yisingle.app.map.view.CenterMapMarkerView;
-import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.utils.DisplayUtil;
 
 import java.lang.reflect.Field;
@@ -18,12 +16,9 @@ import java.lang.reflect.Field;
  * Created by jikun on 17/5/10.
  */
 
-public abstract class BaseMapFragment extends BaseFrament {
+public abstract class BaseMapFragment<T extends BasePresenter> extends BaseFrament<T> {
     private TextureMapView mapView;
     protected AMap aMap;
-
-    protected LocationMapMarkerView locationMapMarkerView;
-    protected CenterMapMarkerView centerMapMarkerView;
 
 
     protected abstract TextureMapView getTextureMapView();
@@ -87,13 +82,6 @@ public abstract class BaseMapFragment extends BaseFrament {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeMarkerViewFromMap();
-        }
-        if (null != centerMapMarkerView) {
-            centerMapMarkerView.removeMarkerViewFromMap();
-        }
         mapView.onDestroy();
 
     }
@@ -119,6 +107,10 @@ public abstract class BaseMapFragment extends BaseFrament {
         uiSettings.setZoomControlsEnabled(false);//设置是否允许显示缩放按钮
         uiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_RIGHT);//设置Logo在底部右下角
         uiSettings.setLogoBottomMargin(DisplayUtil.dip2px(getContext(), 120));//设置Logo距离底部120dp;
+        //旋转手势
+        uiSettings.setRotateGesturesEnabled(false);
+        //倾斜手势
+        uiSettings.setTiltGesturesEnabled(false);
 
     }
 
@@ -127,8 +119,4 @@ public abstract class BaseMapFragment extends BaseFrament {
         return aMap;
     }
 
-
-    public void setaMap(AMap aMap) {
-        this.aMap = aMap;
-    }
 }

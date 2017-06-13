@@ -12,7 +12,6 @@ import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.MainTabData;
-import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
 import com.yisingle.app.service.GuardService;
@@ -139,5 +138,10 @@ public class MainActiivty extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopLocationService();
+    }
+
+    @Override
+    public void onBackPressedSupport() {
+
     }
 }

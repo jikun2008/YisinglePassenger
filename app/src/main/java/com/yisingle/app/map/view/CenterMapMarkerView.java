@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.yisingle.app.R;
 import com.yisingle.app.utils.BitMapUtils;
-
 
 import java.util.ArrayList;
 
@@ -27,45 +27,32 @@ import java.util.ArrayList;
  */
 
 public class CenterMapMarkerView extends BaseMapMarkerView {
-    private Marker centerMarker = null;
 
-    private Context mContext;
 
     private View infoWindow = null;
 
     private boolean infowindowloading = false;
 
-    public CenterMapMarkerView(Context context) {
-        mContext = context;
-
-
+    public CenterMapMarkerView(Context mContext) {
+        super(mContext);
     }
+
 
 
     public void addMarkViewToMap(AMap aMap) {
-
-        if (centerMarker == null) {
+        if (currentMarker == null) {
 
             initMarkInfoWindowAdapter(aMap);
 
-            centerMarker = MarkerBuilder.getCenterMarkerToMapView(getSingleBitmapDescriptor(), aMap);
-        }
-    }
-
-
-    @Override
-    public void removeMarkerViewFromMap() {
-        if (null != centerMarker) {
-            centerMarker.destroy();
-            centerMarker = null;
+            currentMarker = MarkerBuilder.getCenterMarkerToMapView(getSingleBitmapDescriptor(), aMap);
         }
     }
 
 
     public void showInfoWindowLoading() {
         infowindowloading = true;
-        if (!centerMarker.isInfoWindowShown()) {
-            centerMarker.showInfoWindow();
+        if (!currentMarker.isInfoWindowShown()) {
+            currentMarker.showInfoWindow();
         } else {
             updateInfoWindow();
         }
@@ -74,9 +61,9 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
 
     public void stopInfoWindowLoading() {
         infowindowloading = false;
-        if (null == centerMarker) return;
-        if (!centerMarker.isInfoWindowShown()) {
-            centerMarker.showInfoWindow();
+        if (null == currentMarker) return;
+        if (!currentMarker.isInfoWindowShown()) {
+            currentMarker.showInfoWindow();
         } else {
             updateInfoWindow();
         }
@@ -85,8 +72,8 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
 
 
     public void hideInfoWindow() {
-        if (null != centerMarker) {
-            centerMarker.hideInfoWindow();
+        if (null != currentMarker) {
+            currentMarker.hideInfoWindow();
         }
     }
 
@@ -95,10 +82,10 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
      * 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1
      */
     public void startFrameAnimation(@IntRange(from = 1, to = 20) int time) {
-        if (null != centerMarker) {
-            centerMarker.setIcons(getListBitmapDescriptor());
-            centerMarker.setPeriod(time);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
-            centerMarker.setTitle("center");//如果要显示InfoWindow(无论是否自定义)一定要设置Title否则无论你怎么设置都不会显示infowindow
+        if (null != currentMarker) {
+            currentMarker.setIcons(getListBitmapDescriptor());
+            currentMarker.setPeriod(time);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
+            currentMarker.setTitle("center");//如果要显示InfoWindow(无论是否自定义)一定要设置Title否则无论你怎么设置都不会显示infowindow
 
 
         }
@@ -107,21 +94,16 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
 
 
     public void stopFrameAnimation() {
-        if (null != centerMarker) {
-            centerMarker.setIcon(getSingleBitmapDescriptor());
+        if (null != currentMarker) {
+            currentMarker.setIcon(getSingleBitmapDescriptor());
         }
     }
 
 
     public Marker getCenterMarker() {
-        return centerMarker;
+        return currentMarker;
     }
 
-
-    @Override
-    public boolean isAddMarkViewToMap() {
-        return centerMarker != null;
-    }
 
     /**
      * 初始化加载对话框
@@ -178,6 +160,12 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
 
     }
 
+
+    private BitmapDescriptor getStartBitmapDescriptor() {
+        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                R.mipmap.icon_start);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
     private BitmapDescriptor getSingleBitmapDescriptor() {
         Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),

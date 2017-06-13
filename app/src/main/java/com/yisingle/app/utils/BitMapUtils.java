@@ -1,11 +1,15 @@
 package com.yisingle.app.utils;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 
 import com.amap.api.maps.model.BitmapDescriptor;
@@ -42,6 +46,27 @@ public class BitMapUtils {
         canvas.drawBitmap(foreground, (bgWidth - fgWidth) / 2,
                 (bgHeight - fgHeight) / 2, null);
         canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.restore();
+        return newmap;
+    }
+
+
+    public static Bitmap combineTextBitmap() {
+
+        Bitmap newmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newmap);
+        String testString = "测试：gafaeh:1234";
+        Paint mPaint = new Paint();
+        mPaint.setStrokeWidth(3);
+        mPaint.setTextSize(40);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setTextAlign(Paint.Align.LEFT);
+        Rect bounds = new Rect();
+        mPaint.getTextBounds(testString, 0, testString.length(), bounds);
+        canvas.drawText(testString, 0, 0, mPaint);
+
+        canvas.save(Canvas.ALL_SAVE_FLAG);
+
         canvas.restore();
         return newmap;
     }
@@ -104,5 +129,21 @@ public class BitMapUtils {
         return list;
 
     }
+
+    public static int[] getImageWidthHeight(Resources res, @DrawableRes int id) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        /**
+         * 最关键在此，把options.inJustDecodeBounds = true;
+         * 这里再decodeFile()，返回的bitmap为空，但此时调用options.outHeight时，已经包含了图片的高了
+         */
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeResource(res,id, options); // 此时返回的bitmap为null
+        /**
+         *options.outHeight为原始图片的高
+         */
+        return new int[]{options.outWidth, options.outHeight};
+    }
+
 }
 

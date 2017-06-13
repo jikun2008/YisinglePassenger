@@ -3,6 +3,7 @@ package com.yisingle.app.dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     EditText et_city_name;
     @BindView(R.id.et_destination_name)
     EditText et_destination_name;
+
+    private int callBackcode = 0;
 
 
     private OnChoosePlaceListener<ChooseData> onChoosePlaceListener;
@@ -110,16 +113,15 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
         String tag = HisDestinationFragment.class.getSimpleName();
         FragmentManager fragmentManager = getChildFragmentManager();
         if (null == fragmentManager.findFragmentByTag(tag)) {
-            hisDestinationFragment = HisDestinationFragment.newInstance();
+            hisDestinationFragment = HisDestinationFragment.newInstance(callBackcode);
             fragmentManager.beginTransaction()
                     .replace(R.id.frameLayout, hisDestinationFragment, tag)
                     .commitAllowingStateLoss();
             showCityEditText(false);
-            hisDestinationFragment.setChoosePlaceListener(hisDestinationData -> {
+            hisDestinationFragment.setChoosePlaceListener((hisDestinationData, code) -> {
 
-                onChoosePlaceListener.onchoose(new ChooseData(hisDestinationData.getLatLng(), hisDestinationData.getName()));
+                onChoosePlaceListener.onchoose(new ChooseData(hisDestinationData.getLatLng(), hisDestinationData.getName()), code);
                 dismissAllowingStateLoss();
-
             });
             cityChooseFragment = null;
         }
@@ -205,7 +207,7 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     }
 
     public interface OnChoosePlaceListener<T> {
-        void onchoose(T t);
+        void onchoose(T t, int callBackcode);
 
     }
 
@@ -237,4 +239,14 @@ public class LocationNameQueryDialogFragment extends BaseDialogFragment {
     }
 
 
+    public int show(FragmentTransaction transaction, String tag, int callBackcode) {
+        this.callBackcode = callBackcode;
+        return show(transaction, tag);
+    }
+
+    public void show(FragmentManager manager, String tag, int callBackcode) {
+        this.callBackcode = callBackcode;
+        show(manager, tag);
+    }
 }
+

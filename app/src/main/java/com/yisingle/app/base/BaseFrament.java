@@ -23,7 +23,7 @@ import me.yokeyword.fragmentation.SupportFragment;
 public abstract class BaseFrament<P extends BasePresenter> extends SupportFragment implements BaseView {
 
 
-    private P mPresenter;
+    protected P mPresenter;
     private Unbinder butterKnife;
 
     @Nullable

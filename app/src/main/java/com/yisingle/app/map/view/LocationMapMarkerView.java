@@ -6,10 +6,11 @@ import android.graphics.BitmapFactory;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-
 import com.yisingle.app.R;
+import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 
@@ -20,68 +21,79 @@ import com.yisingle.app.map.utils.CoordinateTransUtils;
 
 
 public class LocationMapMarkerView extends BaseMapMarkerView implements SensorEventHelper.OnRotationListener {
-    protected Marker locMarker = null;//当前定位的地图marker
 
-    private Context mcontext;
 
     private SensorEventHelper sensorEventHelper;
 
-    public LocationMapMarkerView(Context context) {
-        mcontext = context;
+    private AMapLocationHelper aMapLocationHelper;
+
+    public LocationMapMarkerView(Context mContext) {
+        super(mContext);
+
+    }
+
+
+    public void addMarkViewToMap(AMap aMap, boolean isMove) {
         initSensorEventHelper();
+        aMapLocationHelper = new AMapLocationHelper(mContext);
+
+        aMapLocationHelper.startSingleLocate(new AMapLocationHelper.OnLocationGetListeneAdapter() {
+            @Override
+            public void onLocationGetSuccess(AMapLocation loc) {
+                LatLng latLng = CoordinateTransUtils.changToLatLng(loc);
+                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                        R.mipmap.navi_map_gps_locked);
+
+                currentMarker = MarkerBuilder.getAddMarkerToMapView(latLng,
+                        bitmap, aMap);
+                if (isMove) {
+                    moveToCamera(aMap, latLng);
+                }
+
+            }
+        });
 
     }
 
-
-    public void addMarkerViewToMap(AMapLocation location, AMap aMap) {
-        LatLng latLng = CoordinateTransUtils.changToLatLng(location);
-        Bitmap bitmap = BitmapFactory.decodeResource(mcontext.getResources(),
-                R.mipmap.navi_map_gps_locked);
-
-        locMarker = MarkerBuilder.getAddMarkerToMapView(latLng,
-                bitmap, aMap);
-
+    public void moveToCamera(AMap aMap, LatLng latLng) {
+        float zoom = 16;//设置缩放级别
+        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
     }
 
-
+    @Override
     public void removeMarkerViewFromMap() {
-        unInitSensorEventHelper();
-        if (null != locMarker) {
-            locMarker.destroy();
-            locMarker = null;
+        super.removeMarkerViewFromMap();
+        if (null != aMapLocationHelper) {
+            aMapLocationHelper.destroyLocation();
         }
 
+        unInitSensorEventHelper();
     }
 
     public Marker getLocMarker() {
-        return locMarker;
+        return currentMarker;
     }
 
 
     public void setMarkerViewPosition(AMapLocation location) {
 
         LatLng latLng = CoordinateTransUtils.changToLatLng(location);
-        if (locMarker != null) {
-            locMarker.setPosition(latLng);
+        if (currentMarker != null) {
+            currentMarker.setPosition(latLng);
         }
-    }
-
-    @Override
-    public boolean isAddMarkViewToMap() {
-        return locMarker != null;
     }
 
 
     @Override
     public void onRotationChange(float angle) {
-        if (null != locMarker) {
-            locMarker.setRotateAngle(angle);
+        if (null != currentMarker) {
+            currentMarker.setRotateAngle(angle);
         }
     }
 
 
     private void initSensorEventHelper() {
-        sensorEventHelper = new SensorEventHelper(mcontext);
+        sensorEventHelper = new SensorEventHelper(mContext);
         sensorEventHelper.setOnRotationListener(this);
     }
 
