@@ -470,11 +470,15 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     @Override
     public boolean onBackPressedSupport() {
-        endMapPointData = null;
-        removeMarkerViewFromMap();
-        addLoctionCenterMarkerViewToMap();
-        showNoHaveDes();
+        if (null != endMapPointData) {
+            endMapPointData = null;
+            removeMarkerViewFromMap();
+            addLoctionCenterMarkerViewToMap();
+            showNoHaveDes();
+            return true;
+        }
+        return false;
 
-        return super.onBackPressedSupport();
+
     }
 }

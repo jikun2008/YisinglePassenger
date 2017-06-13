@@ -143,5 +143,7 @@ public class MainActiivty extends BaseActivity {
     @Override
     public void onBackPressedSupport() {
 
+        finish();
+
     }
 }
