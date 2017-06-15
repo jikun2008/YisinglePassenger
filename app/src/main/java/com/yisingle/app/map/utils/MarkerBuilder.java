@@ -1,4 +1,4 @@
-package com.yisingle.app.map.view;
+package com.yisingle.app.map.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;

@@ -44,10 +44,14 @@ public class RegeocodeAddressInfoUtils {
                 .append(regeocodeAddress.getDistrict())
                 //乡镇名称:
                 .append(regeocodeAddress.getTownship())
+                .append(regeocodeAddress.getNeighborhood())
                 .toString();
 
 
         String address = regeocodeAddress.getFormatAddress().replace(name, "");
+        if (TextUtils.isEmpty(address)) {
+            address = regeocodeAddress.getNeighborhood();
+        }
         if (TextUtils.isEmpty(address)) {
             address = regeocodeAddress.getFormatAddress();
         }

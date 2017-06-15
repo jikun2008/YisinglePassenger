@@ -17,6 +17,7 @@ import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Marker;
 import com.yisingle.app.R;
+import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.utils.BitMapUtils;
 
 import java.util.ArrayList;

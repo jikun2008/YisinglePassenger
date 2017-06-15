@@ -43,8 +43,8 @@ public class StartAndEndPointMarkerView extends BaseMapMarkerView {
 
 
     public void addMarkViewToMap(MapPointData startData, MapPointData endData, AMap aMap) {
-        startPointMapMarkerView.addMarkViewToMap(startData.getText(), startData.getLatLng(), startData.getRes(), aMap);
-        endPointMapMarkerView.addMarkViewToMap(endData.getText(), endData.getLatLng(), endData.getRes(), aMap);
+        startPointMapMarkerView.addMarkViewToMap(startData.getText(), startData.getLatLng(), startData.getRes(), aMap, true);
+        endPointMapMarkerView.addMarkViewToMap(endData.getText(), endData.getLatLng(), endData.getRes(), aMap, false);
         startLatLng = startData.getLatLng();
         endtLatLng = endData.getLatLng();
 
@@ -63,7 +63,7 @@ public class StartAndEndPointMarkerView extends BaseMapMarkerView {
         int screenWidth = ScreenUtils.getScreenWidth();
 
         int left = paddingwidth + (int) (startright > endright ? startright : endright);
-        if (left > screenWidth /2) {
+        if (left > screenWidth / 2) {
             left = screenWidth / 5;
         }
         int top = paddingheight * 2;

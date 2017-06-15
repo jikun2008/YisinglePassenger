@@ -13,6 +13,7 @@ import com.yisingle.app.R;
 import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
+import com.yisingle.app.map.utils.MarkerBuilder;
 
 
 /**
@@ -56,7 +57,7 @@ public class LocationMapMarkerView extends BaseMapMarkerView implements SensorEv
     }
 
     public void moveToCamera(AMap aMap, LatLng latLng) {
-        float zoom = 16;//设置缩放级别
+        float zoom = 17;//设置缩放级别
         aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
     }
 

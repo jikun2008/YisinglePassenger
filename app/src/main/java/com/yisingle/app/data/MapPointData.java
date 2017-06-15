@@ -1,5 +1,7 @@
 package com.yisingle.app.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
 import com.amap.api.maps.model.LatLng;
@@ -9,7 +11,7 @@ import com.yisingle.app.R;
  * Created by jikun on 17/6/13.
  */
 
-public class MapPointData {
+public class MapPointData implements Parcelable {
 
     private String text;
     private LatLng latLng;
@@ -68,4 +70,34 @@ public class MapPointData {
     public void setRes(int res) {
         this.res = res;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.text);
+        dest.writeParcelable(this.latLng, flags);
+        dest.writeInt(this.res);
+    }
+
+    protected MapPointData(Parcel in) {
+        this.text = in.readString();
+        this.latLng = in.readParcelable(LatLng.class.getClassLoader());
+        this.res = in.readInt();
+    }
+
+    public static final Parcelable.Creator<MapPointData> CREATOR = new Parcelable.Creator<MapPointData>() {
+        @Override
+        public MapPointData createFromParcel(Parcel source) {
+            return new MapPointData(source);
+        }
+
+        @Override
+        public MapPointData[] newArray(int size) {
+            return new MapPointData[size];
+        }
+    };
 }

@@ -10,6 +10,7 @@ import com.amap.api.maps.model.Marker;
 import com.yisingle.app.R;
 import com.yisingle.app.data.CarPositionData;
 import com.yisingle.app.data.ChoosePointData;
+import com.yisingle.app.map.utils.MarkerBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

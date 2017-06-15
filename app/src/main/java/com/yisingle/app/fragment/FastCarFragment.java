@@ -1,5 +1,6 @@
 package com.yisingle.app.fragment;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.yisingle.app.R;
+import com.yisingle.app.activity.SendOrderActivity;
 import com.yisingle.app.base.BaseMapFragment;
 import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.FastCarPriceData;
@@ -496,7 +498,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     }
 
     @OnClick(R.id.bt_start_user_car)
-    public void test() {
-        mPresenter.getNearByCar();
+    public void toSendOrderActivity() {
+        Intent intent = new Intent();
+        intent.putExtra("start",startMapPointData);
+        intent.putExtra("end",endMapPointData);
+        intent.setClass(getActivity(), SendOrderActivity.class);
+        getActivity().startActivity(intent);
     }
 }

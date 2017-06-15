@@ -15,24 +15,36 @@
         android:layout_height="@dimen/dimen_28dp"
         android:layout_marginStart="@dimen/dimen_12dp"
         android:background="@android:color/transparent"
-        android:src="@mipmap/icon_back"
+        android:src="@mipmap/title_people"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/dimen_20dp"
+        android:layout_height="@dimen/dimen_16dp"
+        android:src="@mipmap/title_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/dimen_18sp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="@dimen/dimen_6dp"
+        android:padding="@dimen/dimen_4dp"
+        android:textSize="@dimen/dimen_12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/iv_logo"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="@dimen/dimen_4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_bias="0.529"
         tools:text="标题" />
 
 

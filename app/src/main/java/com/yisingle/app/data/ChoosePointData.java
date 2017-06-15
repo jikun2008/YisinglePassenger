@@ -2,6 +2,7 @@ package com.yisingle.app.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
@@ -32,6 +33,8 @@ public class ChoosePointData implements Parcelable {
     public static ChoosePointData createChoosePointData(LatLng latLng, RegeocodeAddress regeocodeAddress, List<CarPositionData> carPositionDatas) {
 
         String address = RegeocodeAddressInfoUtils.getSimpleSitename(regeocodeAddress);
+        String info = RegeocodeAddressInfoUtils.getRegeocodeAddress(regeocodeAddress);
+        Log.e("测试代码", "测试代码" + info);
         ChoosePointData choosePointData = new ChoosePointData(latLng, address, regeocodeAddress, carPositionDatas);
         return choosePointData;
     }
