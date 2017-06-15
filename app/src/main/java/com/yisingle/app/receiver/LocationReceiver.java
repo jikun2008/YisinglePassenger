@@ -21,7 +21,7 @@ public class LocationReceiver extends BroadcastReceiver {
         LocationEvent event = intent.getParcelableExtra(LocationReceiver.LOCATION);
 
         if (event != null) {
-            EventBus.getDefault().post(event);
+           // EventBus.getDefault().post(event);
         }
 
     }

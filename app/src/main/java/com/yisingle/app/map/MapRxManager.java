@@ -63,7 +63,7 @@ public class MapRxManager {
             }
 
 
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread());
+        }).subscribeOn(Schedulers.computation());
 
 
         return observable;

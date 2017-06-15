@@ -133,17 +133,17 @@ public class HisDestinationFragment extends BaseFrament {
                 .subscribe(new Subscriber<List<Tip>>() {
                     @Override
                     public void onCompleted() {
-                        Log.e("测试代码", "测试代码hisDestinationFragment--onCompleted");
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("测试代码", "测试代码hisDestinationFragment--onError");
+
                     }
 
                     @Override
                     public void onNext(List<Tip> tipList) {
-                        Log.e("测试代码", "测试代码hisDestinationFragment--onNext");
+
 
                         dataList.clear();
                         dataList.add(HisDestinationData.createHomeHisDestinationData("家", "家里", new LatLng(30.627856, 103.997414)));

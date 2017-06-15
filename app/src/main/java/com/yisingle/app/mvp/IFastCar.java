@@ -6,6 +6,7 @@ import android.content.Context;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.yisingle.app.base.BaseView;
+import com.yisingle.app.data.ChoosePointData;
 
 /**
  * 登录页接口
@@ -14,12 +15,14 @@ import com.yisingle.app.base.BaseView;
 public interface IFastCar {
     interface FastCarView extends BaseView {
 
-       void onAddressSuccess(RegeocodeAddress regeocodeAddress,String simpleAddress, LatLng latLng);
+       void onAddressSuccess(ChoosePointData choosePointData);
 
     }
 
     interface FastCarPresenter {
         void getRegeocodeAddress(Context context,  LatLng latLng);
+
+        void getNearByCar();
     }
 
 }

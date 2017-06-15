@@ -90,7 +90,6 @@ public class BitMapUtils {
         int max = bgWidth / 2;
         int difference = max - min;
         float radius = min + difference * percent + 1;
-        Log.e("测试代码", "测试代码radius=" + radius);
 
         Bitmap newmap = Bitmap
                 .createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);

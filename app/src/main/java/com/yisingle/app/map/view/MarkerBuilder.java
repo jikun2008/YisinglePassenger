@@ -63,8 +63,22 @@ public class MarkerBuilder {
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0.5f, 0.5f);
         options.position(latlng);
-        options.zIndex(0);
+        options.zIndex(zIndex-1);
         Marker mLocMarker = aMap.addMarker(options);
+        mLocMarker.setTitle(LOCATION_MARKER_FLAG);
+        return mLocMarker;
+    }
+
+
+    public static Marker getCarMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap,float rotateAngle) {
+
+        MarkerOptions options = new MarkerOptions();
+        options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        options.anchor(0.5f, 0.5f);
+        options.position(latlng);
+        options.zIndex(zIndex-2);
+        Marker mLocMarker = aMap.addMarker(options);
+        mLocMarker.setRotateAngle(rotateAngle);
         mLocMarker.setTitle(LOCATION_MARKER_FLAG);
         return mLocMarker;
     }

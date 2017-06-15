@@ -6,24 +6,24 @@ import java.io.Serializable;
  * @author yu
  */
 public class HttpResult<T> implements Serializable {
-    private String ret_string;
-    private int ret_code = -1;
+    private String errorMsg;
+    private int code = -1;
     private T response;
 
-    public String getRet_string() {
-        return ret_string;
+    public String getErrorMsg() {
+        return errorMsg;
     }
 
-    public void setRet_string(String ret_string) {
-        this.ret_string = ret_string;
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 
-    public int getRet_code() {
-        return ret_code;
+    public int getCode() {
+        return code;
     }
 
-    public void setRet_code(int ret_code) {
-        this.ret_code = ret_code;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public T getResponse() {

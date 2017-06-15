@@ -92,9 +92,9 @@ public class RxUtils {
             public Observable<T> call(Observable<HttpResult<T>> tObservable) {
                 return tObservable
                         .flatMap(result -> {
-                            if (0 == result.getRet_code())
+                            if (0 == result.getCode())
                                 return Observable.just(result.getResponse());
-                            return Observable.error(new ApiException(result.getRet_code() + "", result.getRet_string()));
+                            return Observable.error(new ApiException(result.getCode() + "", result.getErrorMsg()));
 
                         });
             }
@@ -114,9 +114,9 @@ public class RxUtils {
                 return httpResultObservable.flatMap(new Func1<HttpResult<T>, Observable<HttpResult<T>>>() {
                     @Override
                     public Observable<HttpResult<T>> call(HttpResult<T> result) {
-                        if (0 == result.getRet_code())
+                        if (0 == result.getCode())
                             return Observable.just(result);
-                        return Observable.error(new ApiException(result.getRet_code() + "", result.getRet_string()));
+                        return Observable.error(new ApiException(result.getCode() + "", result.getErrorMsg()));
                     }
                 });
             }
