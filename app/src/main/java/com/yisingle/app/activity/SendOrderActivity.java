@@ -61,13 +61,14 @@ public class SendOrderActivity extends BaseMapActivity {
 
     @Override
     protected void initMapLoad() {
+        //initMapLoad在initViews之后执行
         setMapUiSetting();
         locationMapMarkerView = new LocationMapMarkerView(getApplicationContext());
         locationMapMarkerView.addMarkViewToMap(getaMap(), false);
         startPointMapMarkerView = new PointMapMarkerView(getApplicationContext(), 0);
 
 
-        startPointMapMarkerView.addMarkViewToMap(startMapPointData.getLatLng(), startMapPointData.getRes(), getaMap(), false);
+        startPointMapMarkerView.addMarkViewToMap(startMapPointData.getLatLng(), startMapPointData.getRes(), getaMap(), true, "00:00");
         startPointMapMarkerView.addCircleViewToMap(startMapPointData.getLatLng(), getaMap());
         startPointMapMarkerView.moveToCamera(aMap, startMapPointData.getLatLng());
 
@@ -85,8 +86,7 @@ public class SendOrderActivity extends BaseMapActivity {
     }
 
     @OnClick(R.id.bt_cancle_order)
-    public void test() {
-        // locationMapMarkerView.addMarkViewToMap(getaMap(), true);
-        //startPointMapMarkerView.addMarkViewToMap(startMapPointData.getLatLng(), startMapPointData.getRes(), getaMap(), false);
+    public void cancleOrder() {
+        finish();
     }
 }

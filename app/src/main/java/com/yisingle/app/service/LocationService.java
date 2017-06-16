@@ -108,7 +108,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     @Override
     public void onLocationGetFail(AMapLocation loc) {
         if (null != loc) {
-            sendLocation(new LocationEvent(LocationEvent.Code.SUCCESS, loc));
+            sendLocation(new LocationEvent(LocationEvent.Code.FAILED, loc));
         }
 
         //

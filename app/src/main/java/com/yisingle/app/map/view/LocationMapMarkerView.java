@@ -52,6 +52,11 @@ public class LocationMapMarkerView extends BaseMapMarkerView implements SensorEv
                 }
 
             }
+
+            @Override
+            public void onLocationGetFail(AMapLocation loc) {
+                super.onLocationGetFail(loc);
+            }
         });
 
     }

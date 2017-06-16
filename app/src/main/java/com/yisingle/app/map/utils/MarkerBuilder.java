@@ -23,7 +23,10 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class MarkerBuilder {
-
+    //    private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
+//    private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
+    //224,236,237
+    //233,241,242
     private static final String LOCATION_MARKER_FLAG = "mylocation";
     private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
     private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
@@ -63,20 +66,20 @@ public class MarkerBuilder {
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0.5f, 0.5f);
         options.position(latlng);
-        options.zIndex(zIndex-1);
+        options.zIndex(zIndex - 1);
         Marker mLocMarker = aMap.addMarker(options);
         mLocMarker.setTitle(LOCATION_MARKER_FLAG);
         return mLocMarker;
     }
 
 
-    public static Marker getCarMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap,float rotateAngle) {
+    public static Marker getCarMarkerToMapView(LatLng latlng, Bitmap bitmap, AMap aMap, float rotateAngle) {
 
         MarkerOptions options = new MarkerOptions();
         options.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         options.anchor(0.5f, 0.5f);
         options.position(latlng);
-        options.zIndex(zIndex-2);
+        options.zIndex(zIndex - 2);
         Marker mLocMarker = aMap.addMarker(options);
         mLocMarker.setRotateAngle(rotateAngle);
         mLocMarker.setTitle(LOCATION_MARKER_FLAG);

@@ -13,8 +13,14 @@ import com.amap.api.maps.model.LatLng;
 
 public class CircleBuilder {
 
-    private static final int STROKE_COLOR = Color.argb(180, 3, 145, 255);
-    private static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
+//180, 3, 145, 255
+    //10, 0, 0, 180
+    public static final int STROKE_COLOR = Color.argb(180, 3, 145, 200);
+    public static final int FILL_COLOR = Color.argb(10, 0, 0, 180);
+
+    //224,236,237
+    //233,241,242
+
 
     public static Circle addCircle(LatLng latlng, double radius, AMap aMap) {
         CircleOptions options = new CircleOptions();
@@ -24,5 +30,18 @@ public class CircleBuilder {
         options.center(latlng);
         options.radius(radius);
         return aMap.addCircle(options);
+    }
+
+    public static int getStrokeColor(int alpha) {
+
+        return Color.argb(alpha, 3, 145, 200);
+
+    }
+
+
+    public static int getFillColor(int alpha) {
+
+        return Color.argb(alpha, 0, 0, 180);
+
     }
 }
