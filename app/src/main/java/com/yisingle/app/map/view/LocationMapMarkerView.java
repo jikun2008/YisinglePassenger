@@ -14,6 +14,7 @@ import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.MarkerBuilder;
+import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
 
 
 /**
@@ -21,91 +22,166 @@ import com.yisingle.app.map.utils.MarkerBuilder;
  */
 
 
-public class LocationMapMarkerView extends BaseMapMarkerView implements SensorEventHelper.OnRotationListener {
+public class
+LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindowData> {
 
 
     private SensorEventHelper sensorEventHelper;
 
     private AMapLocationHelper aMapLocationHelper;
 
-    public LocationMapMarkerView(Context mContext) {
-        super(mContext);
+    public LocationMapMarkerView(AMap aMap, Context mContext) {
+        super(aMap, mContext);
+    }
 
+    @Override
+    protected Marker buildMarker(LocationMapMarkerData markerData) {
+
+        AMapLocation location = AMapLocationHelper.getLastKnownLocation(getContext());
+
+        LatLng latLng = CoordinateTransUtils.changToLatLng(location);
+
+        if (null == latLng) {
+            latLng = new LatLng(39.908692, 116.397477);//天安门
+        }
+        Marker marker = initAddMarker(latLng);
+
+
+        return marker;
+    }
+
+    @Override
+    protected void addMarkSuccess(LocationMapMarkerData markerData) {
+        super.addMarkSuccess(markerData);
+        initLocationHelper(markerData.isMove());
+
+        initSensorEventHelper();
     }
 
 
-    public void addMarkViewToMap(AMap aMap, boolean isMove) {
-        initSensorEventHelper();
-        aMapLocationHelper = new AMapLocationHelper(mContext);
+    private Marker initAddMarker(LatLng latLng) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                R.mipmap.navi_map_gps_locked);
+
+        Marker marker = MarkerBuilder.getLocationToMapView(latLng,
+                bitmap, getMap());
+        return marker;
+    }
+
+
+    private void moveToCamera(LatLng latLng) {
+        float zoom = 17;//设置缩放级别
+        if (null != getMap()) {
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
+        }
+
+    }
+
+    @Override
+    public void removeView() {
+        super.removeView();
+
+        unInitLocationHelper();
+        unInitSensorEventHelper();
+    }
+
+
+    /**
+     * 改变定位Marker的坐标点
+     *
+     * @param location
+     */
+    public void changeMarkerViewPosition(AMapLocation location) {
+
+        LatLng latLng = CoordinateTransUtils.changToLatLng(location);
+        changeMarkerViewPosition(latLng);
+    }
+
+    /**
+     * 改变定位Marker的坐标点
+     *
+     * @param latLng
+     */
+    public void changeMarkerViewPosition(LatLng latLng) {
+
+        if (null != latLng && null != getMarker()) {
+            getMarker().setPosition(latLng);
+        }
+    }
+
+
+    private void initLocationHelper(boolean isMove) {
+        if (null == aMapLocationHelper) {
+            aMapLocationHelper = new AMapLocationHelper(getContext());
+        }
 
         aMapLocationHelper.startSingleLocate(new AMapLocationHelper.OnLocationGetListeneAdapter() {
             @Override
             public void onLocationGetSuccess(AMapLocation loc) {
                 LatLng latLng = CoordinateTransUtils.changToLatLng(loc);
-                Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                        R.mipmap.navi_map_gps_locked);
+                if (null == getMarker()) {
+                    initAddMarker(latLng);
+                } else {
+                    changeMarkerViewPosition(latLng);
 
-                currentMarker = MarkerBuilder.getLocationToMapView(latLng,
-                        bitmap, aMap);
+                }
                 if (isMove) {
-                    moveToCamera(aMap, latLng);
+                    moveToCamera(latLng);
                 }
 
-            }
 
-            @Override
-            public void onLocationGetFail(AMapLocation loc) {
-                super.onLocationGetFail(loc);
             }
         });
-
     }
 
-    public void moveToCamera(AMap aMap, LatLng latLng) {
-        float zoom = 17;//设置缩放级别
-        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
-    }
-
-    @Override
-    public void removeMarkerViewFromMap() {
-        super.removeMarkerViewFromMap();
+    private void unInitLocationHelper() {
         if (null != aMapLocationHelper) {
             aMapLocationHelper.destroyLocation();
-        }
-
-        unInitSensorEventHelper();
-    }
-
-    public Marker getLocMarker() {
-        return currentMarker;
-    }
-
-
-    public void setMarkerViewPosition(AMapLocation location) {
-
-        LatLng latLng = CoordinateTransUtils.changToLatLng(location);
-        if (currentMarker != null) {
-            currentMarker.setPosition(latLng);
+            aMapLocationHelper = null;
         }
     }
-
-
-    @Override
-    public void onRotationChange(float angle) {
-        if (null != currentMarker) {
-            currentMarker.setRotateAngle(angle);
-        }
-    }
-
 
     private void initSensorEventHelper() {
-        sensorEventHelper = new SensorEventHelper(mContext);
-        sensorEventHelper.setOnRotationListener(this);
+        if (null == sensorEventHelper) {
+            sensorEventHelper = new SensorEventHelper(getContext());
+        }
+        sensorEventHelper = new SensorEventHelper(getContext());
+        sensorEventHelper.setOnRotationListener(angle -> {
+            if (null != getMarker()) {
+                getMarker().setRotateAngle(angle);
+            }
+        });
     }
 
     private void unInitSensorEventHelper() {
         if (null != sensorEventHelper) {
             sensorEventHelper.destroySensorEventHelper();
+            sensorEventHelper = null;
+        }
+
+    }
+
+    public static class LocationMapMarkerData extends BaseMarkerData {
+
+
+        private LocationMapMarkerData() {
+
+        }
+
+        public static LocationMapMarkerData createData(boolean isMove) {
+            LocationMapMarkerData data = new LocationMapMarkerData();
+            data.setMove(isMove);
+            return data;
+        }
+
+        private boolean isMove;
+
+        public boolean isMove() {
+            return isMove;
+        }
+
+        public void setMove(boolean move) {
+            isMove = move;
         }
 
     }

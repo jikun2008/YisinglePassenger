@@ -8,7 +8,9 @@ import com.yisingle.app.base.BaseMapActivity;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.map.view.LocationMapMarkerView;
+import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
 import com.yisingle.app.map.view.PointMapMarkerView;
+import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -63,14 +65,19 @@ public class SendOrderActivity extends BaseMapActivity {
     protected void initMapLoad() {
         //initMapLoad在initViews之后执行
         setMapUiSetting();
-        locationMapMarkerView = new LocationMapMarkerView(getApplicationContext());
-        locationMapMarkerView.addMarkViewToMap(getaMap(), false);
-        startPointMapMarkerView = new PointMapMarkerView(getApplicationContext(), 0);
+        locationMapMarkerView = new LocationMapMarkerView(getaMap(), getApplicationContext());
+        locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+        startPointMapMarkerView = new PointMapMarkerView(getaMap(), getApplicationContext());
 
 
-        startPointMapMarkerView.addMarkViewToMap(startMapPointData.getLatLng(), startMapPointData.getRes(), getaMap(), true, "00:00");
+        startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+        startPointMapMarkerView.initMarkInfoWindowAdapter();
+
         startPointMapMarkerView.addCircleViewToMap(startMapPointData.getLatLng(), getaMap());
-        startPointMapMarkerView.moveToCamera(aMap, startMapPointData.getLatLng());
+
+
+        startPointMapMarkerView.startCountTime();
+        startPointMapMarkerView.moveToCamera();
 
     }
 
@@ -78,10 +85,10 @@ public class SendOrderActivity extends BaseMapActivity {
     public void onDestroy() {
         super.onDestroy();
         if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeMarkerViewFromMap();
+            locationMapMarkerView.removeView();
         }
         if (null != startPointMapMarkerView) {
-            startPointMapMarkerView.removeMarkerViewFromMap();
+            startPointMapMarkerView.removeView();
         }
     }
 

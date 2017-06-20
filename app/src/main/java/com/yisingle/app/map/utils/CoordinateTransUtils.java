@@ -9,7 +9,12 @@ import com.amap.api.maps.model.LatLng;
 
 public class CoordinateTransUtils {
 
-    public static LatLng changToLatLng(AMapLocation loc) {
-        return new LatLng(loc.getLatitude(), loc.getLongitude());
+    public static LatLng changToLatLng(AMapLocation location) {
+        if (location != null) {
+            return new LatLng(location.getLatitude(), location.getLongitude());
+        } else {
+            return null;
+        }
+
     }
 }

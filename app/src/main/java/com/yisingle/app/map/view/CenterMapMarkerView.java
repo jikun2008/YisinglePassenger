@@ -1,16 +1,13 @@
 package com.yisingle.app.map.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.AnimationDrawable;
+import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptor;
@@ -20,46 +17,66 @@ import com.yisingle.app.R;
 import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.utils.BitMapUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
+
 
 /**
  * Created by jikun on 17/5/17.
  * 地图中选点帮助类
  */
 
-public class CenterMapMarkerView extends BaseMapMarkerView {
+public class CenterMapMarkerView extends BaseMapMarkerView<BaseMarkerData, CenterWindowData> {
 
 
-    private View infoWindow = null;
+    public CenterMapMarkerView(AMap aMap, Context context) {
+        super(aMap, context);
+    }
 
+    @Override
+    protected Marker buildMarker(BaseMarkerData markerData) {
+        Marker marker = MarkerBuilder.getCenterMarkerToMapView(getSingleBitmapDescriptor(), getMap());
 
-    LinearLayout ll_have_net;
-    LinearLayout ll_no_net;
-    LinearLayout ll_left;
-    ImageView iv_loading;
-
-    public CenterMapMarkerView(Context mContext) {
-        super(mContext);
+        return marker;
     }
 
 
-    public void addMarkViewToMap(AMap aMap) {
-        if (currentMarker == null) {
+    public void initMarkInfoWindowAdapter() {
+        initMarkInfoWindowAdapter(CenterWindowData.createLoading(), R.layout.map_fast_car_info_window, (viewHolder, data) -> {
+            if (data.getType() == CenterWindowData.Type.LOADING) {
+                Log.e("测试代码", "测试代码bindData------LOADING");
+                viewHolder.setVisibility(R.id.ll_have_net, View.VISIBLE)
+                        .setVisibility(R.id.ll_no_net, View.GONE)
+                        .setVisibility(R.id.ll_left, View.GONE)
+                        .setVisibility(R.id.iv_loading, View.VISIBLE)
+                        .startAnimationDrawable(R.id.iv_loading);
+            } else if (data.getType() == CenterWindowData.Type.SUCCESS) {
+                Log.e("测试代码", "测试代码bindData------SUCCESS");
 
-            initMarkInfoWindowAdapter(aMap);
+                viewHolder.setVisibility(R.id.ll_have_net, View.VISIBLE)
+                        .setVisibility(R.id.ll_no_net, View.GONE)
+                        .setVisibility(R.id.ll_left, View.VISIBLE)
+                        .setVisibility(R.id.iv_loading, View.GONE)
+                        .stopAnimationDrawable(R.id.iv_loading);
+            } else {
+                Log.e("测试代码", "测试代码bindData------Failed");
+                viewHolder.setVisibility(R.id.ll_have_net, View.GONE)
+                        .setVisibility(R.id.ll_no_net, View.VISIBLE)
+                        .stopAnimationDrawable(R.id.iv_loading);
+            }
 
-            currentMarker = MarkerBuilder.getCenterMarkerToMapView(getSingleBitmapDescriptor(), aMap);
-            currentMarker.setTitle("center");//如果要显示InfoWindow(无论是否自定义)一定要设置Title否则无论你怎么设置都不会显示infowindow
-        }
+        });
     }
-
 
     public void showLoading(@IntRange(from = 1, to = 20) int time) {
         startFrameAnimation(time);
-        if (null != currentMarker && !currentMarker.isInfoWindowShown()) {
-            currentMarker.showInfoWindow();
+        if (null != getMarker() && !getMarker().isInfoWindowShown()) {
+            getMarker().showInfoWindow();
         }
-        updateLoadingInfoWindow();
+        reshInfoWindowData(CenterWindowData.createLoading());
     }
 
     public void stopLoading() {
@@ -67,36 +84,10 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
     }
 
 
-    public void updateErrorInfoWindow() {
-        if (ll_have_net != null) {
-            Log.e("测试代码","测试代码Error----------updateErrorInfoWindow");
-            ll_have_net.setVisibility(View.GONE);
-            ll_no_net.setVisibility(View.VISIBLE);
-            AnimationDrawable animationDrawable = (AnimationDrawable) iv_loading.getDrawable();
-            if (animationDrawable.isRunning()) {
-                animationDrawable.stop();
-            }
-        }
-    }
-
-    public void updateSucccessInfoWindow() {
-        if (ll_have_net != null) {
-            Log.e("测试代码","测试代码Succcess----------updateSucccessInfoWindow");
-            ll_have_net.setVisibility(View.VISIBLE);
-            ll_no_net.setVisibility(View.GONE);
-            ll_left.setVisibility(View.VISIBLE);
-            iv_loading.setVisibility(View.GONE);
-            AnimationDrawable animationDrawable = (AnimationDrawable) iv_loading.getDrawable();
-            if (animationDrawable.isRunning()) {
-                animationDrawable.stop();
-            }
-        }
-
-    }
-
     public void hideInfoWindow() {
-        if (null != currentMarker && currentMarker.isInfoWindowShown()) {
-            currentMarker.hideInfoWindow();
+        if (null != getMarker() && getMarker().isInfoWindowShown()) {
+            setInfoData(CenterWindowData.createLoading());
+            getMarker().hideInfoWindow();
         }
     }
 
@@ -105,91 +96,79 @@ public class CenterMapMarkerView extends BaseMapMarkerView {
      * 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1
      */
     private void startFrameAnimation(@IntRange(from = 1, to = 20) int time) {
-        if (null != currentMarker) {
-            currentMarker.setIcons(getListBitmapDescriptor());
-            currentMarker.setPeriod(time);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
+        if (null != getMarker()) {
+            getMarker().setIcons(getListBitmapDescriptor());
+            getMarker().setPeriod(time);// 设置多少帧刷新一次图片资源，Marker动画的间隔时间，值越小动画越快。默认为20，最小为1。
         }
 
     }
 
 
     private void stopFrameAnimation() {
-        if (null != currentMarker) {
-            currentMarker.setIcon(getSingleBitmapDescriptor());
+        if (null != getMarker()) {
+            getMarker().setIcon(getSingleBitmapDescriptor());
         }
-    }
-
-
-    public Marker getCenterMarker() {
-        return currentMarker;
-    }
-
-
-    /**
-     * 初始化加载对话框
-     *
-     * @param aMap 高德地图的Amap类
-     */
-    private void initMarkInfoWindowAdapter(AMap aMap) {
-
-        aMap.setOnMarkerClickListener(marker -> false);
-
-        aMap.setInfoWindowAdapter(new AMap.InfoWindowAdapter() {
-            @SuppressLint("InflateParams")
-            @Override
-            public View getInfoWindow(Marker marker) {
-
-                if (infoWindow == null) {
-                    infoWindow = LayoutInflater.from(mContext).inflate(
-                            R.layout.map_fast_car_info_window, null);
-                    ll_have_net = (LinearLayout) infoWindow.findViewById(R.id.ll_have_net);
-
-                    ll_no_net = (LinearLayout) infoWindow.findViewById(R.id.ll_no_net);
-                    ll_left = (LinearLayout) infoWindow.findViewById(R.id.ll_left);
-                    iv_loading = (ImageView) infoWindow.findViewById(R.id.iv_loading);
-                    updateLoadingInfoWindow();
-                }
-
-
-
-
-                return infoWindow;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                return null;
-            }
-        });
-    }
-
-
-    private void updateLoadingInfoWindow() {
-        if (ll_have_net != null) {
-            Log.e("测试代码","测试代码Loading----------updateLoadingInfoWindow");
-            ll_have_net.setVisibility(View.VISIBLE);
-            ll_no_net.setVisibility(View.GONE);
-            ll_left.setVisibility(View.GONE);
-            iv_loading.setVisibility(View.VISIBLE);
-            AnimationDrawable animationDrawable = (AnimationDrawable) iv_loading.getDrawable();
-            if (!animationDrawable.isRunning()) {
-                animationDrawable.start();
-            }
-        }
-
     }
 
 
     private BitmapDescriptor getSingleBitmapDescriptor() {
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                 R.mipmap.icon_me_location);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private ArrayList<BitmapDescriptor> getListBitmapDescriptor() {
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                 R.mipmap.icon_me_location);
         return BitMapUtils.getMultipleBitmapDescriptorList(bitmap);
+    }
+
+    public static class CenterWindowData extends BaseWindowData {
+
+
+        @Type
+        int type;
+
+        //添加支持注解的依赖到你的项目中，需要在build.gradle文件中的依赖块中添加：
+        //dependencies { compile 'com.android.support:support-annotations:24.2.0' }
+        @IntDef({Type.LOADING, Type.SUCCESS, Type.ERROR})
+        @Retention(RetentionPolicy.SOURCE)
+        public @interface Type {
+
+            int LOADING = 0;
+            int SUCCESS = 1;
+            int ERROR = 2;
+
+
+        }
+
+        public static CenterWindowData createLoading() {
+            CenterWindowData centerWindowData = new CenterWindowData();
+            centerWindowData.setType(Type.LOADING);
+            return centerWindowData;
+        }
+
+        public static CenterWindowData createSuccess() {
+            CenterWindowData centerWindowData = new CenterWindowData();
+            centerWindowData.setType(Type.SUCCESS);
+            return centerWindowData;
+        }
+
+        public static CenterWindowData createError() {
+            CenterWindowData centerWindowData = new CenterWindowData();
+            centerWindowData.setType(Type.ERROR);
+            return centerWindowData;
+        }
+
+        public
+        @Type
+        int getType() {
+            return type;
+        }
+
+        public void setType(@Type int type) {
+            this.type = type;
+        }
     }
 
 }

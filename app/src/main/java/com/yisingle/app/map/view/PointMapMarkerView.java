@@ -1,17 +1,11 @@
 package com.yisingle.app.map.view;
 
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.DrawableRes;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -22,90 +16,43 @@ import com.yisingle.app.R;
 import com.yisingle.app.map.utils.CircleBuilder;
 import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.utils.AnimatorUtils;
+import com.yisingle.app.utils.TimeUtils;
+import com.yisingle.baselibray.baseadapter.viewholder.MapInfoWindowViewHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by jikun on 17/6/11.
  */
 
-public class PointMapMarkerView extends BaseMapMarkerView {
+public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.PointMapMarkerData, PointMapMarkerView.PointMapWindowData> {
 
     protected Marker textMarker = null;
 
 
-    private View infoWindow = null;
-
-
     private List<Circle> circleList;
-
-    private int size;
-
-    private String text;
 
 
     private ValueAnimator valueAnimator;
 
-    private String time;
+
+    Subscription subscription;
+
+    private int currentValue;
 
 
-    private TextView tv_info;
-
-    private TextView tv_time;
-
-    private LinearLayout ll_waitTime;
-
-    private LinearLayout ll_left;
-
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public PointMapMarkerView(Context mContext, int size) {
-        super(mContext);
-        this.size = size;
-    }
-
-    @Override
-    public boolean isAddMarkViewToMap() {
-        return currentMarker != null;
-    }
-
-
-    public void addMarkViewToMap(LatLng latLng, @DrawableRes int res, AMap aMap) {
-        addMarkViewToMap(latLng, res, aMap, false, "");
+    public PointMapMarkerView(AMap aMap, Context context) {
+        super(aMap, context);
 
     }
 
-
-    public void addMarkViewToMap(LatLng latLng, @DrawableRes int res, AMap aMap, boolean ishowInfoWindow, String time) {
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                res);
-        this.time = time;
-        currentMarker = MarkerBuilder.getStartMarkerToMapView(latLng,
-                bitmap, aMap);
-        initMarkInfoWindowAdapter(aMap);
-        if (ishowInfoWindow) {
-            currentMarker.showInfoWindow();
-        }
-
-    }
-
-    int currentValue = 0;
 
     public void addCircleViewToMap(LatLng latlng, AMap aMap) {
         circleList = new ArrayList<>();
@@ -121,11 +68,6 @@ public class PointMapMarkerView extends BaseMapMarkerView {
         valueAnimator = AnimatorUtils.getValueAnimator(0, 50, animation -> {
 
             int value = (int) animation.getAnimatedValue();
-            if (currentValue == value) {
-                //防止闪烁的方式
-                return;
-            }
-            Log.e("测试代码", "测试代码value=" + value);
 
 
             for (int i = 0; i < circleList.size(); i++) {
@@ -144,7 +86,7 @@ public class PointMapMarkerView extends BaseMapMarkerView {
                     fillPercent = 20 - value * 20 / 50;
                 }
 
-                Log.e("测试代码", "测试代码strokePercent=" + strokePercent + "--fillPercent" + fillPercent);
+
                 if (circle.getFillColor() != CircleBuilder.getStrokeColor(strokePercent)) {
                     circle.setStrokeColor(CircleBuilder.getStrokeColor(strokePercent));
                     circle.setFillColor(CircleBuilder.getFillColor(fillPercent));
@@ -166,29 +108,42 @@ public class PointMapMarkerView extends BaseMapMarkerView {
 
     }
 
-    public void moveToCamera(AMap aMap, LatLng latLng) {
+    public void moveToCamera() {
         float zoom = 17;//设置缩放级别
-        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));//zoom - 缩放级别，[3-20]。
+        if (null != getMap() && null != getMarker()) {
+            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(getMarker().getPosition(), zoom));//zoom - 缩放级别，[3-20]。
+        }
     }
 
-    public void addMarkViewToMap(String text, LatLng latLng, @DrawableRes int res, AMap aMap, boolean ishowInfoWindow) {
+
+    public void startCountTime() {
+        subscription = Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+                    String time = TimeUtils.millis2String(aLong * 1000, sdf);
+                    PointMapWindowData data = PointMapWindowData.createTimeData(true, time);
+                    reshInfoWindowData(data);
+                });
+    }
 
 
-        this.text = text;
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                res);
-        currentMarker = MarkerBuilder.getStartMarkerToMapView(latLng,
-                bitmap, aMap);
-        initMarkInfoWindowAdapter(aMap);
-        if (ishowInfoWindow) {
-            currentMarker.showInfoWindow();
+    @Override
+    protected Marker buildMarker(PointMapMarkerData markerData) {
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                markerData.getDrawableId());
+        Marker marker = MarkerBuilder.getStartMarkerToMapView(markerData.getLatLng(),
+                bitmap, getMap());
+        if (markerData.ishowInfoWindow()) {
+            getMarker().showInfoWindow();
         }
-        textMarker = MarkerBuilder.getTextToMapView(text, latLng, aMap, size);
+        textMarker = MarkerBuilder.getTextToMapView(markerData.getText(), markerData.getLatLng(), getMap(), markerData.getSize());
+        return marker;
     }
 
     @Override
-    public void removeMarkerViewFromMap() {
-        super.removeMarkerViewFromMap();
+    public void removeView() {
+        super.removeView();
         if (null != textMarker) {
             textMarker.destroy();
             textMarker = null;
@@ -200,67 +155,132 @@ public class PointMapMarkerView extends BaseMapMarkerView {
             }
             circleList.clear();
         }
+        if (null != subscription && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
 
 
     }
 
-    /**
-     * 初始化加载对话框
-     *
-     * @param aMap 高德地图的Amap类
-     */
-    private void initMarkInfoWindowAdapter(AMap aMap) {
 
-        aMap.setOnMarkerClickListener(marker -> false);
-
-        aMap.setInfoWindowAdapter(new AMap.InfoWindowAdapter() {
-            @SuppressLint("InflateParams")
+    public void initMarkInfoWindowAdapter() {
+        initMarkInfoWindowAdapter(PointMapWindowData.createTimeData(true, "00:00"), R.layout.map_wait_car_info_window, new InfoWindowListener<PointMapWindowData>() {
             @Override
-            public View getInfoWindow(Marker marker) {
-
-                if (infoWindow == null) {
-                    infoWindow = LayoutInflater.from(mContext).inflate(
-                            R.layout.map_wait_car_info_window, null);
-                    tv_time = (TextView) infoWindow.findViewById(R.id.tv_time);
-                    tv_info = (TextView) infoWindow.findViewById(R.id.tv_info);
-                    ll_waitTime = (LinearLayout) infoWindow.findViewById(R.id.ll_waitTime);
-                    ll_left = (LinearLayout) infoWindow.findViewById(R.id.ll_left);
-                    if (TextUtils.isEmpty(time)) {
-                        reshInfoWindowData();
-                    } else {
-                        reshTimeInfoWindowData(time);
-                    }
-
+            public void bindData(MapInfoWindowViewHolder viewHolder, PointMapWindowData data) {
+                if (data.ishowTimeView()) {
+                    viewHolder.setText(R.id.tv_info, data.getInfo());
+                    viewHolder.setText(R.id.tv_time, data.getTime());
+                    viewHolder.setVisibility(R.id.ll_waitTime, View.VISIBLE);
+                    viewHolder.setVisibility(R.id.ll_left, View.GONE);
+                } else {
+                    viewHolder.setText(R.id.tv_info, data.getInfo());
+                    viewHolder.setVisibility(R.id.ll_waitTime, View.GONE);
+                    viewHolder.setVisibility(R.id.ll_left, View.VISIBLE);
                 }
 
-
-                return infoWindow;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                return null;
             }
         });
     }
 
 
-    public void reshInfoWindowData() {
-        tv_info.setText("从这里出发");
+    public static class PointMapMarkerData extends BaseMarkerData {
+        private boolean ishowInfoWindow;
+        private String text;
+        private int size;
 
 
-        ll_waitTime.setVisibility(View.GONE);
+        private PointMapMarkerData() {
 
-        ll_left.setVisibility(View.VISIBLE);
+        }
+
+        public boolean ishowInfoWindow() {
+            return ishowInfoWindow;
+        }
+
+        public void setIshowInfoWindow(boolean ishowInfoWindow) {
+            this.ishowInfoWindow = ishowInfoWindow;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+
+        public static PointMapMarkerData createData(@DrawableRes int drawableId, LatLng latLng, String text, int size) {
+            PointMapMarkerData pointMapMarkerData = new PointMapMarkerData();
+            pointMapMarkerData.setText(text);
+            pointMapMarkerData.setSize(size);
+            pointMapMarkerData.setLatLng(latLng);
+            pointMapMarkerData.setDrawableId(drawableId);
+            return pointMapMarkerData;
+        }
     }
 
+    public static class PointMapWindowData extends BaseWindowData {
 
-    public void reshTimeInfoWindowData(String time) {
-        this.time = time;
-        tv_info.setText("正在为你寻找车辆");
-        tv_time.setText(time);
-        ll_waitTime.setVisibility(View.VISIBLE);
+        private boolean ishowTimeView;
+        private String time;
+        private String info;
 
-        ll_left.setVisibility(View.GONE);
+        private PointMapWindowData() {
+
+
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+
+        public void setInfo(String info) {
+            this.info = info;
+        }
+
+        public boolean ishowTimeView() {
+            return ishowTimeView;
+        }
+
+        public void setIshowTimeView(boolean ishowTimeView) {
+            this.ishowTimeView = ishowTimeView;
+        }
+
+        public static PointMapWindowData createNoTimeData(boolean isShowWindow) {
+            PointMapWindowData data = createData(isShowWindow, "", "从这里出发", false);
+            return data;
+        }
+
+        public static PointMapWindowData createTimeData(boolean isShowWindow, String time) {
+            PointMapWindowData data = createData(isShowWindow, time, "正在为你寻找车辆", true);
+            return data;
+        }
+
+        public static PointMapWindowData createData(boolean isShowWindow, String time, String info, boolean ishowTimeView) {
+            PointMapWindowData data = new PointMapWindowData();
+            data.setShowWindow(isShowWindow);
+            data.setShowWindow(true);
+            data.setShowWindow(ishowTimeView);
+            data.setTime(time);
+            data.setInfo(info);
+            return data;
+        }
     }
 }

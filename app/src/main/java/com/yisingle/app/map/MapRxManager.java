@@ -15,7 +15,7 @@ import com.amap.api.services.help.Tip;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.SyncOnSubscribe;
 import rx.schedulers.Schedulers;
 
 /**
@@ -47,23 +47,24 @@ public class MapRxManager {
 
         LatLonPoint searchLatlonPoint = new LatLonPoint(latitude, longitude);
 
-
-        Observable<RegeocodeAddress> observable = Observable.create((Observable.OnSubscribe<RegeocodeAddress>) subscriber -> {
+        SyncOnSubscribe<String, RegeocodeAddress> syncOnSubscribe = SyncOnSubscribe.createSingleState(() -> "", (s, observer) -> {
             try {
                 RegeocodeQuery query = new RegeocodeQuery(searchLatlonPoint, 100, GeocodeSearch.AMAP);
                 RegeocodeAddress address = geocodeSearch.getFromLocation(query);
                 if (address != null && !TextUtils.isEmpty(address.getFormatAddress())) {
-                    subscriber.onNext(address);
-                    subscriber.onCompleted();
+                    observer.onNext(address);
+                    observer.onCompleted();
                 } else {
-                    subscriber.onError(new Exception("当前address为null"));
+                    observer.onError(new Exception("当前address为null"));
                 }
             } catch (AMapException e) {
-                subscriber.onError(e);
+                observer.onError(e);
             }
 
+        });
 
-        }).subscribeOn(Schedulers.computation());
+
+        Observable<RegeocodeAddress> observable = Observable.create(syncOnSubscribe).subscribeOn(Schedulers.computation());
 
 
         return observable;
@@ -78,27 +79,29 @@ public class MapRxManager {
             geocodeSearch = new GeocodeSearch(context);
         }
 
+        SyncOnSubscribe<String, List<Tip>> syncOnSubscribe = SyncOnSubscribe
+                .createSingleState(() -> "", (s, observer) -> {
+                    try {
 
-        Observable<List<Tip>> observable = Observable.create((Observable.OnSubscribe<List<Tip>>) subscriber -> {
-            try {
+                        InputtipsQuery inputquery = new InputtipsQuery(key, city);
+                        Inputtips inputTips = new Inputtips(context, inputquery);
+                        List<Tip> tips = inputTips.requestInputtips();
 
+                        if (tips != null && tips.size() != 0) {
+                            observer.onNext(tips);
+                            observer.onCompleted();
+                        } else {
+                            observer.onError(new Exception("未能查询到数据"));
+                        }
+                    } catch (AMapException e) {
+                        observer.onError(e);
+                    }
 
-                InputtipsQuery inputquery = new InputtipsQuery(key, city);
-                Inputtips inputTips = new Inputtips(context, inputquery);
-                List<Tip> tips = inputTips.requestInputtips();
+                });
 
-                if (tips != null && tips.size() != 0) {
-                    subscriber.onNext(tips);
-                    subscriber.onCompleted();
-                } else {
-                    subscriber.onError(new Exception("未能查询到数据"));
-                }
-            } catch (AMapException e) {
-                subscriber.onError(e);
-            }
-
-
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread());
+        // Observable.create(SyncOnSubscribe.createSingleState(f0,a2));
+        Observable<List<Tip>> observable =
+                Observable.create(syncOnSubscribe).subscribeOn(Schedulers.computation());
 
 
         return observable;

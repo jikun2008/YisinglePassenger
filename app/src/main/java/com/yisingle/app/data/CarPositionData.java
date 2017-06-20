@@ -3,11 +3,12 @@ package com.yisingle.app.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
 /**
  * Created by jikun on 17/6/14.
  */
 
-public class CarPositionData implements Parcelable {
+public class CarPositionData  implements Parcelable {
 
 
     //纬度

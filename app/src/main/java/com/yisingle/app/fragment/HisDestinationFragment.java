@@ -23,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by jikun on 17/6/1.
@@ -129,7 +130,7 @@ public class HisDestinationFragment extends BaseFrament {
 
     public void reshdata(String city, String key) {
 
-        MapRxManager.getGeocodeAddressList(getContext(), key, city)
+        MapRxManager.getGeocodeAddressList(getContext(), key, city).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Tip>>() {
                     @Override
                     public void onCompleted() {
@@ -143,8 +144,6 @@ public class HisDestinationFragment extends BaseFrament {
 
                     @Override
                     public void onNext(List<Tip> tipList) {
-
-
                         dataList.clear();
                         dataList.add(HisDestinationData.createHomeHisDestinationData("家", "家里", new LatLng(30.627856, 103.997414)));
                         dataList.add(HisDestinationData.createCompanyHisDestinationData("公司", "东方希望天祥国际广场", new LatLng(30.552963, 104.0679)));

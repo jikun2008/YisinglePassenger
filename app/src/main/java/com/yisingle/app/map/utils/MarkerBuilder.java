@@ -117,6 +117,7 @@ public class MarkerBuilder {
         options.anchor(0.5f, 1.0f);
         options.zIndex(zIndex);
         Marker marker = aMap.addMarker(options);
+        marker.setTitle("CenterMarker");////如果要显示InfoWindow(无论是否自定义)一定要设置Title否则无论你怎么设置都不会显示infowindow
         //设置Marker在屏幕上,不跟随地图移动
         marker.setPositionByPixels(screenPosition.x, screenPosition.y);
         return marker;

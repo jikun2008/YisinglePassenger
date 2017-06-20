@@ -26,19 +26,18 @@ import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
 import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
-import com.yisingle.app.event.LocationEvent;
+import com.yisingle.app.map.view.BaseMarkerData;
 import com.yisingle.app.map.view.CenterMapMarkerView;
+import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
 import com.yisingle.app.map.view.LocationMapMarkerView;
-import com.yisingle.app.map.view.NearbyCarMapMarkerView;
-import com.yisingle.app.map.view.StartAndEndPointMarkerView;
+import com.yisingle.app.map.view.NearbyCarMapListMarkerView;
+import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
+import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
 import com.yisingle.app.utils.SpannableStringUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,12 +84,12 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     private boolean isNoCamraChange = false;
 
 
-    private StartAndEndPointMarkerView startAndEndPointMarkerView;
+    private StartAndEndPointListMarkerView startAndEndPointMarkerView;
 
     protected LocationMapMarkerView locationMapMarkerView;
     protected CenterMapMarkerView centerMapMarkerView;
 
-    private NearbyCarMapMarkerView nearbyCarMapMarkerView;
+    private NearbyCarMapListMarkerView nearbyCarMapMarkerView;
 
     private MapPointData startMapPointData;
 
@@ -147,7 +146,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         }
 
         if (null != nearbyCarMapMarkerView) {
-            nearbyCarMapMarkerView.removeMarkerViewFromMap();
+            nearbyCarMapMarkerView.removeView();
         }
         mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target);
     }
@@ -168,16 +167,18 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     public void onError() {
         Log.e("测试代码", "测试代码FastCarFragment+onError");
         tv_start_place.setText("你从哪出发");
-        centerMapMarkerView.updateErrorInfoWindow();
+        centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
     }
 
     @Override
     public void onAddressSuccess(ChoosePointData data) {
         Log.e("测试代码", "测试代码FastCarFragment+onAddressSuccess");
-        centerMapMarkerView.updateSucccessInfoWindow();
+        centerMapMarkerView.reshInfoWindowData(CenterWindowData.createSuccess());
         tv_start_place.setText(data.getSimpleAddress());
         startMapPointData = MapPointData.createStartMapPointData(data.getSimpleAddress(), data.getLatLng());
-        nearbyCarMapMarkerView.addMarkerViewToMap(getaMap(), data);
+
+
+        nearbyCarMapMarkerView.addView(NearbyCarMapListMarkerView.changeList(data.getCarPositionDatas()));
     }
 
 
@@ -203,10 +204,10 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
         if (startMapPointData != null && endMapPointData != null) {
-            startAndEndPointMarkerView.moveToCamera(getaMap());
+            startAndEndPointMarkerView.moveToCamera();
         } else {
-            if (null != locationMapMarkerView && null != locationMapMarkerView.getLocMarker()) {
-                LatLng latLng = locationMapMarkerView.getLocMarker().getPosition();
+            if (null != locationMapMarkerView && null != locationMapMarkerView.getMarker()) {
+                LatLng latLng = locationMapMarkerView.getMarker().getPosition();
                 loctionToMapViewByPosition(latLng);
             }
         }
@@ -223,10 +224,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     @Override
     public void initMapLoad() {
         setMapUiSetting();
-        startAndEndPointMarkerView = new StartAndEndPointMarkerView(getContext(), 40);
-        locationMapMarkerView = new LocationMapMarkerView(getContext());
-        centerMapMarkerView = new CenterMapMarkerView(getContext());
-        nearbyCarMapMarkerView = new NearbyCarMapMarkerView(getContext());
+        startAndEndPointMarkerView = new StartAndEndPointListMarkerView(getaMap(), getContext());
+        locationMapMarkerView = new LocationMapMarkerView(getaMap(), getContext());
+        centerMapMarkerView = new CenterMapMarkerView(getaMap(), getContext());
+
+        nearbyCarMapMarkerView = new NearbyCarMapListMarkerView(getaMap(), getContext());
         addLoctionCenterMarkerViewToMap();
         aMap.setOnCameraChangeListener(this);
 
@@ -252,20 +254,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         return textureMapView;
     }
 
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLocationEventAccept(LocationEvent event) {
-//        Logger.e("onLocationEventAccept()");
-//        if (event.getCode() == LocationEvent.Code.SUCCESS) {
-//            if (null == locationMapMarkerView) return;
-//            if (locationMapMarkerView.isAddMarkViewToMap()) {
-//                locationMapMarkerView.setMarkerViewPosition(event.getMapLocation());
-//            } else {
-//                locationMapMarkerView.addMarkViewToMap(event.getMapLocation(), aMap);
-//            }
-//
-//        }
-    }
 
     @OnClick({R.id.ll_end, R.id.ll_start})
     public void chooseWhere(View view) {
@@ -308,32 +296,40 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     public void addLoctionCenterMarkerViewToMap() {
         isNoCamraChange = false;
-        locationMapMarkerView.addMarkViewToMap(getaMap(), true);
-        centerMapMarkerView.addMarkViewToMap(getaMap());
+        centerMapMarkerView.addView(new BaseMarkerData());
+        centerMapMarkerView.initMarkInfoWindowAdapter();
+        locationMapMarkerView.addView(LocationMapMarkerView.LocationMapMarkerData.createData(true));
+
     }
 
 
     public void addLoctionStartAndEndMarkerViewToMap(MapPointData startData, MapPointData endData, AMap aMap) {
         isNoCamraChange = true;
-        locationMapMarkerView.addMarkViewToMap(aMap, false);
-        startAndEndPointMarkerView.addMarkViewToMap(startData, endData, aMap);
-        startAndEndPointMarkerView.moveToCamera(aMap);
+        locationMapMarkerView.addView(LocationMapMarkerView.LocationMapMarkerData.createData(false));
+
+        List<PointMapMarkerData> list = new ArrayList<>();
+        PointMapMarkerData data = PointMapMarkerData.createData(startData.getRes(), startData.getLatLng(), startData.getText(), 40);
+        PointMapMarkerData data1 = PointMapMarkerData.createData(endData.getRes(), endData.getLatLng(), endData.getText(), 40);
+        list.add(data);
+        list.add(data1);
+        startAndEndPointMarkerView.addView(list);
+        startAndEndPointMarkerView.moveToCamera();
 
 
     }
 
     public void removeMarkerViewFromMap() {
         if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeMarkerViewFromMap();
+            locationMapMarkerView.removeView();
         }
         if (null != centerMapMarkerView) {
-            centerMapMarkerView.removeMarkerViewFromMap();
+            centerMapMarkerView.removeView();
         }
         if (null != startAndEndPointMarkerView) {
-            startAndEndPointMarkerView.removeMarkerViewFromMap();
+            startAndEndPointMarkerView.removeView();
         }
         if (null != nearbyCarMapMarkerView) {
-            nearbyCarMapMarkerView.removeMarkerViewFromMap();
+            nearbyCarMapMarkerView.removeView();
         }
         getaMap().clear();
     }
@@ -500,9 +496,10 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     @OnClick(R.id.bt_start_user_car)
     public void toSendOrderActivity() {
         Intent intent = new Intent();
-        intent.putExtra("start",startMapPointData);
-        intent.putExtra("end",endMapPointData);
+        intent.putExtra("start", startMapPointData);
+        intent.putExtra("end", endMapPointData);
         intent.setClass(getActivity(), SendOrderActivity.class);
         getActivity().startActivity(intent);
     }
+
 }

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -211,6 +212,22 @@ public class ViewHolderImpl {
     public void setVisibility(int viewId, int visibility) {
         View view = findViewById(viewId);
         view.setVisibility(visibility);
+    }
+
+    public void startAnimationDrawable(int viewId) {
+        ImageView imageView = findViewById(viewId);
+        AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+        if (!animationDrawable.isRunning()) {
+            animationDrawable.start();
+        }
+    }
+
+    public void stopAnimationDrawable(int viewId) {
+        ImageView imageView = findViewById(viewId);
+        AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getDrawable();
+        if (animationDrawable.isRunning()) {
+            animationDrawable.stop();
+        }
     }
 
     /**
