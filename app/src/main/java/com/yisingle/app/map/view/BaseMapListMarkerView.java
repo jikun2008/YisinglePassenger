@@ -30,6 +30,7 @@ public abstract class BaseMapListMarkerView<M extends BaseMarkerData, T extends 
     protected abstract List<BaseMapMarkerView<M, T>> getListMarker(List<M> markerDataList);
 
     public void addView(List<M> markerDataList) {
+        removeView();
         this.markerDataList = markerDataList;
         markerViewList = getListMarker(markerDataList);
 

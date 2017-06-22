@@ -145,9 +145,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             return;
         }
 
-        if (null != nearbyCarMapMarkerView) {
-            nearbyCarMapMarkerView.removeView();
-        }
         mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target);
     }
 
@@ -207,8 +204,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             startAndEndPointMarkerView.moveToCamera();
         } else {
             if (null != locationMapMarkerView && null != locationMapMarkerView.getMarker()) {
-                LatLng latLng = locationMapMarkerView.getMarker().getPosition();
-                loctionToMapViewByPosition(latLng);
+                locationMapMarkerView.startLocationToView();
             }
         }
 

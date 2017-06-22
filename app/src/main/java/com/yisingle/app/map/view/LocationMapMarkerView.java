@@ -110,11 +110,21 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
     }
 
 
+    public void startLocationToView() {
+        if (null != aMapLocationHelper) {
+            beginLocation(true);
+        }
+    }
+
     private void initLocationHelper(boolean isMove) {
         if (null == aMapLocationHelper) {
             aMapLocationHelper = new AMapLocationHelper(getContext());
         }
 
+        beginLocation(isMove);
+    }
+
+    private void beginLocation(boolean isMove) {
         aMapLocationHelper.startSingleLocate(new AMapLocationHelper.OnLocationGetListeneAdapter() {
             @Override
             public void onLocationGetSuccess(AMapLocation loc) {

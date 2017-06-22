@@ -93,6 +93,10 @@ public abstract class BaseMapMarkerView<M extends BaseMarkerData, T extends Base
     public void initMarkInfoWindowAdapter(T data, @LayoutRes int layoutid, InfoWindowListener<T> listener) {
 
         this.infoData = data;
+        if (data.isShowWindow()) {
+            marker.showInfoWindow();
+        }
+
         infoWindowListener = listener;
         map.setOnMarkerClickListener(marker -> false);
 
