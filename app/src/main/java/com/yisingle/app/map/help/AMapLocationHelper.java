@@ -120,9 +120,26 @@ public class AMapLocationHelper {
     /**
      * 开启单次定位
      */
+    public void startSingleLocate() {
+
+
+        if (null != locationClient) {
+            locationClient.setLocationListener(locationListener);
+            locationOption = getDefaultOption(true, time_location_interval);//当isOnceLocation为true的时候设置time_location_interval没有作用，因为是单次定位
+            locationClient.setLocationOption(locationOption);
+            locationClient.startLocation();
+        }
+    }
+
+    /**
+     * 开启单次定位
+     */
     public void startSingleLocate(OnLocationGetListener onLocationGetListener) {
         this.onLocationGetListener = onLocationGetListener;
+
         if (null != locationClient) {
+            locationClient.stopLocation();
+            locationClient.setLocationListener(locationListener);
             locationOption = getDefaultOption(true, time_location_interval);//当isOnceLocation为true的时候设置time_location_interval没有作用，因为是单次定位
             locationClient.setLocationOption(locationOption);
             locationClient.startLocation();
@@ -151,7 +168,7 @@ public class AMapLocationHelper {
     /**
      * 获取最后一次定位的位置
      *
-     * @return   返回最后一次定位的位置
+     * @return 返回最后一次定位的位置
      */
     public static AMapLocation getLastKnownLocation(Context context) {
 

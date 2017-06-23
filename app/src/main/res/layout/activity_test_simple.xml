@@ -1,56 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="wrap_content">
 
-    >
-
-
-    <LinearLayout
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/map_info_window">
-
-        <LinearLayout
-            android:id="@+id/ll_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dimen_8dp"
-            android:layout_marginStart="@dimen/dimen_12dp"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dimen_6dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/loading_info_window_time"
-                android:textSize="@dimen/dimen_8sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/loading_info_window_time_des"
-                android:textSize="@dimen/dimen_8sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="1px"
+        android:onClick="testLocation"
+        android:text="testLocation" />
 
 
-            android:background="@color/gray_line" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dimen_12dp"
-            android:layout_marginStart="@dimen/dimen_6dp"
-
-            android:paddingBottom="@dimen/dimen_4dp"
-            android:text="@string/leave_from_here"
-            android:textSize="@dimen/dimen_12sp" />
-    </LinearLayout>
 </LinearLayout>

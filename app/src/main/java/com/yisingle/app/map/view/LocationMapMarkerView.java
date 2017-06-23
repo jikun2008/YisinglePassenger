@@ -15,6 +15,7 @@ import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
+import com.yisingle.app.utils.ToastUtils;
 
 
 /**
@@ -29,6 +30,8 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
     private SensorEventHelper sensorEventHelper;
 
     private AMapLocationHelper aMapLocationHelper;
+
+    private boolean isMove = false;
 
     public LocationMapMarkerView(AMap aMap, Context mContext) {
         super(aMap, mContext);
@@ -113,18 +116,22 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
     public void startLocationToView() {
         if (null != aMapLocationHelper) {
             beginLocation(true);
+
         }
     }
 
     private void initLocationHelper(boolean isMove) {
         if (null == aMapLocationHelper) {
             aMapLocationHelper = new AMapLocationHelper(getContext());
+
         }
 
         beginLocation(isMove);
     }
 
+
     private void beginLocation(boolean isMove) {
+        this.isMove = isMove;
         aMapLocationHelper.startSingleLocate(new AMapLocationHelper.OnLocationGetListeneAdapter() {
             @Override
             public void onLocationGetSuccess(AMapLocation loc) {
@@ -138,8 +145,6 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
                 if (isMove) {
                     moveToCamera(latLng);
                 }
-
-
             }
         });
     }
