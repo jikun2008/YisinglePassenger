@@ -3,10 +3,12 @@ package com.yisingle.app.activity;
 import android.os.Bundle;
 
 import com.amap.api.maps.TextureMapView;
+import com.amap.api.maps.model.LatLng;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseMapActivity;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.MapPointData;
+import com.yisingle.app.data.SendOrderData;
 import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
 import com.yisingle.app.map.view.PointMapMarkerView;
@@ -28,8 +30,10 @@ public class SendOrderActivity extends BaseMapActivity {
 
     private PointMapMarkerView startPointMapMarkerView;
 
-    private MapPointData startMapPointData;
+    private SendOrderData sendOrderData;
 
+
+    private MapPointData startMapPointData;
     private MapPointData endMapPointData;
 
     @Override
@@ -41,8 +45,15 @@ public class SendOrderActivity extends BaseMapActivity {
     protected void initViews(Bundle savedInstanceState) {
         setTitle("等待应答", true);
 
-        startMapPointData = getIntent().getParcelableExtra("start");
-        endMapPointData = getIntent().getParcelableExtra("end");
+        sendOrderData = getIntent().getParcelableExtra("SendOrderData");
+
+        LatLng startLatLng = new LatLng(Double.parseDouble(sendOrderData.getStartLatitude()), Double.parseDouble(sendOrderData.getStartLongitude()));
+
+        startMapPointData = MapPointData.createStartMapPointData(sendOrderData.getStartPlaceName(), startLatLng);
+
+        LatLng endLatLnt = new LatLng(Double.parseDouble(sendOrderData.getEndLatitude()), Double.parseDouble(sendOrderData.getEndLongitude()));
+
+        endMapPointData = MapPointData.createStartMapPointData(sendOrderData.getEndPlaceName(), endLatLnt);
 
     }
 

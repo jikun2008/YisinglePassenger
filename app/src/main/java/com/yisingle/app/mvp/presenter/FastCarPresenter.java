@@ -1,13 +1,15 @@
 package com.yisingle.app.mvp.presenter;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.annotation.IntDef;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.CarPositionData;
 import com.yisingle.app.data.ChoosePointData;
+import com.yisingle.app.data.MapPointData;
+import com.yisingle.app.data.SendOrderData;
 import com.yisingle.app.http.ApiService;
 import com.yisingle.app.http.RetrofitManager;
 import com.yisingle.app.map.MapRxManager;
@@ -15,6 +17,8 @@ import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.rx.ApiSubscriber;
 import com.yisingle.app.rx.RxUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +26,6 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,12 +33,24 @@ import rx.schedulers.Schedulers;
  */
 
 public class FastCarPresenter extends BasePresenter<IFastCar.FastCarView> implements IFastCar.FastCarPresenter {
+
+
+    @IntDef({TYPE.REGEOCODE_ADDRESS, TYPE.SEND_ORDER})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TYPE {
+
+        int REGEOCODE_ADDRESS = 0;
+        int SEND_ORDER = 1;
+
+
+    }
+
     public FastCarPresenter(IFastCar.FastCarView view) {
         super(view);
     }
 
     @Override
-    public void getRegeocodeAddress(Context context, LatLng latLng) {
+    public void getRegeocodeAddress(Context context, LatLng latLng, int type) {
 
         Map<String, String> params = new HashMap<>();
         params.put("latitude", String.valueOf(latLng.latitude));
@@ -61,20 +76,20 @@ public class FastCarPresenter extends BasePresenter<IFastCar.FastCarView> implem
             @Override
             public void onStart() {
                 super.onStart();
-                mView.showLoading();
+                mView.showLoading(type);
             }
 
             @Override
             public void onCompleted() {
 
-                mView.dismissLoading();
+                mView.dismissLoading(type);
             }
 
             @Override
             public void onError(Throwable e) {
 
-                mView.dismissLoading();
-                mView.onError();
+                mView.dismissLoading(type);
+                mView.onError(type);
             }
 
             @Override
@@ -84,37 +99,32 @@ public class FastCarPresenter extends BasePresenter<IFastCar.FastCarView> implem
 
             }
         });
-//        MapRxManager.getRegeocodeAddressObservable(context, latLng.latitude, latLng.longitude)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new ApiSubscriber<RegeocodeAddress>(mView, true, true) {
-//                    @Override
-//                    public void onNext(RegeocodeAddress regeocodeAddress) {
-//                        String address = RegeocodeAddressInfoUtils.getSimpleSitename(regeocodeAddress);
-//
-//                        mView.onAddressSuccess(regeocodeAddress, address, latLng);
-//                    }
-//                });
+
     }
 
     @Override
-    public void getNearByCar() {
-//        Map<String, String> params = new HashMap<>();
-//        params.put("latitude", "123");
-//        params.put("longitude", "123");
-//        params.put("deviceId", "123");
-//        params.put("phonenum", "123");
-//        RetrofitManager.getInstance().createService(ApiService.class)
-//                .getNearByCarPosition(params)
-//                .filter(data -> mView != null)
-//                .compose(RxUtils.apiChildTransformer())
-//                .subscribe(new ApiSubscriber<List<CarPositionData>>(null) {
-//                    @Override
-//                    public void onNext(List<CarPositionData> carPositionDatas) {
-//
-//                    }
-//                });
+    public void sendOrder(String phoneNum, MapPointData startMapPointData, MapPointData endMapPointData, int type) {
+        Map<String, String> params = new HashMap<>();
+        params.put("phoneNum", phoneNum);
+        params.put("startLatitude", String.valueOf(startMapPointData.getLatLng().latitude));
+        params.put("startLongitude", String.valueOf(startMapPointData.getLatLng().longitude));
+        params.put("startPlaceName", startMapPointData.getText());
+        params.put("endLatitude", String.valueOf(endMapPointData.getLatLng().latitude));
+        params.put("endLongitude", String.valueOf(endMapPointData.getLatLng().longitude));
+        params.put("endPlaceName", endMapPointData.getText());
+
+        RetrofitManager.getInstance().createService(ApiService.class).sendOrderData(params)
+                .compose(RxUtils.apiChildTransformer())
+                .subscribe(new ApiSubscriber<SendOrderData>(mView,type) {
+                    @Override
+                    public void onNext(SendOrderData data) {
+                        mView.onSendOrderSuccess(data);
+                    }
+                });
+
 
     }
+
 
 }
 

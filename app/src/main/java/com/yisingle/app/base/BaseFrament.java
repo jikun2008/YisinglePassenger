@@ -47,7 +47,7 @@ public abstract class BaseFrament<P extends BasePresenter> extends SupportFragme
 
 
         butterKnife = ButterKnife.bind(this, view);
-        mPresenter=createPresenter();
+        mPresenter = createPresenter();
         initViews(savedInstanceState);
 
 
@@ -93,7 +93,7 @@ public abstract class BaseFrament<P extends BasePresenter> extends SupportFragme
 
 
     @Override
-    public void onError() {
+    public void onError(int type) {
 
     }
 
@@ -103,12 +103,12 @@ public abstract class BaseFrament<P extends BasePresenter> extends SupportFragme
     }
 
     @Override
-    public void showLoading() {
+    public void showLoading(int type) {
 
     }
 
     @Override
-    public void dismissLoading() {
+    public void dismissLoading(int type) {
 
     }
 }

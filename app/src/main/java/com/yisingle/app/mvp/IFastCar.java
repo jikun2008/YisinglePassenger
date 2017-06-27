@@ -7,6 +7,8 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.yisingle.app.base.BaseView;
 import com.yisingle.app.data.ChoosePointData;
+import com.yisingle.app.data.MapPointData;
+import com.yisingle.app.data.SendOrderData;
 
 /**
  * 登录页接口
@@ -17,12 +19,15 @@ public interface IFastCar {
 
        void onAddressSuccess(ChoosePointData choosePointData);
 
+        void onSendOrderSuccess(SendOrderData sendOrderData);
+
     }
 
     interface FastCarPresenter {
-        void getRegeocodeAddress(Context context,  LatLng latLng);
+        void getRegeocodeAddress(Context context,  LatLng latLng,int type);
 
-        void getNearByCar();
+        void sendOrder(String phoneNum, MapPointData startMapPointData, MapPointData endMapPointData,int type);
+
     }
 
 }

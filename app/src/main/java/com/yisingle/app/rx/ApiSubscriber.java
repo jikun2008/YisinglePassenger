@@ -19,13 +19,15 @@ public abstract class ApiSubscriber<T> extends Subscriber<T> {
     private boolean showToast;
 
     private boolean isshowLoading = true;
+    private int type = 0;
 
     /**
      * 传null不显示loading也不显示toast
      */
-    public ApiSubscriber(BaseView mBaseView) {
+    public ApiSubscriber(BaseView mBaseView, int type) {
         this.mBaseView = mBaseView;
         this.showToast = mBaseView != null;
+        this.type = type;
     }
 
     /**
@@ -51,7 +53,7 @@ public abstract class ApiSubscriber<T> extends Subscriber<T> {
     @Override
     public void onStart() {
         if (isshowLoading && mBaseView != null) {
-            mBaseView.showLoading();
+            mBaseView.showLoading(type);
         }
 
     }
@@ -59,7 +61,7 @@ public abstract class ApiSubscriber<T> extends Subscriber<T> {
     @Override
     public void onCompleted() {
         if (isshowLoading && mBaseView != null) {
-            mBaseView.dismissLoading();
+            mBaseView.dismissLoading(type);
         }
 
     }
@@ -71,8 +73,8 @@ public abstract class ApiSubscriber<T> extends Subscriber<T> {
         e.printStackTrace();
 
         if (isshowLoading && mBaseView != null) {
-            mBaseView.dismissLoading();
-            mBaseView.onError();
+            mBaseView.dismissLoading(type);
+            mBaseView.onError(type);
         }
 
 

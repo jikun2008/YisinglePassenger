@@ -25,6 +25,7 @@ import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
 import com.yisingle.app.data.MapPointData;
+import com.yisingle.app.data.SendOrderData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.map.view.BaseMarkerData;
 import com.yisingle.app.map.view.CenterMapMarkerView;
@@ -36,6 +37,7 @@ import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
 import com.yisingle.app.utils.SpannableStringUtils;
+import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -145,26 +147,51 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             return;
         }
 
-        mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target);
+        mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target, FastCarPresenter.TYPE.REGEOCODE_ADDRESS);
     }
 
     @Override
-    public void showLoading() {
-        Log.e("测试代码", "测试代码FastCarFragment+showLoading");
-        centerMapMarkerView.showLoading(5);
+    public void showLoading(int type) {
+
+        switch (type) {
+            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+                Log.e("测试代码", "测试代码FastCarFragment+showLoading");
+                centerMapMarkerView.showLoading(5);
+                break;
+            case FastCarPresenter.TYPE.SEND_ORDER:
+                showLoadingDialog();
+                break;
+        }
     }
 
     @Override
-    public void dismissLoading() {
-        Log.e("测试代码", "测试代码FastCarFragment+dismissLoading");
-        centerMapMarkerView.stopLoading();
+    public void dismissLoading(int type) {
+
+        switch (type) {
+            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+                Log.e("测试代码", "测试代码FastCarFragment+dismissLoading");
+                centerMapMarkerView.stopLoading();
+                break;
+            case FastCarPresenter.TYPE.SEND_ORDER:
+                dimisLoadingDialog();
+                break;
+        }
     }
 
     @Override
-    public void onError() {
-        Log.e("测试代码", "测试代码FastCarFragment+onError");
-        tv_start_place.setText("你从哪出发");
-        centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
+    public void onError(int type) {
+
+        switch (type) {
+            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+                Log.e("测试代码", "测试代码FastCarFragment+onError");
+                tv_start_place.setText("你从哪出发");
+                centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
+                break;
+            case FastCarPresenter.TYPE.SEND_ORDER:
+                ToastUtils.show("发送订单错误");
+                break;
+        }
+
     }
 
     @Override
@@ -176,6 +203,21 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
 
         nearbyCarMapMarkerView.addView(NearbyCarMapListMarkerView.changeList(data.getCarPositionDatas()));
+    }
+
+    @Override
+    public void onSendOrderSuccess(SendOrderData sendOrderData) {
+
+        if (sendOrderData.getState() == SendOrderData.State.NEW) {
+            Intent intent = new Intent();
+            intent.putExtra("SendOrderData", sendOrderData);
+            intent.setClass(getActivity(), SendOrderActivity.class);
+            getActivity().startActivity(intent);
+        } else {
+            ToastUtils.show("你有一个未完成的订单，请先完成那个订单");
+        }
+
+
     }
 
 
@@ -491,11 +533,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     @OnClick(R.id.bt_start_user_car)
     public void toSendOrderActivity() {
-        Intent intent = new Intent();
-        intent.putExtra("start", startMapPointData);
-        intent.putExtra("end", endMapPointData);
-        intent.setClass(getActivity(), SendOrderActivity.class);
-        getActivity().startActivity(intent);
+
+
+        mPresenter.sendOrder("17713576031", startMapPointData, endMapPointData, FastCarPresenter.TYPE.SEND_ORDER);
     }
 
 }

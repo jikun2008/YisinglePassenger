@@ -1,5 +1,6 @@
 package com.yisingle.app.base;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import java.lang.reflect.Field;
 public abstract class BaseMapFragment<T extends BasePresenter> extends BaseFrament<T> {
     private TextureMapView mapView;
     protected AMap aMap;
+    private ProgressDialog progressDialog;
 
 
     protected abstract TextureMapView getTextureMapView();
@@ -117,6 +119,25 @@ public abstract class BaseMapFragment<T extends BasePresenter> extends BaseFrame
 
     public AMap getaMap() {
         return aMap;
+    }
+
+    protected void showLoadingDialog() {
+        if (null == progressDialog) {
+            progressDialog = new ProgressDialog(getActivity());
+        }
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setTitle("加载中");
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+
+    }
+
+    protected void dimisLoadingDialog() {
+        if (null != progressDialog && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
     }
 
 }

@@ -1,12 +1,12 @@
 package com.yisingle.app.base;
 
 public interface BaseView {
-    void onError();
+    void onError(int type);
 
     void toast(String msg);
 
-    void showLoading();
+    void showLoading(int type);
 
-    void dismissLoading();
+    void dismissLoading(int type);
 
 }

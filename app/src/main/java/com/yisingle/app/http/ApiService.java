@@ -2,6 +2,7 @@ package com.yisingle.app.http;
 
 
 import com.yisingle.app.data.CarPositionData;
+import com.yisingle.app.data.SendOrderData;
 
 import java.util.List;
 import java.util.Map;
@@ -15,4 +16,9 @@ public interface ApiService {
     // 获取定位位置周围的汽车
     @POST("yisingle/getNearByCarPosition.action")
     Observable<HttpResult<List<CarPositionData>>> getNearByCarPosition(@Body Map<String, String> params);
+
+
+    // 发送订单
+    @POST("yisingle/sendOrder.action")
+    Observable<HttpResult<SendOrderData>> sendOrderData(@Body Map<String, String> params);
 }

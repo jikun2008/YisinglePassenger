@@ -138,7 +138,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
     }
 
     @Override
-    public void onError() {
+    public void onError(int type) {
 
     }
 
@@ -148,12 +148,12 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
     }
 
     @Override
-    public void showLoading() {
+    public void showLoading(int type) {
 
     }
 
     @Override
-    public void dismissLoading() {
+    public void dismissLoading(int type) {
 
     }
 
