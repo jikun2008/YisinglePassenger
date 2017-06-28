@@ -4,11 +4,10 @@ package com.yisingle.app.mvp;
 import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.yisingle.app.base.BaseView;
 import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.MapPointData;
-import com.yisingle.app.data.SendOrderData;
+import com.yisingle.app.data.OrderData;
 
 /**
  * 登录页接口
@@ -19,7 +18,7 @@ public interface IFastCar {
 
        void onAddressSuccess(ChoosePointData choosePointData);
 
-        void onSendOrderSuccess(SendOrderData sendOrderData);
+        void onSendOrderSuccess(OrderData sendOrderData);
 
     }
 

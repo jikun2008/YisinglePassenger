@@ -2,7 +2,7 @@ package com.yisingle.app.http;
 
 
 import com.yisingle.app.data.CarPositionData;
-import com.yisingle.app.data.SendOrderData;
+import com.yisingle.app.data.OrderData;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +20,5 @@ public interface ApiService {
 
     // 发送订单
     @POST("yisingle/sendOrder.action")
-    Observable<HttpResult<SendOrderData>> sendOrderData(@Body Map<String, String> params);
+    Observable<HttpResult<OrderData>> sendOrderData(@Body Map<String, String> params);
 }

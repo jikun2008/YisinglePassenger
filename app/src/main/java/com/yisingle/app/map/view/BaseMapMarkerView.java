@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.Marker;
 import com.yisingle.baselibray.baseadapter.viewholder.MapInfoWindowViewHolder;
 
@@ -155,6 +156,7 @@ public abstract class BaseMapMarkerView<M extends BaseMarkerData, T extends Base
             infoWindowListener.bindData(viewHolder, data);
         }
     }
+
 
 
 }

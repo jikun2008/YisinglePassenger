@@ -10,7 +10,7 @@
         android:id="@+id/tv_choose_city"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:background="@drawable/start_des_place_selector"
+        android:background="@drawable/bg_line_corners"
         android:clickable="true"
         android:gravity="center_vertical|left"
         android:paddingLeft="@dimen/dimen_16dp"

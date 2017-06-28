@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,7 @@ import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
 import com.yisingle.app.data.MapPointData;
-import com.yisingle.app.data.SendOrderData;
+import com.yisingle.app.data.OrderData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.map.view.BaseMarkerData;
 import com.yisingle.app.map.view.CenterMapMarkerView;
@@ -37,7 +38,6 @@ import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
 import com.yisingle.app.utils.SpannableStringUtils;
-import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -188,7 +188,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
                 centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
                 break;
             case FastCarPresenter.TYPE.SEND_ORDER:
-                ToastUtils.show("发送订单错误");
+//                ToastUtils.show("发送订单错误");
                 break;
         }
 
@@ -206,15 +206,30 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     }
 
     @Override
-    public void onSendOrderSuccess(SendOrderData sendOrderData) {
+    public void onSendOrderSuccess(OrderData sendOrderData) {
 
-        if (sendOrderData.getState() == SendOrderData.State.NEW) {
+        if (sendOrderData.getOrderState() == OrderData.State.WAIT_NEW) {
             Intent intent = new Intent();
             intent.putExtra("SendOrderData", sendOrderData);
             intent.setClass(getActivity(), SendOrderActivity.class);
             getActivity().startActivity(intent);
-        } else {
-            ToastUtils.show("你有一个未完成的订单，请先完成那个订单");
+        } else if (sendOrderData.getOrderState() == OrderData.State.WAIT_OLD || sendOrderData.getOrderState() == OrderData.State.HAVE_TAKE) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("提示");
+            builder.setMessage("下单失败,因为你有一个未完成的订单，是否查看订单");
+            builder.setCancelable(false);
+            builder.setNegativeButton("确定", (dialog, which) -> {
+                Intent intent = new Intent();
+                intent.putExtra("SendOrderData", sendOrderData);
+                intent.setClass(getActivity(), SendOrderActivity.class);
+                getActivity().startActivity(intent);
+            });
+            builder.setPositiveButton("取消", (dialog, which) -> {
+
+            });
+            builder.show();
+
         }
 
 
@@ -335,6 +350,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     public void addLoctionCenterMarkerViewToMap() {
         isNoCamraChange = false;
         centerMapMarkerView.addView(new BaseMarkerData());
+
+
         centerMapMarkerView.initMarkInfoWindowAdapter();
         locationMapMarkerView.addView(LocationMapMarkerView.LocationMapMarkerData.createData(true));
 

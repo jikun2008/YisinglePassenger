@@ -45,20 +45,149 @@
         android:layout_marginLeft="@dimen/dimen_10dp"
         android:layout_marginRight="@dimen/dimen_10dp"
         android:layout_marginStart="@dimen/dimen_10dp"
-        android:background="@android:color/transparent"
+        android:background="@drawable/bg_line_no_corners"
         android:orientation="vertical"
         android:padding="1px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+        <LinearLayout
+            android:id="@+id/ll_driver_have"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <ImageView
+                    android:id="@+id/iv_driver_head"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_15dp"
+                    android:src="@mipmap/icon_driver_head" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/iv_driver_head"
+                    android:layout_alignTop="@+id/iv_driver_head"
+                    android:layout_marginLeft="@dimen/dimen_10sp"
+                    android:layout_toLeftOf="@+id/iv_driver_message"
+                    android:layout_toRightOf="@+id/iv_driver_head">
+
+                    <LinearLayout
+                        android:id="@+id/ll_driver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true">
+
+                        <TextView
+                            android:id="@+id/tv_driver_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="皮耶罗"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/dimen_16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_driver_start"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/dimen_10dp"
+                            android:layout_toRightOf="@+id/tv_driver_name"
+                            android:drawableLeft="@mipmap/icon_driver_start"
+                            android:text="5.0"
+                            android:textColor="@color/gray_text"
+                            android:textSize="@dimen/dimen_10sp" />
+
+
+                        <TextView
+                            android:id="@+id/tv_driver_order_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/dimen_10dp"
+                            android:layout_toRightOf="@+id/tv_driver_start"
+                            android:text="666单"
+                            android:textColor="@color/gray_text"
+                            android:textSize="@dimen/dimen_12sp" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/tv_driver_car_name"
+                        android:layout_below="@+id/ll_driver_name">
+
+                        <TextView
+                            android:id="@+id/tv_driver_car_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#ededed"
+                            android:text="川A66666"
+                            android:textColor="@color/gray_text"
+                            android:textSize="@dimen/dimen_12sp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true" />
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_driver_car_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+
+                        android:text="黑色·奔驰S350"
+                        android:textColor="@color/gray_text"
+                        android:textSize="@dimen/dimen_12sp" />
+
+
+                </RelativeLayout>
+
+
+                <ImageView
+                    android:id="@+id/iv_driver_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen_15dp"
+                    android:layout_toLeftOf="@+id/iv_driver_phone"
+                    android:src="@mipmap/icon_driver_message" />
+
+                <ImageView
+                    android:id="@+id/iv_driver_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen_15dp"
+                    android:src="@mipmap/icon_driver_phone" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/driver_recycleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/bt_cancle_order"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_50dp"
             android:layout_marginTop="@dimen/dimen_4dp"
-            android:background="@drawable/start_des_place_selector"
-            android:text="取消订单" />
+            android:background="@drawable/bg_line_corners"
+            android:text="取消订单"
+            android:visibility="gone" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

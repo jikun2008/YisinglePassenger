@@ -9,7 +9,7 @@ import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.CarPositionData;
 import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.MapPointData;
-import com.yisingle.app.data.SendOrderData;
+import com.yisingle.app.data.OrderData;
 import com.yisingle.app.http.ApiService;
 import com.yisingle.app.http.RetrofitManager;
 import com.yisingle.app.map.MapRxManager;
@@ -115,9 +115,9 @@ public class FastCarPresenter extends BasePresenter<IFastCar.FastCarView> implem
 
         RetrofitManager.getInstance().createService(ApiService.class).sendOrderData(params)
                 .compose(RxUtils.apiChildTransformer())
-                .subscribe(new ApiSubscriber<SendOrderData>(mView,type) {
+                .subscribe(new ApiSubscriber<OrderData>(mView,type) {
                     @Override
-                    public void onNext(SendOrderData data) {
+                    public void onNext(OrderData data) {
                         mView.onSendOrderSuccess(data);
                     }
                 });

@@ -6,6 +6,7 @@ import com.amap.api.maps.model.LatLng;
 
 public class BaseMarkerData {
 
+
     protected LatLng latLng;
 
     protected

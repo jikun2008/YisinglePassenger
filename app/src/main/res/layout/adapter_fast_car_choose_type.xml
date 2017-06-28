@@ -6,7 +6,7 @@
     android:layout_height="48dp"
     android:layout_centerInParent="true"
     android:layout_weight="1"
-    android:background="@drawable/start_des_place_selector"
+    android:background="@drawable/bg_line_corners"
     android:clickable="true">
 
     <TextView

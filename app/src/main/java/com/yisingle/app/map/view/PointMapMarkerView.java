@@ -43,7 +43,7 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
     private ValueAnimator valueAnimator;
 
 
-    Subscription subscription;
+    Subscription timesubscription;
 
     private int currentValue;
 
@@ -101,7 +101,30 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
 
     }
 
-    public void stopAnimator() {
+    public void removeCircle() {
+        stopAnimator();
+        if (circleList != null) {
+            for (Circle circle : circleList) {
+                circle.remove();
+            }
+            circleList.clear();
+        }
+    }
+
+
+    public void stopCountTime() {
+        if (null != timesubscription && !timesubscription.isUnsubscribed()) {
+            timesubscription.unsubscribe();
+        }
+
+        if (null != getMarker()) {
+            getMarker().hideInfoWindow();
+        }
+
+
+    }
+
+    private void stopAnimator() {
         if (null != valueAnimator) {
             valueAnimator.cancel();
         }
@@ -117,7 +140,7 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
 
 
     public void startCountTime() {
-        subscription = Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        timesubscription = Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
                     String time = TimeUtils.millis2String(aLong * 1000, sdf);
@@ -148,16 +171,8 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
             textMarker.destroy();
             textMarker = null;
         }
-        stopAnimator();
-        if (circleList != null) {
-            for (Circle circle : circleList) {
-                circle.remove();
-            }
-            circleList.clear();
-        }
-        if (null != subscription && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
+        removeCircle();
+        stopCountTime();
 
 
     }
@@ -177,7 +192,6 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
                     viewHolder.setVisibility(R.id.ll_waitTime, View.GONE);
                     viewHolder.setVisibility(R.id.ll_left, View.VISIBLE);
                 }
-
             }
         });
     }
@@ -277,7 +291,7 @@ public class PointMapMarkerView extends BaseMapMarkerView<PointMapMarkerView.Poi
             PointMapWindowData data = new PointMapWindowData();
             data.setShowWindow(isShowWindow);
             data.setShowWindow(true);
-            data.setShowWindow(ishowTimeView);
+            data.setIshowTimeView(ishowTimeView);
             data.setTime(time);
             data.setInfo(info);
             return data;

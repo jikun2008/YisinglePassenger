@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@drawable/start_des_place_selector"
+    android:background="@drawable/bg_line_corners"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout

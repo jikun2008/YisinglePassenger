@@ -11,15 +11,13 @@ import java.lang.annotation.RetentionPolicy;
  * Created by jikun on 17/6/27.
  */
 
-public class SendOrderData implements Parcelable {
+public class OrderData implements Parcelable {
 
 
-    @State
-    private int state;
     private int id;
 
-    private String phoneNum;
 
+    private String phoneNum;
 
     private String startLatitude;
 
@@ -27,16 +25,21 @@ public class SendOrderData implements Parcelable {
     private String startLongitude;
 
 
-    private String startPlaceName;
-
-
     private String endLatitude;
-
 
     private String endLongitude;
 
 
+    private String startPlaceName;
+
+
     private String endPlaceName;
+
+
+    private int orderState;
+
+    private DriverData driverEntity;
+
 
     public String getPhoneNum() {
         return phoneNum;
@@ -94,6 +97,47 @@ public class SendOrderData implements Parcelable {
         this.endPlaceName = endPlaceName;
     }
 
+    public OrderData() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public DriverData getDriverEntity() {
+        return driverEntity;
+    }
+
+    public void setDriverEntity(DriverData driverEntity) {
+        this.driverEntity = driverEntity;
+    }
+
+    @State
+    public int getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(@State int orderState) {
+        this.orderState = orderState;
+    }
+
+    //添加支持注解的依赖到你的项目中，需要在build.gradle文件中的依赖块中添加：
+    //dependencies { compile 'com.android.support:support-annotations:24.2.0' }
+    @IntDef({State.WAIT_NEW, State.WAIT_OLD, State.HAVE_TAKE, State.HAVE_COMPLETE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface State {
+
+        int WAIT_NEW = -1;
+        int WAIT_OLD = 0;
+        int HAVE_TAKE = 1;
+        int HAVE_COMPLETE = 2;
+
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -105,64 +149,36 @@ public class SendOrderData implements Parcelable {
         dest.writeString(this.phoneNum);
         dest.writeString(this.startLatitude);
         dest.writeString(this.startLongitude);
-        dest.writeString(this.startPlaceName);
         dest.writeString(this.endLatitude);
         dest.writeString(this.endLongitude);
+        dest.writeString(this.startPlaceName);
         dest.writeString(this.endPlaceName);
+        dest.writeInt(this.orderState);
+        dest.writeParcelable(this.driverEntity, flags);
     }
 
-    public SendOrderData() {
-    }
-
-    protected SendOrderData(Parcel in) {
+    protected OrderData(Parcel in) {
         this.id = in.readInt();
         this.phoneNum = in.readString();
         this.startLatitude = in.readString();
         this.startLongitude = in.readString();
-        this.startPlaceName = in.readString();
         this.endLatitude = in.readString();
         this.endLongitude = in.readString();
+        this.startPlaceName = in.readString();
         this.endPlaceName = in.readString();
+        this.orderState = in.readInt();
+        this.driverEntity = in.readParcelable(DriverData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<SendOrderData> CREATOR = new Parcelable.Creator<SendOrderData>() {
+    public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {
         @Override
-        public SendOrderData createFromParcel(Parcel source) {
-            return new SendOrderData(source);
+        public OrderData createFromParcel(Parcel source) {
+            return new OrderData(source);
         }
 
         @Override
-        public SendOrderData[] newArray(int size) {
-            return new SendOrderData[size];
+        public OrderData[] newArray(int size) {
+            return new OrderData[size];
         }
     };
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public
-    @State
-    int getState() {
-        return state;
-    }
-
-    public void setState(@State int state) {
-        this.state = state;
-    }
-
-    //添加支持注解的依赖到你的项目中，需要在build.gradle文件中的依赖块中添加：
-    //dependencies { compile 'com.android.support:support-annotations:24.2.0' }
-    @IntDef({State.NEW, State.OLDER})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-
-        int NEW = 66;
-        int OLDER = 67;
-
-    }
 }
