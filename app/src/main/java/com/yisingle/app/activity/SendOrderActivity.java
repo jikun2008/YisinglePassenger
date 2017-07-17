@@ -142,8 +142,8 @@ public class SendOrderActivity extends BaseMapActivity {
             startPointMapMarkerView.removeCircle();
             startPointMapMarkerView.stopCountTime();
 
-            double latitude = Double.parseDouble(sendOrderData.getDriverEntity().getLatitude());
-            double longitude = Double.parseDouble(sendOrderData.getDriverEntity().getLongitude());
+            double latitude = Double.parseDouble(sendOrderData.getDriver().getLatitude());
+            double longitude = Double.parseDouble(sendOrderData.getDriver().getLongitude());
             LatLng latLng = new LatLng(latitude, longitude);
             carMapMarkerView.addView(new CarMapMarkerView.CarMapMarkerData(latLng, R.mipmap.car));
             carMapMarkerView.initMarkInfoWindowAdapter();
@@ -176,9 +176,9 @@ public class SendOrderActivity extends BaseMapActivity {
 
     private void showDriverView(OrderData orderData) {
 
-        if (null != orderData.getDriverEntity()) {
+        if (null != orderData.getDriver()) {
 
-            DriverData driverData = orderData.getDriverEntity();
+            DriverData driverData = orderData.getDriver();
             tv_driver_name.setText(driverData.getDriverName());
 
             // tv_driver_car_number.setText(driverData.get);//车牌号

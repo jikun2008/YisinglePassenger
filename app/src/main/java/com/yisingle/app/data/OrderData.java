@@ -13,6 +13,21 @@ import java.lang.annotation.RetentionPolicy;
 
 public class OrderData implements Parcelable {
 
+    public DriverData getDriver() {
+        return driver;
+    }
+
+    public void setDriver(DriverData driver) {
+        this.driver = driver;
+    }
+
+    public UserData getUser() {
+        return user;
+    }
+
+    public void setUser(UserData user) {
+        this.user = user;
+    }
 
     private int id;
 
@@ -38,7 +53,10 @@ public class OrderData implements Parcelable {
 
     private int orderState;
 
-    private DriverData driverEntity;
+
+    private DriverData driver;
+
+    private UserData user;
 
 
     public String getPhoneNum() {
@@ -108,13 +126,7 @@ public class OrderData implements Parcelable {
         this.id = id;
     }
 
-    public DriverData getDriverEntity() {
-        return driverEntity;
-    }
 
-    public void setDriverEntity(DriverData driverEntity) {
-        this.driverEntity = driverEntity;
-    }
 
     @State
     public int getOrderState() {
@@ -154,7 +166,8 @@ public class OrderData implements Parcelable {
         dest.writeString(this.startPlaceName);
         dest.writeString(this.endPlaceName);
         dest.writeInt(this.orderState);
-        dest.writeParcelable(this.driverEntity, flags);
+        dest.writeParcelable(this.driver, flags);
+        dest.writeParcelable(this.user, flags);
     }
 
     protected OrderData(Parcel in) {
@@ -167,7 +180,8 @@ public class OrderData implements Parcelable {
         this.startPlaceName = in.readString();
         this.endPlaceName = in.readString();
         this.orderState = in.readInt();
-        this.driverEntity = in.readParcelable(DriverData.class.getClassLoader());
+        this.driver = in.readParcelable(DriverData.class.getClassLoader());
+        this.user = in.readParcelable(UserData.class.getClassLoader());
     }
 
     public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {

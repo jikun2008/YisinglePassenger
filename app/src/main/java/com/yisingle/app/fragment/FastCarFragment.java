@@ -216,8 +216,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         } else if (sendOrderData.getOrderState() == OrderData.State.WAIT_OLD || sendOrderData.getOrderState() == OrderData.State.HAVE_TAKE) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("提示");
-            builder.setMessage("下单失败,因为你有一个未完成的订单，是否查看订单");
+            builder.setTitle("下单失败");
+            builder.setMessage("因为你有一个未完成的订单，是否查看订单");
             builder.setCancelable(false);
             builder.setNegativeButton("确定", (dialog, which) -> {
                 Intent intent = new Intent();
