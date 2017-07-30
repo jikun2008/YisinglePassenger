@@ -1,5 +1,7 @@
 package com.yisingle.app.activity;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -8,6 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionNo;
+import com.yanzhenjie.permission.PermissionYes;
+import com.yanzhenjie.permission.Rationale;
+import com.yanzhenjie.permission.RationaleListener;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
 import com.yisingle.app.base.BasePresenter;
@@ -16,6 +23,7 @@ import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
 import com.yisingle.app.service.GuardService;
 import com.yisingle.app.service.LocationService;
+import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 

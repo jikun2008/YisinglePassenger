@@ -1,5 +1,6 @@
 package com.yisingle.app.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -19,6 +20,9 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionNo;
+import com.yanzhenjie.permission.PermissionYes;
 import com.yisingle.app.R;
 import com.yisingle.app.activity.SendOrderActivity;
 import com.yisingle.app.base.BaseMapFragment;
@@ -38,6 +42,7 @@ import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
 import com.yisingle.app.utils.SpannableStringUtils;
+import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -115,7 +120,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     protected void initViews(Bundle savedInstanceState) {
         //initViews比initMapCreate先执行
 
-
+        getPermission();
         initChooseCarTypeRecyclerView();
 
         initPriceRecyclerView();
@@ -553,6 +558,68 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
 
         mPresenter.sendOrder("17713576031", startMapPointData, endMapPointData, FastCarPresenter.TYPE.SEND_ORDER);
+    }
+
+    //定位权限管理
+
+    private void getPermission() {
+        AndPermission.with(this)
+                .requestCode(300)
+                .permission(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                        , Manifest.permission.CALL_PHONE
+                )
+                .rationale((requestCode, rationale) -> {
+                    // 此对话框可以自定义，调用rationale.resume()就可以继续申请。
+                    AndPermission.rationaleDialog(getActivity(), rationale).show();
+
+                })
+                .callback(this)
+                .start();
+    }
+
+    // 成功回调的方法，用注解即可，这里的300就是请求时的requestCode。
+    @PermissionYes(300)
+    private void getPermissionYes(List<String> grantedPermissions) {
+        // TODO 申请权限成功。
+        loctionToMapView();
+    }
+
+    @PermissionNo(300)
+    private void getPermissionNo(List<String> deniedPermissions) {
+        // TODO 申请权限失败。
+
+
+        // 是否有不再提示并拒绝的权限。
+        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
+            // 第一种：用AndPermission默认的提示语。
+            AndPermission.defaultSettingDialog(this, 400).show();
+
+        } else {
+            ToastUtils.show("你拒绝了定位权限请重新启动应用并允许定位权限");
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        List<String> permissionList = new ArrayList<>();
+        permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        permissionList.add(Manifest.permission.CALL_PHONE);
+        switch (requestCode) {
+            case 400: { // 这个400就是你上面传入的数字。
+                // 你可以在这里检查你需要的权限是否被允许，并做相应的操作。
+                if (AndPermission.hasPermission(getActivity(), permissionList)) {
+                    loctionToMapView();
+                } else {
+                    ToastUtils.show("你拒绝了定位权限请重新启动应用并允许定位权限");
+                    getActivity().finish();
+                }
+                break;
+            }
+        }
     }
 
 }

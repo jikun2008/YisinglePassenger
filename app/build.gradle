@@ -74,4 +74,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.yanzhenjie:permission:1.0.8'
 }

@@ -13,11 +13,13 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 public class MainApplication extends Application {
 
+    private static Context context;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+        context = getApplicationContext();
     }
 
     @Override
@@ -27,6 +29,12 @@ public class MainApplication extends Application {
         Logger.init().methodCount(0).hideThreadInfo();
 
         CrashReport.initCrashReport(getApplicationContext(), "8856cf1479", false);
+
+    }
+
+    public static Context getContext() {
+
+        return context;
 
     }
 }
