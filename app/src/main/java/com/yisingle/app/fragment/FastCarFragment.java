@@ -20,18 +20,22 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.blankj.utilcode.util.ImageUtils;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
 import com.yisingle.app.R;
 import com.yisingle.app.activity.SendOrderActivity;
 import com.yisingle.app.base.BaseMapFragment;
+import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.FastCarPriceData;
 import com.yisingle.app.data.FastCarTypeData;
 import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.data.OrderData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
+import com.yisingle.app.event.DoLoginEvent;
+import com.yisingle.app.event.UserDataEvent;
 import com.yisingle.app.map.view.BaseMarkerData;
 import com.yisingle.app.map.view.CenterMapMarkerView;
 import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
@@ -41,10 +45,15 @@ import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
 import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
+import com.yisingle.app.utils.ShareprefUtils;
 import com.yisingle.app.utils.SpannableStringUtils;
 import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,7 +252,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     @Override
     protected boolean isregisterEventBus() {
-        return false;
+        return true;
     }
 
 
@@ -276,6 +285,14 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
         aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));//zoom - 缩放级别，[3-20]。
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageLoginSuccess(UserDataEvent event) {
+        //登陆成功返回
+        if (locationMapMarkerView != null) {
+            locationMapMarkerView.setMarkIcon(R.mipmap.touxiang);
+        }
     }
 
 
@@ -556,8 +573,14 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     @OnClick(R.id.bt_start_user_car)
     public void toSendOrderActivity() {
 
-
-        mPresenter.sendOrder("17713576031", startMapPointData, endMapPointData, FastCarPresenter.TYPE.SEND_ORDER);
+        boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+        if (isLoginSuccess) {
+            String phone = ShareprefUtils.get(Constant.PHONE_NUM, "");
+            mPresenter.sendOrder(phone, startMapPointData, endMapPointData, FastCarPresenter.TYPE.SEND_ORDER);
+        } else {
+            ToastUtils.show("请先登录");
+            EventBus.getDefault().post(new DoLoginEvent());
+        }
     }
 
     //定位权限管理
@@ -621,5 +644,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             }
         }
     }
+
 
 }

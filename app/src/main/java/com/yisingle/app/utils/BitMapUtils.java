@@ -10,10 +10,10 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.support.annotation.DrawableRes;
-import android.util.Log;
 
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.blankj.utilcode.util.ImageUtils;
 
 import java.util.ArrayList;
 
@@ -137,11 +137,20 @@ public class BitMapUtils {
          * 这里再decodeFile()，返回的bitmap为空，但此时调用options.outHeight时，已经包含了图片的高了
          */
         options.inJustDecodeBounds = true;
-        Bitmap bitmap = BitmapFactory.decodeResource(res,id, options); // 此时返回的bitmap为null
+        Bitmap bitmap = BitmapFactory.decodeResource(res, id, options); // 此时返回的bitmap为null
         /**
          *options.outHeight为原始图片的高
          */
         return new int[]{options.outWidth, options.outHeight};
+    }
+
+
+    public static Bitmap getRoundBitMap(Resources res, @DrawableRes int id) {
+        Bitmap normal = BitmapFactory.decodeResource(res, id);
+
+        Bitmap rouudBitmap = ImageUtils.toRound(normal);
+
+        return rouudBitmap;
     }
 
 }

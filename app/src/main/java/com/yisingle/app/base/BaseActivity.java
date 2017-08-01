@@ -1,5 +1,6 @@
 package com.yisingle.app.base;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -22,8 +23,11 @@ import me.yokeyword.fragmentation.SupportActivity;
 public abstract class BaseActivity<P extends BasePresenter> extends SupportActivity implements BaseView {
 
 
-    private P mPresenter;
+    protected P mPresenter;
     private Unbinder butterKnife;
+
+
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -93,10 +97,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends SupportActiv
     @Override
     public void showLoading(int type) {
 
+        showLoadingDialog();
+
     }
 
     @Override
     public void dismissLoading(int type) {
+        dimisLoadingDialog();
 
     }
 
@@ -130,6 +137,25 @@ public abstract class BaseActivity<P extends BasePresenter> extends SupportActiv
                 leftOnclickListener.onClick(v);
             }
         });
+
+    }
+
+    private void showLoadingDialog() {
+        if (null == progressDialog) {
+            progressDialog = new ProgressDialog(this);
+        }
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setTitle("加载中");
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+
+    }
+
+    private void dimisLoadingDialog() {
+        if (null != progressDialog && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
 
     }
 

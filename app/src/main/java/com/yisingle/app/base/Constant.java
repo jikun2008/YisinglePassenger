@@ -15,6 +15,13 @@ public class Constant {
     public static final String LOGIN_PASSENGER_ID = "login_passenger_id";
 
 
+    public static final String PHONE_NUM = "phone_number";
+
+    public static final String PASS_WORD = "pass_word";
+
+    public static final String IS_LOGIN_SUCCESS = "is_login_success";
+
+
     public static String getBaseUrl() {
 
         return HTPP + IP + ":" + PORT + "/";

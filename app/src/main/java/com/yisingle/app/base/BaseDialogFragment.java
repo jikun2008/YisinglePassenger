@@ -1,5 +1,6 @@
 package com.yisingle.app.base;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,8 +25,11 @@ import butterknife.Unbinder;
 
 public abstract class BaseDialogFragment<P extends BasePresenter> extends DialogFragment implements BaseView {
 
-    private P mPresenter;
+    protected P mPresenter;
     private Unbinder butterKnife;
+
+
+    private ProgressDialog progressDialog;
 
 
     @Nullable
@@ -107,7 +111,7 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
 
     }
 
-    private void test(){
+    private void test() {
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.gravity = Gravity.BOTTOM; // 紧贴底部
@@ -149,11 +153,31 @@ public abstract class BaseDialogFragment<P extends BasePresenter> extends Dialog
 
     @Override
     public void showLoading(int type) {
-
+        showLoadingDialog();
     }
 
     @Override
     public void dismissLoading(int type) {
+        dimisLoadingDialog();
+    }
+
+
+    private void showLoadingDialog() {
+        if (null == progressDialog) {
+            progressDialog = new ProgressDialog(getActivity());
+        }
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setTitle("加载中");
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+
+    }
+
+    private void dimisLoadingDialog() {
+        if (null != progressDialog && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
 
     }
 

@@ -1,31 +1,36 @@
 package com.yisingle.app.activity;
 
-import android.Manifest;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.FrameLayout;
 
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionNo;
-import com.yanzhenjie.permission.PermissionYes;
-import com.yanzhenjie.permission.Rationale;
-import com.yanzhenjie.permission.RationaleListener;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BaseActivity;
-import com.yisingle.app.base.BasePresenter;
+import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.MainTabData;
+import com.yisingle.app.data.UserData;
+import com.yisingle.app.event.DoLoginEvent;
+import com.yisingle.app.event.UserDataEvent;
 import com.yisingle.app.fragment.FastCarFragment;
+import com.yisingle.app.fragment.LoginRegisterDialogFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
+import com.yisingle.app.mvp.IRegister;
+import com.yisingle.app.mvp.presenter.RegisterPresenter;
 import com.yisingle.app.service.GuardService;
 import com.yisingle.app.service.LocationService;
+import com.yisingle.app.utils.ShareprefUtils;
 import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +42,7 @@ import butterknife.BindView;
  */
 
 
-public class MainActiivty extends BaseActivity {
+public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRegister.RegisterView {
 
 
     @BindView(R.id.fl_menu)
@@ -46,6 +51,8 @@ public class MainActiivty extends BaseActivity {
     DrawerLayout drawer_layout;
     @BindView(R.id.tab_recyclerView)
     RecyclerView tab_recyclerView;
+
+    private SideDrawerFragment sideDrawerFragment;
 
     List<MainTabData> dataList = new ArrayList<>();
 
@@ -59,19 +66,31 @@ public class MainActiivty extends BaseActivity {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         initTabRecyclerView();
-
+        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, false);
         setTitle("主界面", v -> {
 
-            if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-                drawer_layout.closeDrawer(GravityCompat.START);
+            ;
+
+
+            boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+            if (isLoginSuccess) {
+                sideDrawerFragment.loadView();
+                if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+                    drawer_layout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer_layout.openDrawer(GravityCompat.START);
+                }
             } else {
-                drawer_layout.openDrawer(GravityCompat.START);
+                new LoginRegisterDialogFragment().show(getSupportFragmentManager(), LoginRegisterDialogFragment.class.getSimpleName());
             }
+
+
         });
 
 
         if (savedInstanceState == null) {
-            loadRootFragment(R.id.fl_menu, SideDrawerFragment.newInstance());
+            sideDrawerFragment = SideDrawerFragment.newInstance();
+            loadRootFragment(R.id.fl_menu, sideDrawerFragment);
             loadRootFragment(R.id.fl_container, FastCarFragment.newInstance());
         } else {
             // 这里库已经做了Fragment恢复,所有不需要额外的处理了, 不会出现重叠问题
@@ -79,18 +98,18 @@ public class MainActiivty extends BaseActivity {
         }
 
         startLocationService();
-
+        autoLogin();
 
     }
 
     @Override
     protected boolean isregisterEventBus() {
-        return false;
+        return true;
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected RegisterPresenter createPresenter() {
+        return new RegisterPresenter(this);
     }
 
     private void initTabRecyclerView() {
@@ -146,6 +165,7 @@ public class MainActiivty extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopLocationService();
+        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, false);
     }
 
     @Override
@@ -153,5 +173,40 @@ public class MainActiivty extends BaseActivity {
 
         finish();
 
+    }
+
+    @Override
+    public void registerSuccess(UserData data) {
+
+    }
+
+
+    private void autoLogin() {
+
+        String phone = ShareprefUtils.get(Constant.PHONE_NUM, "");
+        String password = ShareprefUtils.get(Constant.PASS_WORD, "");
+        if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(password)) {
+            mPresenter.login(phone, password, RegisterPresenter.TYPE.Login);
+        }
+
+    }
+
+    @Override
+    public void loginSuccess(UserData data) {
+        ShareprefUtils.put(Constant.PHONE_NUM, data.getPhonenum());
+        ShareprefUtils.put(Constant.PASS_WORD, data.getPassword());
+        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, true);
+        EventBus.getDefault().post(new UserDataEvent(data));
+        ToastUtils.show("自动登陆成功");
+    }
+
+    /**
+     * 请登录
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void doToLogin(DoLoginEvent event) {
+        findViewById(R.id.ib_left).performClick();
     }
 }

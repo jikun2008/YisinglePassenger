@@ -3,19 +3,24 @@ package com.yisingle.app.map.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.DrawableRes;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.blankj.utilcode.util.ImageUtils;
 import com.yisingle.app.R;
+import com.yisingle.app.base.Constant;
 import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.help.SensorEventHelper;
 import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
-import com.yisingle.app.utils.ToastUtils;
+import com.yisingle.app.utils.BitMapUtils;
+import com.yisingle.app.utils.ShareprefUtils;
 
 
 /**
@@ -63,8 +68,16 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
 
 
     private Marker initAddMarker(LatLng latLng) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                R.mipmap.navi_map_gps_locked);
+        boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+        Bitmap bitmap = null;
+        if (isLoginSuccess) {
+
+            bitmap = getLoginMarkIcon(R.mipmap.touxiang);
+        } else {
+            bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                    R.mipmap.navi_map_gps_locked);
+        }
+
 
         Marker marker = MarkerBuilder.getLocationToMapView(latLng,
                 bitmap, getMap());
@@ -199,5 +212,27 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
             isMove = move;
         }
 
+    }
+
+    public void setMarkIcon(@DrawableRes int drawableId) {
+        if (getMarker() != null) {
+
+            Bitmap bitmap = getLoginMarkIcon(drawableId);
+            getMarker().setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        }
+
+    }
+
+    private Bitmap getLoginMarkIcon(@DrawableRes int drawableId) {
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                R.mipmap.navi_map_gps_locked);
+        Bitmap rouudBitmap = BitMapUtils.getRoundBitMap(getContext().getResources(), drawableId);
+
+
+        int newBitmtWith = bitmap.getHeight() / 4;
+        Bitmap newBitmap = ImageUtils.scale(rouudBitmap, newBitmtWith, newBitmtWith);
+        Bitmap combieBitmap = BitMapUtils.combineBitmap(bitmap, newBitmap);
+        return combieBitmap;
     }
 }
