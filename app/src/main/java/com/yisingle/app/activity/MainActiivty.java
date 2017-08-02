@@ -193,6 +193,7 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
 
     @Override
     public void loginSuccess(UserData data) {
+        ShareprefUtils.put(Constant.LOGIN_PASSENGER_ID, data.getId());
         ShareprefUtils.put(Constant.PHONE_NUM, data.getPhonenum());
         ShareprefUtils.put(Constant.PASS_WORD, data.getPassword());
         ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, true);

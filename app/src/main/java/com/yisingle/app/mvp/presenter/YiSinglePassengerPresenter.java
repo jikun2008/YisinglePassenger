@@ -1,10 +1,13 @@
 package com.yisingle.app.mvp.presenter;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.logger.Logger;
 import com.yisingle.app.base.BasePresenter;
+import com.yisingle.app.data.OrderData;
 import com.yisingle.app.data.SocketData;
 import com.yisingle.app.data.SocketHeadData;
+import com.yisingle.app.event.OrderEvent;
 import com.yisingle.app.mvp.IYiSinglePassenger;
 import com.yisingle.app.utils.JsonUtils;
 import com.yisingle.app.websocket.WebSocketManager;
@@ -34,45 +37,43 @@ public class YiSinglePassengerPresenter extends BasePresenter<IYiSinglePassenger
         WebSocketManager.getInstance().setOnWebSocketListener(new WebSocketManager.OnWebSocketListener() {
             @Override
             public void onConnectSuccess() {
+                Logger.e("乘客端WebSocket--onConnectSuccess");
                 sengHeadBeatDataDelay(2);
             }
 
             @Override
             public void onConnectFailed() {
                 connectWebSocketDelay(2);
-
+                Logger.e("乘客端WebSocket---onConnectFailed");
             }
 
             @Override
             public void onDisConnect() {
                 connectWebSocketDelay(2);
+                Logger.e("乘客端WebSocket---onDisConnect");
             }
 
 
             @Override
             public void onGetMsg(String respones) {
+                Logger.e("乘客端WebSocket---onGetMsg" + respones);
 
                 try {
 
 
                     if (JsonUtils.isGoodJson(respones)) {
-
+                        Logger.json(respones);
                         SocketHeadData headData = gson.fromJson(respones, SocketHeadData.class);
                         switch (headData.getType()) {
-                            case SocketData.Type.HEART_BEAT:
-                                sengHeadBeatDataDelay(5);
-                                break;
-                            case SocketData.Type.ORDER_NEW:
-//                                SocketData<OrderEntity> data = gson.fromJson(respones, new TypeToken<SocketData<OrderEntity>>() {
-//                                }.getType());
-//                                mView.findOrderSuccess(data.getResponse());
-//                                WebSocketManager.getInstance().sendData(respones);//收到消息后把消息返回的服务器告诉服务器我接受到了订单
-                                break;
-                            case SocketData.Type.PRICIE_ORDER:
-//                                SocketData<OrderEntity> price = gson.fromJson(respones, new TypeToken<SocketData<OrderEntity>>() {
-//                                }.getType());
-//                                //发送价格订单到OrderService
-//                                EventBus.getDefault().post(price.getResponse());
+
+                            case SocketData.Type.PASSENGER_ORDER_CHANGE:
+                                Logger.e("socket收到数据类型是:" + "SocketData.Type.PASSENGER_ORDER_CHANGE");
+
+                                SocketData<OrderData> socketData = gson.fromJson(respones, new TypeToken<SocketData<OrderData>>() {
+                                }.getType());
+                                //发送价格订单到
+                                WebSocketManager.getInstance().sendData(gson.toJson(socketData));
+                                EventBus.getDefault().post(new OrderEvent(socketData.getResponse()));
                                 break;
                         }
                     } else {

@@ -16,6 +16,7 @@ import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.DriverData;
 import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.data.OrderData;
+import com.yisingle.app.event.OrderEvent;
 import com.yisingle.app.map.view.CarMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
@@ -23,6 +24,9 @@ import com.yisingle.app.map.view.PointMapMarkerView;
 import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +99,7 @@ public class SendOrderActivity extends BaseMapActivity {
 
     @Override
     protected boolean isregisterEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -232,5 +236,15 @@ public class SendOrderActivity extends BaseMapActivity {
         ll_driver_have.setVisibility(View.GONE);
 
         bt_cancle_order.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 请登录
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderEvent(OrderEvent event) {
+        //13123
     }
 }

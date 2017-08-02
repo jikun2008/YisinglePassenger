@@ -58,6 +58,15 @@ public class OrderData implements Parcelable {
 
     private UserData user;
 
+    private int passengerRelyState;
+
+    public int getPassengerRelyState() {
+        return passengerRelyState;
+    }
+
+    public void setPassengerRelyState(int passengerRelyState) {
+        this.passengerRelyState = passengerRelyState;
+    }
 
     public String getPhoneNum() {
         return phoneNum;
@@ -168,6 +177,7 @@ public class OrderData implements Parcelable {
         dest.writeInt(this.orderState);
         dest.writeParcelable(this.driver, flags);
         dest.writeParcelable(this.user, flags);
+        dest.writeInt(this.passengerRelyState);
     }
 
     protected OrderData(Parcel in) {
@@ -182,6 +192,7 @@ public class OrderData implements Parcelable {
         this.orderState = in.readInt();
         this.driver = in.readParcelable(DriverData.class.getClassLoader());
         this.user = in.readParcelable(UserData.class.getClassLoader());
+        this.passengerRelyState = in.readInt();
     }
 
     public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {

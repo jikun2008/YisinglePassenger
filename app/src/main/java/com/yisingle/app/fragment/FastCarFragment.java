@@ -45,6 +45,7 @@ import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
 import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenter;
+import com.yisingle.app.service.OrderService;
 import com.yisingle.app.utils.ShareprefUtils;
 import com.yisingle.app.utils.SpannableStringUtils;
 import com.yisingle.app.utils.ToastUtils;
@@ -227,7 +228,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             intent.putExtra("SendOrderData", sendOrderData);
             intent.setClass(getActivity(), SendOrderActivity.class);
             getActivity().startActivity(intent);
-        } else if (sendOrderData.getOrderState() == OrderData.State.WAIT_OLD || sendOrderData.getOrderState() == OrderData.State.HAVE_TAKE) {
+        } else{
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("下单失败");
@@ -293,6 +294,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         if (locationMapMarkerView != null) {
             locationMapMarkerView.setMarkIcon(R.mipmap.touxiang);
         }
+        OrderService.startService(getContext());
     }
 
 
@@ -521,6 +523,13 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         });
 
 
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        OrderService.stopService(getContext());
     }
 
     private void reshPriceData(boolean isExcellentCar) {

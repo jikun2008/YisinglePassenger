@@ -55,6 +55,7 @@ public class SocketHeadData implements Serializable {
         int HEART_BEAT = 1;
         int ORDER_NEW = 2;
         int PRICIE_ORDER=3;
+        int PASSENGER_ORDER_CHANGE=4;
 
     }
 

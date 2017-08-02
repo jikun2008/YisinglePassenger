@@ -71,8 +71,8 @@ public class WebSocketManager extends WebSocketListener {
         if (sWebSocket == null) {
 
 
-            int driverId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID, -1);
-            Request request = new Request.Builder().header("driverId", driverId + "").url(Constant.getWsBaseUrl() + "yisingle/passenger/websokcet").build();
+            int passengerId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID, -1);
+            Request request = new Request.Builder().header("passengerId", passengerId + "").url(Constant.getWsBaseUrl() + "yisingle/passenger/websokcet").build();
 
 
             sWebSocket = sClient.newWebSocket(request, this);
@@ -189,7 +189,7 @@ public class WebSocketManager extends WebSocketListener {
         heartData.setLatitude(latitude);
         heartData.setLongitude(longitude);
 
-        int passengerId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID,-1);
+        int passengerId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID, -1);
         heartData.setId(passengerId);
         webSocketData.setResponse(heartData);
 
