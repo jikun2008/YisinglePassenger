@@ -13,15 +13,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseDialogFragment;
 import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.UserData;
 import com.yisingle.app.event.UserDataEvent;
 import com.yisingle.app.mvp.IRegister;
-import com.yisingle.app.mvp.presenter.RegisterPresenter;
-import com.yisingle.app.utils.ShareprefUtils;
-import com.yisingle.app.utils.ToastUtils;
+import com.yisingle.app.mvp.presenter.RegisterPresenterImpl;
+import com.yisingle.baselibray.base.BaseDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,7 +32,7 @@ import butterknife.OnClick;
  * Created by jikun on 17/7/31.
  */
 
-public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPresenter> implements IRegister.RegisterView {
+public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPresenterImpl> implements IRegister.RegisterView {
 
     @BindView(R.id.tv_info)
     TextView tv_info;
@@ -98,8 +98,8 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
     }
 
     @Override
-    protected RegisterPresenter createPresenter() {
-        return new RegisterPresenter(this);
+    protected RegisterPresenterImpl createPresenter() {
+        return new RegisterPresenterImpl(this);
     }
 
     @Override
@@ -127,21 +127,21 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
         String password = et_password.getText().toString();
 
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtils.show("请输入账号");
+            ToastUtils.showShort("请输入账号");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            ToastUtils.show("请输入密码");
+            ToastUtils.showShort("请输入密码");
             return;
         }
 
         if (!RegexUtils.isMobileExact(phoneNum)) {
-            ToastUtils.show("请输入正确的手机号码");
+            ToastUtils.showShort("请输入正确的手机号码");
             return;
         }
 
-        mPresenter.login(phoneNum, password, RegisterPresenter.TYPE.Login);
+        mPresenter.login(phoneNum, password, RegisterPresenterImpl.TYPE.Login);
     }
 
     @OnClick(R.id.bt_register)
@@ -156,32 +156,32 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
 
 
         if (TextUtils.isEmpty(phone)) {
-            ToastUtils.show("请输入账号");
+            ToastUtils.showShort("请输入账号");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            ToastUtils.show("请输入密码");
+            ToastUtils.showShort("请输入密码");
             return;
         }
 
         if (TextUtils.isEmpty(confimpassword)) {
-            ToastUtils.show("请输入确认密码");
+            ToastUtils.showShort("请输入确认密码");
             return;
         }
 
 
         if (!password.equals(confimpassword)) {
-            ToastUtils.show("两次密码不一致，请重新输入");
+            ToastUtils.showShort("两次密码不一致，请重新输入");
             return;
         }
 
 
         if (!RegexUtils.isMobileExact(phone)) {
-            ToastUtils.show("请输入正确的手机号码");
+            ToastUtils.showShort("请输入正确的手机号码");
             return;
         }
-        mPresenter.register(phone, password, RegisterPresenter.TYPE.Register);
+        mPresenter.register(phone, password, RegisterPresenterImpl.TYPE.Register);
 
     }
 
@@ -206,9 +206,9 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
     @Override
     public void onError(int type) {
         switch (type) {
-            case RegisterPresenter.TYPE.Register:
+            case RegisterPresenterImpl.TYPE.Register:
                 break;
-            case RegisterPresenter.TYPE.Login:
+            case RegisterPresenterImpl.TYPE.Login:
                 break;
         }
     }
@@ -216,18 +216,18 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
     @Override
     public void registerSuccess(UserData data) {
         showLoginOrRegisterView(true);
-        ToastUtils.show("注册成功");
+        ToastUtils.showShort("注册成功");
 
     }
 
     @Override
     public void loginSuccess(UserData data) {
         dismissAllowingStateLoss();
-        ToastUtils.show("登陆成功");
-        ShareprefUtils.put(Constant.LOGIN_PASSENGER_ID, data.getId());
-        ShareprefUtils.put(Constant.PHONE_NUM, data.getPhonenum());
-        ShareprefUtils.put(Constant.PASS_WORD, data.getPassword());
-        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, true);
+        ToastUtils.showShort("登陆成功");
+        SPUtils.getInstance().put(Constant.LOGIN_PASSENGER_ID, data.getId());
+        SPUtils.getInstance().put(Constant.PHONE_NUM, data.getPhonenum());
+        SPUtils.getInstance().put(Constant.PASS_WORD, data.getPassword());
+        SPUtils.getInstance().put(Constant.IS_LOGIN_SUCCESS, true);
         EventBus.getDefault().post(new UserDataEvent(data));
 
     }

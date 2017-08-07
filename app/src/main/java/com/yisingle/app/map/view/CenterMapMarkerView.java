@@ -5,23 +5,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.View;
-
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Marker;
+import com.map.library.view.base.BaseMapMarkerView;
+import com.map.library.view.base.BaseMarkerData;
+import com.map.library.view.base.BaseWindowData;
 import com.yisingle.app.R;
 import com.yisingle.app.map.utils.MarkerBuilder;
+import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
 import com.yisingle.app.utils.BitMapUtils;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
 
 
 /**
@@ -41,6 +40,11 @@ public class CenterMapMarkerView extends BaseMapMarkerView<BaseMarkerData, Cente
         Marker marker = MarkerBuilder.getCenterMarkerToMapView(getSingleBitmapDescriptor(), getMap());
 
         return marker;
+    }
+
+    @Override
+    protected void addMarkSuccess(BaseMarkerData markerData) {
+
     }
 
 

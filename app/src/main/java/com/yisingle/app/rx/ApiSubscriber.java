@@ -1,8 +1,8 @@
 package com.yisingle.app.rx;
 
 
-import com.yisingle.app.base.BaseView;
 import com.yisingle.app.http.ErrorHandler;
+import com.yisingle.baselibray.base.BaseView;
 
 import rx.Subscriber;
 

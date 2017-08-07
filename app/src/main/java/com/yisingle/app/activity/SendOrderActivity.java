@@ -3,6 +3,7 @@ package com.yisingle.app.activity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,20 +11,29 @@ import android.widget.TextView;
 
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveRouteResult;
+import com.map.library.DistanceUtils;
+import com.map.library.data.RouteData;
+import com.map.library.view.polyline.MapPolylineView;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseMapActivity;
-import com.yisingle.app.base.BasePresenter;
+import com.yisingle.app.base.BasePassengerMapActivity;
 import com.yisingle.app.data.DriverData;
 import com.yisingle.app.data.MapPointData;
 import com.yisingle.app.data.OrderData;
 import com.yisingle.app.event.OrderEvent;
+import com.yisingle.app.event.PriceOrderEvent;
 import com.yisingle.app.map.view.CarMapMarkerView;
+import com.yisingle.app.map.view.CarMapMarkerView.CarMapWindowData;
 import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
-import com.yisingle.app.map.view.PointMapMarkerView;
-import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
+import com.yisingle.app.map.view.PointCircleMapMarkerView;
+import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapMarkerData;
+import com.yisingle.app.mvp.ISendOrder;
+import com.yisingle.app.mvp.presenter.SendOrderPresenterImpl;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
+import com.yisingle.baselibray.utils.TimeDisUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,7 +48,7 @@ import butterknife.OnClick;
  * Created by jikun on 17/6/15.
  */
 
-public class SendOrderActivity extends BaseMapActivity {
+public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresenterImpl> implements ISendOrder.SendOrderView {
 
     @BindView(R.id.textureMapView)
     TextureMapView textureMapView;
@@ -63,17 +73,19 @@ public class SendOrderActivity extends BaseMapActivity {
 
     protected LocationMapMarkerView locationMapMarkerView;
 
-    private PointMapMarkerView startPointMapMarkerView;
+    private PointCircleMapMarkerView startPointMapMarkerView;
 
-    private CarMapMarkerView carMapMarkerView;
+    private PointCircleMapMarkerView endPointMapMarkerView;
+
+    private CarMapMarkerView carMapMarkerView;//车辆View
+
+    private MapPolylineView mapPolylineView;//路线View
 
     private OrderData sendOrderData;
 
 
-    private MapPointData startMapPointData;
-    private MapPointData endMapPointData;
-
     private RecyclerAdapter<String> driverAdapter;
+
 
     @Override
     protected int getContentViewLayoutID() {
@@ -84,15 +96,7 @@ public class SendOrderActivity extends BaseMapActivity {
     protected void initViews(Bundle savedInstanceState) {
 
 
-        sendOrderData = getIntent().getParcelableExtra("SendOrderData");
-
-        LatLng startLatLng = new LatLng(Double.parseDouble(sendOrderData.getStartLatitude()), Double.parseDouble(sendOrderData.getStartLongitude()));
-
-        startMapPointData = MapPointData.createStartMapPointData(sendOrderData.getStartPlaceName(), startLatLng);
-
-        LatLng endLatLnt = new LatLng(Double.parseDouble(sendOrderData.getEndLatitude()), Double.parseDouble(sendOrderData.getEndLongitude()));
-
-        endMapPointData = MapPointData.createStartMapPointData(sendOrderData.getEndPlaceName(), endLatLnt);
+        initRecycleView();
 
 
     }
@@ -103,8 +107,8 @@ public class SendOrderActivity extends BaseMapActivity {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected SendOrderPresenterImpl createPresenter() {
+        return new SendOrderPresenterImpl(this);
     }
 
     @Override
@@ -118,58 +122,161 @@ public class SendOrderActivity extends BaseMapActivity {
         setMapUiSetting();
 
 
-        locationMapMarkerView = new LocationMapMarkerView(getaMap(), getApplicationContext());
-        locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
-        startPointMapMarkerView = new PointMapMarkerView(getaMap(), getApplicationContext());
-
-        carMapMarkerView = new CarMapMarkerView(getaMap(), getApplicationContext());
+        sendOrderData = getIntent().getParcelableExtra("SendOrderData");
 
 
-        startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+        createViewOnMap();
+        showViewOnMap(sendOrderData, true);
 
 
-        //////////
+    }
 
 
-        //////////
-        if (sendOrderData.getOrderState() == OrderData.State.WAIT_NEW || sendOrderData.getOrderState() == OrderData.State.WAIT_OLD) {
-            setTitle("等待应答", true);
-            showWaitView();
-            startPointMapMarkerView.initMarkInfoWindowAdapter();
-
-            startPointMapMarkerView.addCircleViewToMap(startMapPointData.getLatLng(), getaMap());
+    private void showViewOnMap(OrderData orderData, boolean isshowLoadView) {
 
 
-            startPointMapMarkerView.startCountTime();
-            startPointMapMarkerView.moveToCamera();
-        } else {
-            startPointMapMarkerView.removeCircle();
-            startPointMapMarkerView.stopCountTime();
+        removeViewOnMap();
 
-            double latitude = Double.parseDouble(sendOrderData.getDriver().getLatitude());
-            double longitude = Double.parseDouble(sendOrderData.getDriver().getLongitude());
-            LatLng latLng = new LatLng(latitude, longitude);
-            carMapMarkerView.addView(new CarMapMarkerView.CarMapMarkerData(latLng, R.mipmap.car));
-            carMapMarkerView.initMarkInfoWindowAdapter();
-            carMapMarkerView.moveToCamera();
-            setTitle("等待接驾", true);
-            showDriverView(sendOrderData);
+        sendOrderData = orderData;
+        LatLng startLatLng = new LatLng(Double.parseDouble(orderData.getStartLatitude()), Double.parseDouble(orderData.getStartLongitude()));
+
+        MapPointData startMapPointData = MapPointData.createStartMapPointData(orderData.getStartPlaceName(), startLatLng);
+
+        LatLng endLatLnt = new LatLng(Double.parseDouble(orderData.getEndLatitude()), Double.parseDouble(orderData.getEndLongitude()));
+
+        MapPointData endMapPointData = MapPointData.createEndMapPointData(orderData.getEndPlaceName(), endLatLnt);
+
+        LatLng driverlatLng = null;
+        if (orderData.getDriver() != null) {
+            double latitude = Double.parseDouble(orderData.getDriver().getLatitude());
+            double longitude = Double.parseDouble(orderData.getDriver().getLongitude());
+            driverlatLng = new LatLng(latitude, longitude);
         }
 
+
+        switch (orderData.getOrderState()) {
+            case OrderData.State.WAIT_NEW:
+            case OrderData.State.WAIT_OLD:
+                setTitle("等待应答", true);
+                showDriverView(false, orderData);
+                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+                startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+                startPointMapMarkerView.initMarkInfoWindowAdapter();
+                startPointMapMarkerView.addCircleViewToMap(startMapPointData.getLatLng(), getaMap());
+                startPointMapMarkerView.startCountTime();
+                startPointMapMarkerView.moveToCamera();
+                break;
+
+            case OrderData.State.HAVE_TAKE:
+                setTitle("等待接驾", true);
+                showDriverView(true, orderData);
+                if (null != driverlatLng) {
+                    //mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startMapPointData.getLatLng());//使用
+                    startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+                    carMapMarkerView.addView(new CarMapMarkerView.CarMapMarkerData(driverlatLng, R.mipmap.car));
+                    carMapMarkerView.moveToCamera();
+                    mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startLatLng, isshowLoadView);
+                }
+                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+                break;
+
+            case OrderData.State.DRIVER_ARRIVE:
+                setTitle("司机已到达", true);
+                showDriverView(true, orderData);
+                if (null != driverlatLng) {
+                    startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+                    carMapMarkerView.addView(new CarMapMarkerView.CarMapMarkerData(driverlatLng, R.mipmap.car));
+                    carMapMarkerView.initMarkInfoWindowAdapter(CarMapWindowData.createSimpleData(true, CarMapWindowData.Type.DrivedAtSart));
+                    carMapMarkerView.moveToCamera();
+                    mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startLatLng, isshowLoadView);
+                }
+                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+                break;
+
+            case OrderData.State.PASSENGER_IN_CAR:
+            case OrderData.State.PASSENGER_OUT_CAR:
+            case OrderData.State.HAVE_COMPLETE:
+                setTitle("行程中", true);
+                showDriverView(true, orderData);
+                if (null != driverlatLng) {
+                    startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
+                    endPointMapMarkerView.addView(PointMapMarkerData.createData(endMapPointData.getRes(), endMapPointData.getLatLng(), endMapPointData.getText(), 40));
+                    carMapMarkerView.addView(new CarMapMarkerView.CarMapMarkerData(driverlatLng, R.mipmap.car));
+                    carMapMarkerView.moveToCamera();
+                    mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, endLatLnt, isshowLoadView);
+                }
+                reshAdapterData();
+                break;
+
+        }
+    }
+
+
+    private void createViewOnMap() {
+
+        if (null == locationMapMarkerView) {
+            locationMapMarkerView = new LocationMapMarkerView(getaMap(), getApplicationContext());
+        }
+
+        if (null == startPointMapMarkerView) {
+            startPointMapMarkerView = new PointCircleMapMarkerView(getaMap(), getApplicationContext());
+        }
+
+        if (null == endPointMapMarkerView) {
+            endPointMapMarkerView = new PointCircleMapMarkerView(getaMap(), getApplicationContext());
+        }
+
+        if (null == carMapMarkerView) {
+            carMapMarkerView = new CarMapMarkerView(getaMap(), getApplicationContext());
+
+        }
+        if (null == mapPolylineView) {
+            mapPolylineView = new MapPolylineView(getApplicationContext(), getaMap());
+
+        }
+
+    }
+
+    /**
+     * 移除地图上的View除了定位的Marker
+     */
+    private void removeViewOnMap() {
+        if (null != locationMapMarkerView) {
+            locationMapMarkerView.removeView();
+
+        }
+
+        if (null != startPointMapMarkerView) {
+            startPointMapMarkerView.removeView();
+
+        }
+        if (null != carMapMarkerView) {
+            carMapMarkerView.removeView();
+
+        }
+        if (null != mapPolylineView) {
+            mapPolylineView.removeLine();
+
+        }
+
+        if (null != endPointMapMarkerView) {
+            endPointMapMarkerView.removeView();
+        }
+    }
+
+
+    private void setViewOnMapToNull() {
+        locationMapMarkerView = null;
+        startPointMapMarkerView = null;
+        carMapMarkerView = null;
+        mapPolylineView = null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeView();
-        }
-        if (null != startPointMapMarkerView) {
-            startPointMapMarkerView.removeView();
-        }
-        if (null != carMapMarkerView) {
-            carMapMarkerView.removeView();
-        }
+        removeViewOnMap();
+        setViewOnMapToNull();
     }
 
     @OnClick(R.id.bt_cancle_order)
@@ -178,7 +285,7 @@ public class SendOrderActivity extends BaseMapActivity {
     }
 
 
-    private void showDriverView(OrderData orderData) {
+    private void showDriverView(boolean isshow, OrderData orderData) {
 
         if (null != orderData.getDriver()) {
 
@@ -190,13 +297,13 @@ public class SendOrderActivity extends BaseMapActivity {
             //  tv_driver_car_name.setText(driverData.get);
 
         }
+        ll_driver_have.setVisibility(isshow ? View.VISIBLE : View.GONE);
+
+        bt_cancle_order.setVisibility(isshow ? View.GONE : View.VISIBLE);
+    }
 
 
-        ll_driver_have.setVisibility(View.VISIBLE);
-
-        bt_cancle_order.setVisibility(View.GONE);
-
-
+    private void initRecycleView() {
         List<String> data = new ArrayList<>();
         data.add("取消行程");
         data.add("行程分享");
@@ -224,27 +331,126 @@ public class SendOrderActivity extends BaseMapActivity {
         driverAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, Object item) {
-                startPointMapMarkerView.removeCircle();
-                startPointMapMarkerView.stopCountTime();
+
             }
         });
-
-
     }
 
-    private void showWaitView() {
-        ll_driver_have.setVisibility(View.GONE);
-
-        bt_cancle_order.setVisibility(View.VISIBLE);
+    private void reshAdapterData() {
+        List<String> data = new ArrayList<>();
+        data.add("取消行程");
+        data.add("行程分享");
+        data.add("需要帮助");
+        data.add("紧急求助");
+        driverAdapter.refreshWithNewData(data);
     }
 
     /**
-     * 请登录
-     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOrderEvent(OrderEvent event) {
-        //13123
+        sendOrderData = event.getOrderData();
+        showViewOnMap(event.getOrderData(), true);
+    }
+
+
+    /**
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPriceOrderEvent(PriceOrderEvent event) {
+        sendOrderData = event.getOrderData();
+
+
+        double latitude = Double.parseDouble(sendOrderData.getDriver().getLatitude());
+        double longitude = Double.parseDouble(sendOrderData.getDriver().getLongitude());
+        LatLng driverlatLng = new LatLng(latitude, longitude);
+        LatLng startLatLng = new LatLng(Double.parseDouble(sendOrderData.getStartLatitude()), Double.parseDouble(sendOrderData.getStartLongitude()));
+
+
+        LatLng endLatLnt = new LatLng(Double.parseDouble(sendOrderData.getEndLatitude()), Double.parseDouble(sendOrderData.getEndLongitude()));
+
+        switch (sendOrderData.getOrderState()) {
+
+            case OrderData.State.HAVE_TAKE:
+                mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startLatLng, false);
+
+                break;
+            case OrderData.State.PASSENGER_IN_CAR:
+            case OrderData.State.PASSENGER_OUT_CAR:
+            case OrderData.State.HAVE_COMPLETE:
+                mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, endLatLnt, false);
+
+                break;
+        }
+
+    }
+
+
+    @Override
+    public void ondrawRouteSuccess(List<RouteData> routeResultList) {
+        Log.e("测试代码", "测试代码ondrawRouteSuccess");
+        if (null != routeResultList && routeResultList.size() > 0) {
+            RouteData routeData = routeResultList.get(0);
+            DriveRouteResult result = routeData.getDriveRouteResult();
+            if (null != result && null != result.getPaths() && result.getPaths().size() > 0) {
+                DrivePath drivePath = result.getPaths().get(0);
+                mapPolylineView.removeLine();
+                mapPolylineView.addLine(drivePath);
+
+                String showtime = TimeDisUtils.changeSectoMin((int) drivePath.getDuration()) + "分钟";    //将预估的时间转换为显示的时间
+
+                float distance = drivePath.getDistance();
+                if (distance < 500) {
+                    distance = 500;
+                }
+                String distanceInfo = DistanceUtils.getDistance((int) distance);
+
+                CarMapWindowData.TripData tripData = new CarMapWindowData.TripData(showtime, distanceInfo, sendOrderData.getOrderPrice().doubleValue() + "");
+                switch (sendOrderData.getOrderState()) {
+                    case OrderData.State.HAVE_TAKE:
+                        CarMapWindowData carMapWindowData = CarMapWindowData.createTripata(true, CarMapWindowData.Type.DrivingToStart, tripData);
+
+                        if (null != carMapMarkerView.getInfoWindow()) {
+                            DriverData driverData = sendOrderData.getDriver();
+                            if (null != driverData.getLatitude() && null != driverData.getLongitude()) {
+                                LatLng latLng = new LatLng(Double.parseDouble(driverData.getLatitude()), Double.parseDouble(driverData.getLongitude()));
+                                carMapMarkerView.getMarker().setPosition(latLng);
+
+                                carMapMarkerView.reshInfoWindowData(carMapWindowData);
+                            }
+                        } else {
+                            carMapMarkerView.initMarkInfoWindowAdapter(carMapWindowData);
+                        }
+
+
+                        break;
+                    case OrderData.State.PASSENGER_IN_CAR:
+                    case OrderData.State.PASSENGER_OUT_CAR:
+                    case OrderData.State.HAVE_COMPLETE:
+                        CarMapWindowData tripWindowData = CarMapWindowData.createTripata(true, CarMapWindowData.Type.DriveAtTrip, tripData);
+                        if (null != carMapMarkerView.getInfoWindow()) {
+                            DriverData driverData = sendOrderData.getDriver();
+                            if (null != driverData.getLatitude() && null != driverData.getLongitude()) {
+                                LatLng latLng = new LatLng(Double.parseDouble(driverData.getLatitude()), Double.parseDouble(driverData.getLongitude()));
+                                carMapMarkerView.getMarker().setPosition(latLng);
+
+                                carMapMarkerView.reshInfoWindowData(tripWindowData);
+                            }
+                        } else {
+                            carMapMarkerView.initMarkInfoWindowAdapter(tripWindowData);
+                        }
+                        break;
+                }
+
+
+            }
+        }
+    }
+
+    @Override
+    public void ondrawRouteFailed(Throwable e) {
+        Log.e("测试代码", "测试代码ondrawRouteFailed  Throwable=" + e.toString());
     }
 }

@@ -1,10 +1,10 @@
 package com.yisingle.app.rx;
 
 
+import com.blankj.utilcode.util.NetworkUtils;
 import com.yisingle.app.http.ApiException;
 import com.yisingle.app.http.HttpResult;
 import com.yisingle.app.http.NetworkDisconnectException;
-import com.yisingle.app.utils.NetUtils;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -75,7 +75,7 @@ public class RxUtils {
                         .doOnSubscribe(new Action0() {
                             @Override
                             public void call() {
-                                if (!NetUtils.isOnline())
+                                if (!NetworkUtils.isConnected())
                                     throw new NetworkDisconnectException();
                             }
                         });

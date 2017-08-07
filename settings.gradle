@@ -1,1 +1,9 @@
-include ':app', ':AmapLibrary', ':baselibray'
+include ':app'
+
+
+include ':CommonLibrary'
+project (':CommonLibrary').projectDir = new File('../CommonLibrary/')
+
+include ':CommonLibrary:baselibray'
+include ':CommonLibrary:iflytekLibrary'
+include ':CommonLibrary:AmapLibrary'

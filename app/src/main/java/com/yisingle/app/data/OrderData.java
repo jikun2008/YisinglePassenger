@@ -6,12 +6,15 @@ import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.math.BigDecimal;
 
 /**
  * Created by jikun on 17/6/27.
  */
 
 public class OrderData implements Parcelable {
+
+
 
     public DriverData getDriver() {
         return driver;
@@ -59,6 +62,16 @@ public class OrderData implements Parcelable {
     private UserData user;
 
     private int passengerRelyState;
+
+    private BigDecimal orderPrice;
+
+    public BigDecimal getOrderPrice() {
+        return orderPrice;
+    }
+
+    public void setOrderPrice(BigDecimal orderPrice) {
+        this.orderPrice = orderPrice;
+    }
 
     public int getPassengerRelyState() {
         return passengerRelyState;
@@ -136,7 +149,6 @@ public class OrderData implements Parcelable {
     }
 
 
-
     @State
     public int getOrderState() {
         return orderState;
@@ -148,14 +160,18 @@ public class OrderData implements Parcelable {
 
     //添加支持注解的依赖到你的项目中，需要在build.gradle文件中的依赖块中添加：
     //dependencies { compile 'com.android.support:support-annotations:24.2.0' }
-    @IntDef({State.WAIT_NEW, State.WAIT_OLD, State.HAVE_TAKE, State.HAVE_COMPLETE})
+    @IntDef({State.WAIT_NEW, State.WAIT_OLD, State.HAVE_TAKE, State.DRIVER_ARRIVE, State.PASSENGER_IN_CAR, State.PASSENGER_OUT_CAR, State.HAVE_COMPLETE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface State {
 
         int WAIT_NEW = -1;
         int WAIT_OLD = 0;
-        int HAVE_TAKE = 1;
-        int HAVE_COMPLETE = 2;
+        int HAVE_TAKE = 1;//订单已接受
+        int DRIVER_ARRIVE = 2;//司机已到达
+        int PASSENGER_IN_CAR = 3;//乘客已经上车
+        int PASSENGER_OUT_CAR = 4;//乘客已下车
+        int HAVE_COMPLETE = 5;//订单已经完成
+
 
     }
 
@@ -178,6 +194,7 @@ public class OrderData implements Parcelable {
         dest.writeParcelable(this.driver, flags);
         dest.writeParcelable(this.user, flags);
         dest.writeInt(this.passengerRelyState);
+        dest.writeSerializable(this.orderPrice);
     }
 
     protected OrderData(Parcel in) {
@@ -193,6 +210,7 @@ public class OrderData implements Parcelable {
         this.driver = in.readParcelable(DriverData.class.getClassLoader());
         this.user = in.readParcelable(UserData.class.getClassLoader());
         this.passengerRelyState = in.readInt();
+        this.orderPrice = (BigDecimal) in.readSerializable();
     }
 
     public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {

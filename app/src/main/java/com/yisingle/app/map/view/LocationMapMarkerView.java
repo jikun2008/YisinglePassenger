@@ -12,15 +12,18 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.map.library.help.AMapLocationHelper;
+import com.map.library.help.SensorEventHelper;
+import com.map.library.view.base.BaseMapMarkerView;
+import com.map.library.view.base.BaseMarkerData;
+import com.map.library.view.base.BaseWindowData;
+import com.map.library.view.utils.CoordinateTransUtils;
 import com.yisingle.app.R;
 import com.yisingle.app.base.Constant;
-import com.yisingle.app.map.help.AMapLocationHelper;
-import com.yisingle.app.map.help.SensorEventHelper;
-import com.yisingle.app.map.utils.CoordinateTransUtils;
 import com.yisingle.app.map.utils.MarkerBuilder;
 import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
 import com.yisingle.app.utils.BitMapUtils;
-import com.yisingle.app.utils.ShareprefUtils;
 
 
 /**
@@ -28,8 +31,7 @@ import com.yisingle.app.utils.ShareprefUtils;
  */
 
 
-public class
-LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindowData> {
+public class LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindowData> {
 
 
     private SensorEventHelper sensorEventHelper;
@@ -60,7 +62,6 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
 
     @Override
     protected void addMarkSuccess(LocationMapMarkerData markerData) {
-        super.addMarkSuccess(markerData);
         initLocationHelper(markerData.isMove());
 
         initSensorEventHelper();
@@ -68,7 +69,7 @@ LocationMapMarkerView extends BaseMapMarkerView<LocationMapMarkerData, BaseWindo
 
 
     private Marker initAddMarker(LatLng latLng) {
-        boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+        boolean isLoginSuccess = SPUtils.getInstance().getBoolean(Constant.IS_LOGIN_SUCCESS, false);
         Bitmap bitmap = null;
         if (isLoginSuccess) {
 

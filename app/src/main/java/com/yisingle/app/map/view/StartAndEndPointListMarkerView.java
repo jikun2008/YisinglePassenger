@@ -5,12 +5,14 @@ import android.content.Context;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.LatLngBounds;
-import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
-import com.yisingle.app.map.view.PointMapMarkerView.PointMapWindowData;
+import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.SizeUtils;
+import com.map.library.view.base.BaseMapListMarkerView;
+import com.map.library.view.base.BaseMapMarkerView;
+import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapMarkerData;
+import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapWindowData;
 import com.yisingle.app.utils.BitMapUtils;
-import com.yisingle.app.utils.DisplayUtil;
 import com.yisingle.app.utils.GLFont;
-import com.yisingle.app.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
  * Created by jikun on 17/6/13.
  */
 
-public class StartAndEndPointListMarkerView extends BaseMapListMarkerView<PointMapMarkerView.PointMapMarkerData, PointMapMarkerView.PointMapWindowData> {
+public class StartAndEndPointListMarkerView extends BaseMapListMarkerView<PointMapMarkerData, PointMapWindowData> {
 
 
     public StartAndEndPointListMarkerView(AMap map, Context context) {
@@ -33,7 +35,7 @@ public class StartAndEndPointListMarkerView extends BaseMapListMarkerView<PointM
         List<BaseMapMarkerView<PointMapMarkerData, PointMapWindowData>> listView = new ArrayList<>();
 
         for (PointMapMarkerData data : markerDataList) {
-            PointMapMarkerView pointMapMarkerView = new PointMapMarkerView(getMap(), getContext());
+            PointCircleMapMarkerView pointMapMarkerView = new PointCircleMapMarkerView(getMap(), getContext());
             pointMapMarkerView.addView(data);
             listView.add(pointMapMarkerView);
         }
@@ -76,7 +78,7 @@ public class StartAndEndPointListMarkerView extends BaseMapListMarkerView<PointM
         }
         int top = paddingheight * 2;
         int right = left;
-        int bottom = DisplayUtil.dip2px(getContext(), 210) + top;
+        int bottom = SizeUtils.dp2px(210) + top;
 
 
         getMap().animateCamera(CameraUpdateFactory.newLatLngBoundsRect(latLngBounds, left, right, top, bottom));

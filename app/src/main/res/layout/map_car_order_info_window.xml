@@ -1,15 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/map_info_window"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_info"
+    <LinearLayout
+        android:id="@+id/ll_driver_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textColor="@color/black_text"
-        android:text="13123" />
+        android:orientation="horizontal"
+        tools:visibility="gone">
+
+        <com.yisingle.app.view.CircleTimeCountDownVIew
+            android:id="@+id/view_countDownView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"></com.yisingle.app.view.CircleTimeCountDownVIew>
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dimen_6dp"
+            android:textColor="@color/black_text"
+            tools:text="司机已到达" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rl_driver_trip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="@dimen/dimen_12dp"
+            android:layout_marginTop="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="2dp"
+                android:gravity="right"
+                android:textColor="@color/black_text"
+                android:textSize="@dimen/dimen_12sp"
+                tools:text="距离终点3.9公里" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_distance"
+                android:gravity="right"
+                android:textColor="@color/black_text"
+                android:textSize="@dimen/dimen_12sp"
+                tools:text="预计行驶11分钟" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_1px"
+            android:layout_height="@dimen/dimen_20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dimen_6dp"
+            android:layout_marginRight="@dimen/dimen_6dp"
+            android:background="@color/gray_line"></View>
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/orange_text"
+            android:textSize="@dimen/dimen_12sp"
+            tools:text="1.14元" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/icon_arrow_right" />
+
+
+    </LinearLayout>
 </LinearLayout>

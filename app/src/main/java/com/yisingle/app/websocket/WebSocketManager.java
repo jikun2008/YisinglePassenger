@@ -3,16 +3,17 @@ package com.yisingle.app.websocket;
 import android.text.TextUtils;
 
 import com.amap.api.location.AMapLocation;
+import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.Gson;
 
+import com.map.library.help.AMapLocationHelper;
 import com.orhanobut.logger.Logger;
 import com.yisingle.app.MainApplication;
 import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.HeartBeatData;
 import com.yisingle.app.data.SocketData;
 import com.yisingle.app.data.SocketHeadData;
-import com.yisingle.app.map.help.AMapLocationHelper;
-import com.yisingle.app.utils.ShareprefUtils;
+
 
 
 import okhttp3.OkHttpClient;
@@ -71,7 +72,7 @@ public class WebSocketManager extends WebSocketListener {
         if (sWebSocket == null) {
 
 
-            int passengerId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID, -1);
+            int passengerId = SPUtils.getInstance().getInt(Constant.LOGIN_PASSENGER_ID, -1);
             Request request = new Request.Builder().header("passengerId", passengerId + "").url(Constant.getWsBaseUrl() + "yisingle/passenger/websokcet").build();
 
 
@@ -189,7 +190,7 @@ public class WebSocketManager extends WebSocketListener {
         heartData.setLatitude(latitude);
         heartData.setLongitude(longitude);
 
-        int passengerId = ShareprefUtils.get(Constant.LOGIN_PASSENGER_ID, -1);
+        int passengerId = SPUtils.getInstance().getInt(Constant.LOGIN_PASSENGER_ID, -1);
         heartData.setId(passengerId);
         webSocketData.setResponse(heartData);
 

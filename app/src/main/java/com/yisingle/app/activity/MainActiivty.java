@@ -7,10 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseActivity;
+import com.yisingle.app.base.BasePassengerActivity;
 import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.MainTabData;
 import com.yisingle.app.data.UserData;
@@ -20,11 +24,10 @@ import com.yisingle.app.fragment.FastCarFragment;
 import com.yisingle.app.fragment.LoginRegisterDialogFragment;
 import com.yisingle.app.fragment.SideDrawerFragment;
 import com.yisingle.app.mvp.IRegister;
-import com.yisingle.app.mvp.presenter.RegisterPresenter;
+import com.yisingle.app.mvp.presenter.RegisterPresenterImpl;
 import com.yisingle.app.service.GuardService;
 import com.yisingle.app.service.LocationService;
-import com.yisingle.app.utils.ShareprefUtils;
-import com.yisingle.app.utils.ToastUtils;
+
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -42,7 +45,7 @@ import butterknife.BindView;
  */
 
 
-public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRegister.RegisterView {
+public class MainActiivty extends BasePassengerActivity<RegisterPresenterImpl> implements IRegister.RegisterView {
 
 
     @BindView(R.id.fl_menu)
@@ -66,13 +69,9 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
     @Override
     protected void initViews(Bundle savedInstanceState) {
         initTabRecyclerView();
-        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, false);
+        SPUtils.getInstance().put(Constant.IS_LOGIN_SUCCESS, false);
         setTitle("主界面", v -> {
-
-            ;
-
-
-            boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+            boolean isLoginSuccess = SPUtils.getInstance().getBoolean(Constant.IS_LOGIN_SUCCESS, false);
             if (isLoginSuccess) {
                 sideDrawerFragment.loadView();
                 if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -108,8 +107,8 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
     }
 
     @Override
-    protected RegisterPresenter createPresenter() {
-        return new RegisterPresenter(this);
+    protected RegisterPresenterImpl createPresenter() {
+        return new RegisterPresenterImpl(this);
     }
 
     private void initTabRecyclerView() {
@@ -165,7 +164,7 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
     protected void onDestroy() {
         super.onDestroy();
         stopLocationService();
-        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, false);
+        SPUtils.getInstance().put(Constant.IS_LOGIN_SUCCESS, false);
     }
 
     @Override
@@ -183,22 +182,23 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
 
     private void autoLogin() {
 
-        String phone = ShareprefUtils.get(Constant.PHONE_NUM, "");
-        String password = ShareprefUtils.get(Constant.PASS_WORD, "");
+        String phone = SPUtils.getInstance().getString(Constant.PHONE_NUM, "");
+        String password = SPUtils.getInstance().getString(Constant.PASS_WORD, "");
         if (!TextUtils.isEmpty(phone) && !TextUtils.isEmpty(password)) {
-            mPresenter.login(phone, password, RegisterPresenter.TYPE.Login);
+            mPresenter.login(phone, password, RegisterPresenterImpl.TYPE.Login);
+
         }
 
     }
 
     @Override
     public void loginSuccess(UserData data) {
-        ShareprefUtils.put(Constant.LOGIN_PASSENGER_ID, data.getId());
-        ShareprefUtils.put(Constant.PHONE_NUM, data.getPhonenum());
-        ShareprefUtils.put(Constant.PASS_WORD, data.getPassword());
-        ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, true);
+        SPUtils.getInstance().put(Constant.LOGIN_PASSENGER_ID, data.getId());
+        SPUtils.getInstance().put(Constant.PHONE_NUM, data.getPhonenum());
+        SPUtils.getInstance().put(Constant.PASS_WORD, data.getPassword());
+        SPUtils.getInstance().put(Constant.IS_LOGIN_SUCCESS, true);
         EventBus.getDefault().post(new UserDataEvent(data));
-        ToastUtils.show("自动登陆成功");
+        ToastUtils.showShort("自动登陆成功");
     }
 
     /**
@@ -209,5 +209,39 @@ public class MainActiivty extends BaseActivity<RegisterPresenter> implements IRe
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void doToLogin(DoLoginEvent event) {
         findViewById(R.id.ib_left).performClick();
+    }
+
+
+    /**
+     * @param title    标题
+     * @param backFlag 是否显示返回按钮
+     */
+    @SuppressWarnings("unused")
+    protected void setTitle(String title, boolean backFlag) {
+        if (findViewById(R.id.titleBar) == null) return;
+        ((TextView) findViewById(R.id.tv_title)).setText(title);
+        if (backFlag) {
+            findViewById(R.id.ib_left).setOnClickListener(view -> finish());
+        } else {
+            findViewById(R.id.ib_right).setVisibility(View.GONE);
+        }
+    }
+
+
+    /**
+     * @param title               标题
+     * @param leftOnclickListener 点击监听器
+     */
+    protected void setTitle(String title, View.OnClickListener leftOnclickListener) {
+        if (findViewById(R.id.titleBar) == null) return;
+        ((TextView) findViewById(R.id.tv_title)).setText(title);
+
+        findViewById(R.id.ib_left).setVisibility(View.VISIBLE);
+        findViewById(R.id.ib_left).setOnClickListener(v -> {
+            if (leftOnclickListener != null) {
+                leftOnclickListener.onClick(v);
+            }
+        });
+
     }
 }

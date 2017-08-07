@@ -6,18 +6,19 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.yisingle.app.base.BaseService;
+
 import com.yisingle.app.data.OrderData;
 import com.yisingle.app.mvp.IYiSinglePassenger;
-import com.yisingle.app.mvp.presenter.YiSinglePassengerPresenter;
+import com.yisingle.app.mvp.presenter.YiSinglePassengerPresenterImpl;
 import com.yisingle.app.websocket.WebSocketManager;
+import com.yisingle.baselibray.base.BaseService;
 
 
 /**
  * Created by jikun on 17/7/10.
  */
 
-public class OrderService extends BaseService<YiSinglePassengerPresenter> implements IYiSinglePassenger.IYiSinglePassengerView {
+public class OrderService extends BaseService<YiSinglePassengerPresenterImpl> implements IYiSinglePassenger.IYiSinglePassengerView {
 
 
     private String TAG = OrderService.class.getSimpleName();
@@ -43,8 +44,8 @@ public class OrderService extends BaseService<YiSinglePassengerPresenter> implem
     }
 
     @Override
-    protected YiSinglePassengerPresenter createPresenter() {
-        return new YiSinglePassengerPresenter(this);
+    protected YiSinglePassengerPresenterImpl createPresenter() {
+        return new YiSinglePassengerPresenterImpl(this);
     }
 
     @Override

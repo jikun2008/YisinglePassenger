@@ -9,15 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
+import com.map.library.help.AMapLocationHelper;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseFrament;
-import com.yisingle.app.base.BasePresenter;
+
 import com.yisingle.app.data.CityModel;
 import com.yisingle.app.decoration.SuspensionDecoration;
-import com.yisingle.app.map.help.AMapLocationHelper;
 import com.yisingle.app.map.utils.CityUtil;
 import com.yisingle.app.widget.IndexBar.IndexBar;
 import com.yisingle.app.widget.IndexBar.helper.GaoDeCityIIndexBarDataHelper;
+import com.yisingle.baselibray.base.BaseFragment;
+import com.yisingle.baselibray.base.BasePresenter;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -29,7 +30,7 @@ import butterknife.BindView;
  * Created by jikun on 17/5/31.
  */
 
-public class CityChooseFragment extends BaseFrament {
+public class CityChooseFragment extends BaseFragment {
 
 
     @BindView(R.id.tv_choose_city)

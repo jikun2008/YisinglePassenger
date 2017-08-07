@@ -7,12 +7,14 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
 import com.amap.api.location.AMapLocation;
-import com.yisingle.app.event.LocationEvent;
-import com.yisingle.app.map.help.AMapLocationHelper;
-import com.yisingle.app.map.location.utils.IWifiAutoCloseDelegate;
-import com.yisingle.app.map.location.utils.NetUtil;
-import com.yisingle.app.map.location.utils.PowerManagerUtil;
-import com.yisingle.app.map.location.utils.WifiAutoCloseDelegate;
+
+import com.map.library.event.LocationEvent;
+import com.map.library.help.AMapLocationHelper;
+import com.map.library.service.utils.IWifiAutoCloseDelegate;
+import com.map.library.service.utils.NetUtil;
+import com.map.library.service.utils.PowerManagerUtil;
+import com.map.library.service.utils.WifiAutoCloseDelegate;
+import com.orhanobut.logger.Logger;
 import com.yisingle.app.receiver.LocationReceiver;
 import com.yisingle.bind.IGuardAidlInterface;
 
@@ -30,9 +32,8 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
 
     private int loctionTime = 2 * 1000;
 
-    private final String RECEIVER_ACTION = "com.broadcast.location.receiver";
-
-
+    //需要守护的LocationService的Action
+    public static String Location_Service_Action = "com.yisingle.app.service.LocationService";
     /**
      * 处理息屏关掉wifi的delegate类
      * //如果因为熄灭屏幕而造成了W定位失败，那么点亮屏幕
@@ -63,11 +64,12 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
         super.onCreate();
         aMapLocationHelper = new AMapLocationHelper(getApplicationContext());
         aMapLocationHelper.setOnLocationGetListener(this);
-
+        Logger.d("LocationService--onCreate");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Logger.d("LocationService--onStartCommand");
         applyNotiKeepMech();
         aMapLocationHelper.startLocation(loctionTime);
         if (mWifiAutoCloseDelegate.isUseful(getApplicationContext())) {
@@ -82,6 +84,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     public void onDestroy() {
         super.onDestroy();
         unApplyNotiKeepMech();
+        Logger.d("LocationService--onDestroy");
         aMapLocationHelper.destroyLocation();
 
     }
@@ -89,6 +92,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     @Override
     public void onLocationGetSuccess(AMapLocation loc) {
 
+        //Logger.d("LocationService--onLocationGetSuccess");
         if (null != loc) {
             //由于当前LocationService 属于另一个进程中
             // 所以发送EventBus或者RxBus都没有作用所以只能发送广播来进行定位转发
@@ -107,6 +111,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
 
     @Override
     public void onLocationGetFail(AMapLocation loc) {
+       // Logger.d("LocationService--onLocationGetFail");
         if (null != loc) {
             sendLocation(new LocationEvent(LocationEvent.Code.FAILED, loc));
         }
@@ -125,8 +130,8 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     }
 
     private void sendLocation(LocationEvent locationEvent) {
-        Intent mIntent = new Intent(RECEIVER_ACTION);
-        mIntent.putExtra(LocationReceiver.LOCATION, locationEvent);
+        Intent mIntent = new Intent(LocationReceiver.RECEIVER_ACTION);
+        mIntent.putExtra(LocationReceiver.Extra_Broadcast_Location_Data, locationEvent);
         //发送广播
         sendBroadcast(mIntent);
     }

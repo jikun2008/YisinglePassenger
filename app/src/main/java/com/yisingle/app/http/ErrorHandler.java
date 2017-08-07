@@ -2,8 +2,8 @@ package com.yisingle.app.http;
 
 import android.net.ParseException;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.JsonParseException;
-import com.yisingle.app.utils.ToastUtils;
 
 
 import org.json.JSONException;
@@ -39,7 +39,7 @@ public final class ErrorHandler {
     public static ApiException handleException(Throwable e, boolean showToast) {
         ApiException exception = parseException(e);
         if (showToast)
-            ToastUtils.show(exception.getMessage());
+            ToastUtils.showShortSafe(exception.getMessage());
 
         return exception;
     }

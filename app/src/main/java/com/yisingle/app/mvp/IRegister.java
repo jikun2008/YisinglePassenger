@@ -1,9 +1,8 @@
 package com.yisingle.app.mvp;
 
 
-import com.yisingle.app.base.BaseView;
-import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.UserData;
+import com.yisingle.baselibray.base.BaseView;
 
 /**
  * 登录页接口

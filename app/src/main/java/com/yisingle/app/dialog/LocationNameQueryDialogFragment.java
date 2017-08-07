@@ -13,12 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.amap.api.maps.model.LatLng;
+import com.map.library.help.AMapLocationHelper;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseDialogFragment;
-import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.fragment.CityChooseFragment;
 import com.yisingle.app.fragment.HisDestinationFragment;
-import com.yisingle.app.map.help.AMapLocationHelper;
+import com.yisingle.baselibray.base.BaseDialogFragment;
+import com.yisingle.baselibray.base.BasePresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;

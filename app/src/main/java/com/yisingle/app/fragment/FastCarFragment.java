@@ -20,13 +20,16 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
-import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.SpanUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.map.library.base.BaseMapFragment;
+import com.map.library.view.base.BaseMarkerData;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
 import com.yisingle.app.R;
 import com.yisingle.app.activity.SendOrderActivity;
-import com.yisingle.app.base.BaseMapFragment;
 import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.ChoosePointData;
 import com.yisingle.app.data.FastCarPriceData;
@@ -36,19 +39,15 @@ import com.yisingle.app.data.OrderData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.DoLoginEvent;
 import com.yisingle.app.event.UserDataEvent;
-import com.yisingle.app.map.view.BaseMarkerData;
 import com.yisingle.app.map.view.CenterMapMarkerView;
 import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
 import com.yisingle.app.map.view.LocationMapMarkerView;
 import com.yisingle.app.map.view.NearbyCarMapListMarkerView;
-import com.yisingle.app.map.view.PointMapMarkerView.PointMapMarkerData;
+import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapMarkerData;
 import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
-import com.yisingle.app.mvp.presenter.FastCarPresenter;
+import com.yisingle.app.mvp.presenter.FastCarPresenterImpl;
 import com.yisingle.app.service.OrderService;
-import com.yisingle.app.utils.ShareprefUtils;
-import com.yisingle.app.utils.SpannableStringUtils;
-import com.yisingle.app.utils.ToastUtils;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -67,7 +66,7 @@ import butterknife.OnClick;
  */
 
 
-public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implements IFastCar.FastCarView, AMap.OnCameraChangeListener {
+public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> implements IFastCar.FastCarView, AMap.OnCameraChangeListener {
     @BindView(R.id.textureMapView)
     TextureMapView textureMapView;
     @BindView(R.id.tv_start_place)
@@ -128,7 +127,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        //initViews比initMapCreate先执行
+        super.initViews(savedInstanceState);
+
 
         getPermission();
         initChooseCarTypeRecyclerView();
@@ -138,7 +138,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         reshPriceData(false);
 
         showNoHaveDes();
-
 
     }
 
@@ -162,18 +161,18 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             return;
         }
 
-        mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target, FastCarPresenter.TYPE.REGEOCODE_ADDRESS);
+        mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target, FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS);
     }
 
     @Override
     public void showLoading(int type) {
 
         switch (type) {
-            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+            case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+showLoading");
                 centerMapMarkerView.showLoading(5);
                 break;
-            case FastCarPresenter.TYPE.SEND_ORDER:
+            case FastCarPresenterImpl.TYPE.SEND_ORDER:
                 showLoadingDialog();
                 break;
         }
@@ -183,11 +182,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     public void dismissLoading(int type) {
 
         switch (type) {
-            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+            case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+dismissLoading");
                 centerMapMarkerView.stopLoading();
                 break;
-            case FastCarPresenter.TYPE.SEND_ORDER:
+            case FastCarPresenterImpl.TYPE.SEND_ORDER:
                 dimisLoadingDialog();
                 break;
         }
@@ -197,12 +196,12 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     public void onError(int type) {
 
         switch (type) {
-            case FastCarPresenter.TYPE.REGEOCODE_ADDRESS:
+            case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+onError");
                 tv_start_place.setText("你从哪出发");
                 centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
                 break;
-            case FastCarPresenter.TYPE.SEND_ORDER:
+            case FastCarPresenterImpl.TYPE.SEND_ORDER:
 //                ToastUtils.show("发送订单错误");
                 break;
         }
@@ -228,7 +227,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             intent.putExtra("SendOrderData", sendOrderData);
             intent.setClass(getActivity(), SendOrderActivity.class);
             getActivity().startActivity(intent);
-        } else{
+        } else {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("下单失败");
@@ -322,8 +321,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
 
     @Override
-    protected FastCarPresenter createPresenter() {
-        return new FastCarPresenter(this);
+    protected FastCarPresenterImpl createPresenter() {
+        return new FastCarPresenterImpl(this);
     }
 
     @Override
@@ -488,7 +487,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
                 holder.setText(R.id.tv_type, item.getTypeName());
                 holder.setSelected(R.id.tv_type, item.isselector());
 
-                SpannableStringBuilder spannableStringBuilder = new SpannableStringUtils.Builder()
+
+                SpannableStringBuilder spannableStringBuilder = new SpanUtils()
                         .append("约")
                         .append(item.getPrice()).setBold().setFontProportion(2)
                         .append("元").create();
@@ -496,7 +496,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
 
                 holder.setSelected(R.id.tv_normal_car_price, item.isselector());
 
-                SpannableStringBuilder discont = new SpannableStringUtils.Builder()
+                SpannableStringBuilder discont = new SpanUtils()
                         .append("优惠卷已抵扣")
                         .append(item.getDiscountPrice()).setForegroundColor(getResources().getColor(R.color.orange_text))
                         .append("元").create();
@@ -582,12 +582,12 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
     @OnClick(R.id.bt_start_user_car)
     public void toSendOrderActivity() {
 
-        boolean isLoginSuccess = ShareprefUtils.get(Constant.IS_LOGIN_SUCCESS, false);
+        boolean isLoginSuccess = SPUtils.getInstance().getBoolean(Constant.IS_LOGIN_SUCCESS, false);
         if (isLoginSuccess) {
-            String phone = ShareprefUtils.get(Constant.PHONE_NUM, "");
-            mPresenter.sendOrder(phone, startMapPointData, endMapPointData, FastCarPresenter.TYPE.SEND_ORDER);
+            String phone = SPUtils.getInstance().getString(Constant.PHONE_NUM, "");
+            mPresenter.sendOrder(phone, startMapPointData, endMapPointData, FastCarPresenterImpl.TYPE.SEND_ORDER);
         } else {
-            ToastUtils.show("请先登录");
+            ToastUtils.showShort("请先登录");
             EventBus.getDefault().post(new DoLoginEvent());
         }
     }
@@ -599,8 +599,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
                 .requestCode(300)
                 .permission(
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                        , Manifest.permission.CALL_PHONE
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
                 )
                 .rationale((requestCode, rationale) -> {
                     // 此对话框可以自定义，调用rationale.resume()就可以继续申请。
@@ -629,7 +630,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
             AndPermission.defaultSettingDialog(this, 400).show();
 
         } else {
-            ToastUtils.show("你拒绝了定位权限请重新启动应用并允许定位权限");
+            ToastUtils.showShort("你拒绝了定位权限请重新启动应用并允许定位权限");
             getActivity().finish();
         }
     }
@@ -640,13 +641,14 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenter> implement
         permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionList.add(Manifest.permission.CALL_PHONE);
+        permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         switch (requestCode) {
             case 400: { // 这个400就是你上面传入的数字。
                 // 你可以在这里检查你需要的权限是否被允许，并做相应的操作。
                 if (AndPermission.hasPermission(getActivity(), permissionList)) {
                     loctionToMapView();
                 } else {
-                    ToastUtils.show("你拒绝了定位权限请重新启动应用并允许定位权限");
+                    ToastUtils.showShort("你拒绝了定位权限请重新启动应用并允许定位权限");
                     getActivity().finish();
                 }
                 break;

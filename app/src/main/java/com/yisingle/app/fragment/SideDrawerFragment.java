@@ -1,28 +1,23 @@
 package com.yisingle.app.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.SpanUtils;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseFrament;
-import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.base.Constant;
 import com.yisingle.app.data.SideData;
-import com.yisingle.app.event.DoLoginEvent;
-import com.yisingle.app.event.UserDataEvent;
 import com.yisingle.app.utils.BitMapUtils;
-import com.yisingle.app.utils.ShareprefUtils;
+
+import com.yisingle.baselibray.base.BaseFragment;
+import com.yisingle.baselibray.base.BasePresenter;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 
 
-public class SideDrawerFragment extends BaseFrament {
+public class SideDrawerFragment extends BaseFragment {
     @BindView(R.id.recyclerView)
     RecyclerView recycleView;
 
@@ -102,9 +97,9 @@ public class SideDrawerFragment extends BaseFrament {
         adapter.setOnItemClickListener((position, item) -> {
 
             if (position == 4) {
-                ShareprefUtils.put(Constant.PHONE_NUM, "");
-                ShareprefUtils.put(Constant.PASS_WORD, "");
-                ShareprefUtils.put(Constant.IS_LOGIN_SUCCESS, false);
+                SPUtils.getInstance().put(Constant.PHONE_NUM, "");
+                SPUtils.getInstance().put(Constant.PASS_WORD, "");
+                SPUtils.getInstance().put(Constant.IS_LOGIN_SUCCESS, false);
                 getActivity().finish();
             }
         });
@@ -112,7 +107,7 @@ public class SideDrawerFragment extends BaseFrament {
     }
 
     public void loadView() {
-        String passengerName = ShareprefUtils.get(Constant.PHONE_NUM, "");
+        String passengerName =   SPUtils.getInstance().getString(Constant.PHONE_NUM, "");
         tv_passenger_name.setText(passengerName);
 
         Bitmap rouudBitmap = BitMapUtils.getRoundBitMap(getResources(), R.mipmap.touxiang);

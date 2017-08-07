@@ -24,11 +24,11 @@ public class Constant {
 
     public static String getBaseUrl() {
 
-        return HTPP + LOCAL_IP + ":" + PORT + "/";
+        return HTPP + IP + ":" + PORT + "/";
     }
 
     public static String getWsBaseUrl() {
-        return WS + LOCAL_IP + ":" + PORT + "/";
+        return WS + IP + ":" + PORT + "/";
     }
 
 

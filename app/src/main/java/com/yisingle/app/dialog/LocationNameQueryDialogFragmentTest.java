@@ -5,8 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseDialogFragment;
-import com.yisingle.app.base.BasePresenter;
+
+import com.yisingle.baselibray.base.BaseDialogFragment;
+import com.yisingle.baselibray.base.BasePresenter;
 import com.yisingle.baselibray.baseadapter.SectionSimpleRecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.SectionSimpleRecyclerAdapter.GroupData;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;

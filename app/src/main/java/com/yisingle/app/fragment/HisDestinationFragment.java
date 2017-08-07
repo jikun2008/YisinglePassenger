@@ -3,18 +3,17 @@ package com.yisingle.app.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.help.Tip;
+import com.map.library.rx.RxMapManager;
 import com.yisingle.app.R;
-import com.yisingle.app.base.BaseFrament;
-import com.yisingle.app.base.BasePresenter;
 import com.yisingle.app.data.HisDestinationData;
 import com.yisingle.app.decoration.HisDestinationItemDecoration;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
-import com.yisingle.app.map.MapRxManager;
+import com.yisingle.baselibray.base.BaseFragment;
+import com.yisingle.baselibray.base.BasePresenter;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -29,7 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by jikun on 17/6/1.
  */
 
-public class HisDestinationFragment extends BaseFrament {
+public class HisDestinationFragment extends BaseFragment {
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
@@ -130,7 +129,7 @@ public class HisDestinationFragment extends BaseFrament {
 
     public void reshdata(String city, String key) {
 
-        MapRxManager.getGeocodeAddressList(getContext(), key, city).observeOn(AndroidSchedulers.mainThread())
+        RxMapManager.getInstance().getGeocodeAddressList(getContext(), key, city).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Tip>>() {
                     @Override
                     public void onCompleted() {

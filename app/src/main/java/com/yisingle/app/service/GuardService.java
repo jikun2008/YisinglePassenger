@@ -12,7 +12,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.yisingle.bind.IGuardAidlInterface;
 
 import java.util.List;
@@ -24,8 +23,7 @@ import java.util.List;
 
 
 public class GuardService extends BaseNoticService {
-    //需要守护的定位服务的名称
-    private final String locationServiceName = "com.yisingle.app.service.LocationService";
+
 
     private ServiceConnection mInnerConnection;
 
@@ -61,7 +59,7 @@ public class GuardService extends BaseNoticService {
             public void onServiceDisconnected(ComponentName name) {
                 Log.e("1", "测试代码：GuardService-------onServiceDisconnected");
                 Intent intent = new Intent();
-                intent.setAction(locationServiceName);
+                intent.setAction(LocationService.Location_Service_Action);
                 startService(getExplicitIntent(getApplicationContext(), intent));
             }
 
@@ -77,7 +75,7 @@ public class GuardService extends BaseNoticService {
         };
 
         Intent intent = new Intent();
-        intent.setAction(locationServiceName);
+        intent.setAction(LocationService.Location_Service_Action);
         bindService(getExplicitIntent(getApplicationContext(), intent), mInnerConnection, Service.BIND_AUTO_CREATE);
     }
 

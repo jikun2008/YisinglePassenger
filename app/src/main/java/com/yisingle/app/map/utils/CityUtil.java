@@ -1,19 +1,18 @@
 package com.yisingle.app.map.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
+import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.Gson;
 import com.yisingle.app.data.CityModel;
-import com.yisingle.app.utils.ShareprefUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  * Created by liangchao_suxun on 2017/4/27.
@@ -31,7 +30,7 @@ public class CityUtil {
             return null;
         }
 
-        String defCityStr = ShareprefUtils.get(DEF_CITY_KEY, "");
+        String defCityStr =  SPUtils.getInstance().getString(DEF_CITY_KEY, "");
         CityModel res = null;
         try {
             res = new Gson().fromJson(defCityStr, CityModel.class);
@@ -51,7 +50,7 @@ public class CityUtil {
 
         for (CityModel cityModel : cities) {
             if ("北京市".equals(cityModel.getCity())) {
-                ShareprefUtils.put(DEF_CITY_KEY, new Gson().toJson(cityModel));
+                SPUtils.getInstance().put(DEF_CITY_KEY, new Gson().toJson(cityModel));
                 return cityModel;
             }
         }

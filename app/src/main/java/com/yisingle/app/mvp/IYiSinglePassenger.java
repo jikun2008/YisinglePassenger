@@ -1,8 +1,9 @@
 package com.yisingle.app.mvp;
 
 
-import com.yisingle.app.base.BaseView;
+
 import com.yisingle.app.data.OrderData;
+import com.yisingle.baselibray.base.BaseView;
 
 /**
  * Created by jikun on 17/7/24.

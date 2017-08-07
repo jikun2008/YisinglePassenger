@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
-import com.yisingle.app.map.utils.RegeocodeAddressInfoUtils;
+import com.map.library.view.utils.RegeocodeAddressInfoUtils;
 
 import java.util.List;
 

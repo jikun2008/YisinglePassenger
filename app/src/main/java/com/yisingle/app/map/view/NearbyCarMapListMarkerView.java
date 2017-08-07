@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.map.library.view.base.BaseMapListMarkerView;
+import com.map.library.view.base.BaseMapMarkerView;
+import com.map.library.view.base.BaseMarkerData;
+import com.map.library.view.base.BaseWindowData;
 import com.yisingle.app.R;
 import com.yisingle.app.data.CarPositionData;
 import com.yisingle.app.map.utils.MarkerBuilder;
@@ -43,6 +47,11 @@ public class NearbyCarMapListMarkerView extends BaseMapListMarkerView<NearbyCarM
 
                     Marker marker = MarkerBuilder.getCarMarkerToMapView(data.getLatLng(), bitmap, getMap(), data.getBearing());
                     return marker;
+                }
+
+                @Override
+                protected void addMarkSuccess(NearbyCarMapMarkerData markerData) {
+
                 }
             };
             baseMapMarkerView.addView(nearbyCarMapMarkerData);
