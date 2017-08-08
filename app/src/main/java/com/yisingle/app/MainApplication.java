@@ -9,7 +9,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.bugly.Bugly;
 
 /**
  * Created by jikun on 17/5/12.
@@ -33,7 +33,9 @@ public class MainApplication extends Application {
         initLogger();
 
         Utils.init(getApplicationContext());//初始化AndroidUtilCode
-        CrashReport.initCrashReport(getApplicationContext(), "8856cf1479", false);
+
+
+        Bugly.init(getApplicationContext(), "8856cf1479", false);//使用腾讯Bugly 开进行升级  保存bug
 
     }
 
