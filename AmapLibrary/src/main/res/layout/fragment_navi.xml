@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/flmapContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <com.amap.api.maps.TextureMapView
+            android:id="@+id/textureMapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/rl_map_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <ProgressBar
+                android:id="@+id/map_progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <Button
+                android:id="@+id/bt_map_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="重新加载" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/flNavContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:visibility="gone"
+        tools:visibility="visible">
+
+
+        <com.amap.api.navi.AMapNaviView
+            android:id="@+id/navi_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/rl_navi_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <ProgressBar
+                android:id="@+id/navi_progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <Button
+                android:id="@+id/bt_navi_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="重新加载" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_navi_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="#2d3038"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="22dp"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/ib_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="6dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/navi_close_selector" />
+            <!--  -->
+
+            <com.amap.api.navi.view.NextTurnTipView
+                android:id="@+id/myDirectionView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                tools:src="@drawable/sou0"></com.amap.api.navi.view.NextTurnTipView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/myDirectionView"
+                android:layout_alignTop="@+id/myDirectionView"
+                android:layout_marginLeft="24dp"
+                android:layout_toRightOf="@+id/myDirectionView"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    tools:text="606米" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="进入"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/myDirectionView"
+                android:layout_marginLeft="24dp"
+                android:layout_toRightOf="@+id/myDirectionView">
+
+                <TextView
+                    android:id="@+id/tv_road_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    tools:text="天府大道北段" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_below="@+id/myDirectionView"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_all_ditance"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="16sp"
+                    tools:text="剩余20公里" />
+
+                <TextView
+                    android:id="@+id/tv_all_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="16sp"
+                    tools:text="剩余20分钟" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_little_navi_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#2d3038"
+                tools:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_distance_little"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    tools:text="177米后" />
+
+                <com.amap.api.navi.view.NextTurnTipView
+                    android:id="@+id/nv_little_turn_view"
+                    android:layout_width="38dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    tools:src="@drawable/sou0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:text="进入"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="18sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_little_road_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    tools:text="天府大道北段" />
+
+
+            </LinearLayout>
+
+            <com.amap.api.navi.view.ZoomInIntersectionView
+                android:id="@+id/mZoomInIntersectionView"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitXY"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
+        <com.amap.api.navi.view.DriveWayView
+            android:id="@+id/driverWayView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_navi_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="6dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="70dp"
+            android:layout_marginRight="6dp"
+            android:orientation="vertical">
+
+            <com.amap.api.navi.view.OverviewButtonView
+                android:id="@+id/overviewButtonView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:visibility="visible"
+                tools:src="@drawable/drive_map_icon_preview_portrait_day"></com.amap.api.navi.view.OverviewButtonView>
+
+
+            <ImageButton
+                android:id="@+id/ib_switch"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/autonavi_road_switch"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_Location"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:background="@mipmap/icon_location_btn"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="4dp" />
+
+            <!--           android:background="@android:color/transparent"
+              android:src="@drawable/autonavi_road_switch"-->
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

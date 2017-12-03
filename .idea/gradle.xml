@@ -7,12 +7,11 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../CommonLibrary" />
-            <option value="$PROJECT_DIR$/../CommonLibrary/AmapLibrary" />
-            <option value="$PROJECT_DIR$/../CommonLibrary/baselibray" />
-            <option value="$PROJECT_DIR$/../CommonLibrary/iflytekLibrary" />
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/AmapLibrary" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/baselibray" />
+            <option value="$PROJECT_DIR$/iflytekLibrary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

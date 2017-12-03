@@ -1,20 +1,18 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.butterknife'
+
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.yisingle.app"
-        minSdkVersion 19
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        jackOptions {
-            enabled = true
-        }
+
     }
     sourceSets {
         main {
@@ -32,7 +30,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            shrinkResources true // 移除无用的resource文件
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.signinfo
             buildConfigField "Boolean", "IS_RELEASE", "true"
@@ -53,10 +51,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile project(':CommonLibrary:AmapLibrary')
-    compile project(':CommonLibrary:baselibray')
-    compile 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
     compile 'com.yanzhenjie:permission:1.0.8'
-    compile 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
+    compile 'com.github.promeg:tinypinyin:2.0.3'
+    // TinyPinyin核心包，约80KB
+    implementation project(':AmapLibrary')
+    implementation project(':baselibray')
 }
