@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../CommonLibrary/AmapLibrary/AmapLibrary.iml" filepath="$PROJECT_DIR$/../CommonLibrary/AmapLibrary/AmapLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../CommonLibrary/CommonLibrary.iml" filepath="$PROJECT_DIR$/../CommonLibrary/CommonLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AmapLibrary/AmapLibrary.iml" filepath="$PROJECT_DIR$/AmapLibrary/AmapLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/YisinglePassenger.iml" filepath="$PROJECT_DIR$/YisinglePassenger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AmapLibrary/YisinglePassenger-AmapLibrary.iml" filepath="$PROJECT_DIR$/AmapLibrary/YisinglePassenger-AmapLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/baselibray/YisinglePassenger-baselibray.iml" filepath="$PROJECT_DIR$/baselibray/YisinglePassenger-baselibray.iml" />
-      <module fileurl="file://$PROJECT_DIR$/iflytekLibrary/YisinglePassenger-iflytekLibrary.iml" filepath="$PROJECT_DIR$/iflytekLibrary/YisinglePassenger-iflytekLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../CommonLibrary/baselibray/baselibray.iml" filepath="$PROJECT_DIR$/../CommonLibrary/baselibray/baselibray.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../CommonLibrary/iflytekLibrary/iflytekLibrary.iml" filepath="$PROJECT_DIR$/../CommonLibrary/iflytekLibrary/iflytekLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baselibray/baselibray.iml" filepath="$PROJECT_DIR$/baselibray/baselibray.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iflytekLibrary/iflytekLibrary.iml" filepath="$PROJECT_DIR$/iflytekLibrary/iflytekLibrary.iml" />
     </modules>
   </component>
 </project>
