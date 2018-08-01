@@ -3,11 +3,14 @@ package com.map.library.listener;
 import android.util.Log;
 
 import com.amap.api.navi.AMapNaviListener;
+import com.amap.api.navi.model.AMapCalcRouteResult;
 import com.amap.api.navi.model.AMapLaneInfo;
+import com.amap.api.navi.model.AMapModelCross;
 import com.amap.api.navi.model.AMapNaviCameraInfo;
 import com.amap.api.navi.model.AMapNaviCross;
 import com.amap.api.navi.model.AMapNaviInfo;
 import com.amap.api.navi.model.AMapNaviLocation;
+import com.amap.api.navi.model.AMapNaviRouteNotifyData;
 import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
 import com.amap.api.navi.model.AMapServiceAreaInfo;
 import com.amap.api.navi.model.AimLessModeCongestionInfo;
@@ -20,7 +23,7 @@ import com.autonavi.tbt.TrafficFacilityInfo;
  * 导航监听适配器，只实现需要的方法
  */
 
-public abstract class AMapNaviAdapterListener implements AMapNaviListener {
+public  abstract class AMapNaviAdapterListener implements AMapNaviListener {
 
 
     public final String TAG = AMapNaviAdapterListener.class.getSimpleName();
@@ -47,12 +50,32 @@ public abstract class AMapNaviAdapterListener implements AMapNaviListener {
     }
 
     @Override
+    public void updateIntervalCameraInfo(AMapNaviCameraInfo aMapNaviCameraInfo, AMapNaviCameraInfo aMapNaviCameraInfo1, int i) {
+
+    }
+
+    @Override
     public void onServiceAreaUpdate(AMapServiceAreaInfo[] aMapServiceAreaInfos) {
 
     }
 
     @Override
     public void onPlayRing(int i) {
+
+    }
+
+    @Override
+    public void onCalculateRouteSuccess(AMapCalcRouteResult aMapCalcRouteResult) {
+
+    }
+
+    @Override
+    public void onCalculateRouteFailure(AMapCalcRouteResult aMapCalcRouteResult) {
+
+    }
+
+    @Override
+    public void onNaviRouteNotify(AMapNaviRouteNotifyData aMapNaviRouteNotifyData) {
 
     }
 
@@ -75,6 +98,11 @@ public abstract class AMapNaviAdapterListener implements AMapNaviListener {
     }
 
     @Override
+    public void onGetNavigationText(String s) {
+
+    }
+
+    @Override
     public void onEndEmulatorNavi() {
         //结束模拟导航
         Log.e(TAG, TAG + ":结束模拟导航-onEndEmulatorNavi");
@@ -84,6 +112,11 @@ public abstract class AMapNaviAdapterListener implements AMapNaviListener {
     public void onArriveDestination() {
         //到达目的地
         Log.e(TAG, TAG + ":到达目的地-onArriveDestination");
+    }
+
+    @Override
+    public void onCalculateRouteFailure(int i) {
+
     }
 
 
@@ -146,8 +179,23 @@ public abstract class AMapNaviAdapterListener implements AMapNaviListener {
     }
 
     @Override
+    public void showModeCross(AMapModelCross aMapModelCross) {
+
+    }
+
+    @Override
+    public void hideModeCross() {
+
+    }
+
+    @Override
     public void showLaneInfo(AMapLaneInfo[] laneInfos, byte[] laneBackgroundInfo, byte[] laneRecommendedInfo) {
         //显示车道信息
+
+    }
+
+    @Override
+    public void showLaneInfo(AMapLaneInfo aMapLaneInfo) {
 
     }
 
@@ -156,6 +204,10 @@ public abstract class AMapNaviAdapterListener implements AMapNaviListener {
         //隐藏车道信息
     }
 
+    @Override
+    public void onCalculateRouteSuccess(int[] ints) {
+
+    }
 
 
     @Override

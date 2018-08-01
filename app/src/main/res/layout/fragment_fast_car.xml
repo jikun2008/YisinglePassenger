@@ -19,12 +19,27 @@
 
     </com.amap.api.maps.TextureMapView>
 
+    <com.yisingle.app.view.CenterChoosPlaceView
+        android:id="@+id/centerChoosPlaceView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/centerGuideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/centerGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <ImageView
         android:id="@+id/iv_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
-        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginLeft="@dimen/dimen_10dp"
         android:src="@mipmap/im_loction_return_nomarl"
         app:layout_constraintBottom_toTopOf="@+id/ll_bottom"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -45,12 +60,12 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <LinearLayout
-            android:id="@+id/ll_no_choose_des"
+            android:id="@+id/llNoChooseDes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/start_des_place_ll_selector"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/ll_start"
@@ -70,7 +85,7 @@
                     android:src="@mipmap/icon_green" />
 
                 <TextView
-                    android:id="@+id/tv_start_place"
+                    android:id="@+id/tvStartPlace"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -83,7 +98,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginStart="60dp"
+                android:layout_marginLeft="60dp"
                 android:background="@color/gray_line" />
 
             <LinearLayout
@@ -103,7 +118,7 @@
                     android:src="@mipmap/icon_orange" />
 
                 <TextView
-                    android:id="@+id/tv_destination_place"
+                    android:id="@+id/tvDestinationPlace"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -115,16 +130,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_have_choose_des"
+            android:id="@+id/llHaveChooseDes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_choose_car_type"
+                android:id="@+id/recyclerViewChooseCarType"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@android:color/white"
@@ -137,7 +152,7 @@
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_price"
+                android:id="@+id/recyclerViewPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"

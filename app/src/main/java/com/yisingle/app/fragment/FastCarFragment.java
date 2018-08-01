@@ -3,6 +3,7 @@ package com.yisingle.app.fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -15,19 +16,22 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.SpanUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.map.library.base.BaseMapFragment;
-import com.map.library.view.base.BaseMarkerData;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
+import com.yisingle.amapview.lib.view.LocationMarkerView;
+import com.yisingle.amapview.lib.view.PointMarkerView;
 import com.yisingle.app.R;
 import com.yisingle.app.activity.SendOrderActivity;
 import com.yisingle.app.base.Constant;
@@ -39,15 +43,14 @@ import com.yisingle.app.data.OrderData;
 import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.DoLoginEvent;
 import com.yisingle.app.event.UserDataEvent;
-import com.yisingle.app.map.view.CenterMapMarkerView;
-import com.yisingle.app.map.view.CenterMapMarkerView.CenterWindowData;
-import com.yisingle.app.map.view.LocationMapMarkerView;
+import com.yisingle.app.map.view.NearByCarViewGroup;
 import com.yisingle.app.map.view.NearbyCarMapListMarkerView;
-import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapMarkerData;
-import com.yisingle.app.map.view.StartAndEndPointListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenterImpl;
 import com.yisingle.app.service.OrderService;
+import com.yisingle.app.utils.BitMapUtils;
+import com.yisingle.app.utils.test.TestNearByDataUtils;
+import com.yisingle.app.view.CenterChoosPlaceView;
 import com.yisingle.baselibray.baseadapter.RecyclerAdapter;
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
@@ -62,61 +65,66 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * Created by jikun on 17/5/10.
+ * @author jikun
+ * @date 17/5/10
  */
-
-
 public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> implements IFastCar.FastCarView, AMap.OnCameraChangeListener {
     @BindView(R.id.textureMapView)
     TextureMapView textureMapView;
-    @BindView(R.id.tv_start_place)
-    TextView tv_start_place;
-    @BindView(R.id.tv_destination_place)
-    TextView tv_destination_place;
+    @BindView(R.id.tvStartPlace)
+    TextView tvStartPlace;
+    @BindView(R.id.tvDestinationPlace)
+    TextView tvDestinationPlace;
 
-    @BindView(R.id.ll_no_choose_des)
-    LinearLayout ll_no_choose_des;
+    @BindView(R.id.llNoChooseDes)
+    LinearLayout llNoChooseDes;
 
-    @BindView(R.id.ll_have_choose_des)
-    LinearLayout ll_have_choose_des;
+    @BindView(R.id.llHaveChooseDes)
+    LinearLayout llHaveChooseDes;
+
+    @BindView(R.id.centerChoosPlaceView)
+    CenterChoosPlaceView centerChoosPlaceView;
 
 
-    @BindView(R.id.recyclerView_choose_car_type)
-    RecyclerView recyclerView_choose_car_type;
+    @BindView(R.id.recyclerViewChooseCarType)
+    RecyclerView recyclerViewChooseCarType;
     List<FastCarTypeData> fastCarTypeListData;
-    RecyclerAdapter<FastCarTypeData> choose_car_type_adapter;
+    RecyclerAdapter<FastCarTypeData> chooseCarTypeAdapter;
 
 
-    @BindView(R.id.recyclerView_price)
-    RecyclerView recyclerView_price;
+    @BindView(R.id.recyclerViewPrice)
+    RecyclerView recyclerViewPrice;
     List<FastCarPriceData> fastCarPriceDataList;
-    RecyclerAdapter<FastCarPriceData> price_adapter;
+    RecyclerAdapter<FastCarPriceData> priceAdapter;
+
 
     LocationNameQueryDialogFragment locationNameQueryDialogFragment;
 
 
     private boolean isMapMove = false;
 
-    private boolean isNoCamraChange = false;
+
+    private LocationMarkerView<String> locationMarkerView;
 
 
-    private StartAndEndPointListMarkerView startAndEndPointMarkerView;
+    private PointMarkerView<String> startPointMarkerView;
 
-    protected LocationMapMarkerView locationMapMarkerView;
-    protected CenterMapMarkerView centerMapMarkerView;
+    private PointMarkerView<String> endPointMarkerView;
 
-    private NearbyCarMapListMarkerView nearbyCarMapMarkerView;
+
+    private NearByCarViewGroup nearByCarViewGroup;
 
     private MapPointData startMapPointData;
 
     private MapPointData endMapPointData;
+
+    private boolean isFirstLoaction = true;
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         textureMapView = null;
-        removeMarkerViewFromMap();
 
     }
 
@@ -129,7 +137,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     protected void initViews(Bundle savedInstanceState) {
         super.initViews(savedInstanceState);
 
-
         getPermission();
         initChooseCarTypeRecyclerView();
 
@@ -137,19 +144,53 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
         reshPriceData(false);
 
-        showNoHaveDes();
+
+    }
+
+
+    @Override
+    public void initMapLoad() {
+        setMapUiSetting();
+
+        startPointMarkerView = new PointMarkerView.Builder(getContext(), getaMap())
+                .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_start)).create();
+
+        endPointMarkerView = new PointMarkerView.Builder(getContext(), getaMap())
+                .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.icon_end)).create();
+
+
+        locationMarkerView = new LocationMarkerView.Builder(getContext(), getaMap())
+                //设置定位的时间间隔 默认为5000ms  1000=1S
+                .setLocationDurtion(6000)
+                //设置有方向的定位图片
+                .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.navi_map_gps_locked))
+                .create();
+        locationMarkerView.startLocation();
+
+        locationMarkerView.setListener(new LocationMarkerView.OnLocationMarkerViewListenerAdapter() {
+            @Override
+            public void onLocationSuccess(AMapLocation loc) {
+                super.onLocationSuccess(loc);
+                if (isFirstLoaction) {
+                    moveToCamera(new LatLng(loc.getLatitude(), loc.getLongitude()));
+                }
+                isFirstLoaction = false;
+            }
+        });
+
+        nearByCarViewGroup = new NearByCarViewGroup(getContext(), getaMap());
+        getaMap().setOnCameraChangeListener(this);
+
 
     }
 
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        if (isNoCamraChange) {
-            return;
-        }
+
         if (!isMapMove) {
-            tv_start_place.setText("正在获取上车点");
-            centerMapMarkerView.hideInfoWindow();
+            tvStartPlace.setText("正在获取上车点");
+            centerChoosPlaceView.hideInfoWindow();
         }
         isMapMove = true;
     }
@@ -157,10 +198,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
         isMapMove = false;
-        if (isNoCamraChange) {
-            return;
-        }
-
         mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target, FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS);
     }
 
@@ -170,10 +207,13 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         switch (type) {
             case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+showLoading");
-                centerMapMarkerView.showLoading(5);
+                centerChoosPlaceView.showInfoWindow();
+                centerChoosPlaceView.showLoading(5);
                 break;
             case FastCarPresenterImpl.TYPE.SEND_ORDER:
                 showLoadingDialog();
+                break;
+            default:
                 break;
         }
     }
@@ -184,10 +224,12 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         switch (type) {
             case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+dismissLoading");
-                centerMapMarkerView.stopLoading();
+                centerChoosPlaceView.stopLoading();
                 break;
             case FastCarPresenterImpl.TYPE.SEND_ORDER:
                 dimisLoadingDialog();
+                break;
+            default:
                 break;
         }
     }
@@ -198,11 +240,13 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         switch (type) {
             case FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS:
                 Log.e("测试代码", "测试代码FastCarFragment+onError");
-                tv_start_place.setText("你从哪出发");
-                centerMapMarkerView.reshInfoWindowData(CenterWindowData.createError());
+                tvStartPlace.setText("你从哪出发");
+                centerChoosPlaceView.showError();
                 break;
             case FastCarPresenterImpl.TYPE.SEND_ORDER:
-//                ToastUtils.show("发送订单错误");
+//                ToastUtils-------------.show("发送订单错误");
+                break;
+            default:
                 break;
         }
 
@@ -211,12 +255,13 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     @Override
     public void onAddressSuccess(ChoosePointData data) {
         Log.e("测试代码", "测试代码FastCarFragment+onAddressSuccess");
-        centerMapMarkerView.reshInfoWindowData(CenterWindowData.createSuccess());
-        tv_start_place.setText(data.getSimpleAddress());
+        centerChoosPlaceView.showSuccess();
+        tvStartPlace.setText(data.getSimpleAddress());
         startMapPointData = MapPointData.createStartMapPointData(data.getSimpleAddress(), data.getLatLng());
 
 
-        nearbyCarMapMarkerView.addView(NearbyCarMapListMarkerView.changeList(data.getCarPositionDatas()));
+        nearByCarViewGroup.setLatLngList(TestNearByDataUtils.produceList(10, data.getLatLng()));
+//        nearbyCarMapMarkerView.addView(NearbyCarMapListMarkerView.changeList(data.getCarPositionDatas()));
     }
 
     @Override
@@ -256,15 +301,29 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     }
 
 
-    private void showHaveDes() {
-        ll_have_choose_des.setVisibility(View.VISIBLE);
-        ll_no_choose_des.setVisibility(View.GONE);
+    private void showHaveDes(MapPointData startData, MapPointData endData) {
+        startPointMarkerView.setPosition(startData.getLatLng());
+        startPointMarkerView.setText(startData.getText());
+
+        endPointMarkerView.setPosition(endData.getLatLng());
+        endPointMarkerView.setText(endData.getText());
+
+        tvDestinationPlace.setText(endData.getText());
+        llHaveChooseDes.setVisibility(View.VISIBLE);
+        llNoChooseDes.setVisibility(View.GONE);
+
+        locationMarkerView.setVisible(false);
+        centerChoosPlaceView.setVisibility(View.GONE);
+        moveToCamera(startData.getLatLng(), endData.getLatLng());
 
     }
 
     private void showNoHaveDes() {
-        ll_have_choose_des.setVisibility(View.GONE);
-        ll_no_choose_des.setVisibility(View.VISIBLE);
+        llHaveChooseDes.setVisibility(View.GONE);
+        llNoChooseDes.setVisibility(View.VISIBLE);
+        locationMarkerView.setVisible(true);
+        centerChoosPlaceView.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -272,10 +331,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
         if (startMapPointData != null && endMapPointData != null) {
-            startAndEndPointMarkerView.moveToCamera();
+//            pathPlaningView.moveToCamera();
+
         } else {
-            if (null != locationMapMarkerView && null != locationMapMarkerView.getMarker()) {
-                locationMapMarkerView.startLocationToView();
+            if (null != locationMarkerView && null != locationMarkerView.getPosition()) {
+                moveToCamera(locationMarkerView.getPosition());
             }
         }
 
@@ -283,32 +343,19 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
     private void loctionToMapViewByPosition(LatLng latLng) {
 
-        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));//zoom - 缩放级别，[3-20]。
+        //zoom - 缩放级别，[3-20]。
+        getaMap().animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageLoginSuccess(UserDataEvent event) {
         //登陆成功返回
-        if (locationMapMarkerView != null) {
-            locationMapMarkerView.setMarkIcon(R.mipmap.touxiang);
+        if (locationMarkerView != null) {
+            Bitmap loginBitMap = BitMapUtils.getLoginMarkIcon(getResources(), R.mipmap.touxiang);
+            locationMarkerView.setIcon(BitmapDescriptorFactory.fromBitmap(loginBitMap));
         }
         OrderService.startService(getContext());
-    }
-
-
-    @Override
-    public void initMapLoad() {
-        setMapUiSetting();
-        startAndEndPointMarkerView = new StartAndEndPointListMarkerView(getaMap(), getContext());
-        locationMapMarkerView = new LocationMapMarkerView(getaMap(), getContext());
-        centerMapMarkerView = new CenterMapMarkerView(getaMap(), getContext());
-
-        nearbyCarMapMarkerView = new NearbyCarMapListMarkerView(getaMap(), getContext());
-        addLoctionCenterMarkerViewToMap();
-        aMap.setOnCameraChangeListener(this);
-
-
     }
 
 
@@ -343,15 +390,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
                     if (startMapPointData != null) {
 
-
                         endMapPointData = MapPointData.createEndMapPointData(chooseData.getName(), chooseData.getLatLng());
-                        removeMarkerViewFromMap();
-
-                        addLoctionStartAndEndMarkerViewToMap(startMapPointData, endMapPointData, aMap);
-
-                        tv_destination_place.setText(chooseData.getName());
-                        showHaveDes();
+                        showHaveDes(startMapPointData, endMapPointData);
                     }
+                    break;
+                default:
                     break;
             }
         });
@@ -364,52 +407,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
             case R.id.ll_end:
                 locationNameQueryDialogFragment.show(getChildFragmentManager(), LocationNameQueryDialogFragment.class.getSimpleName(), 2);
                 break;
+            default:
+                break;
         }
 
 
-    }
-
-
-    public void addLoctionCenterMarkerViewToMap() {
-        isNoCamraChange = false;
-        centerMapMarkerView.addView(new BaseMarkerData());
-
-
-        centerMapMarkerView.initMarkInfoWindowAdapter();
-        locationMapMarkerView.addView(LocationMapMarkerView.LocationMapMarkerData.createData(true));
-
-    }
-
-
-    public void addLoctionStartAndEndMarkerViewToMap(MapPointData startData, MapPointData endData, AMap aMap) {
-        isNoCamraChange = true;
-        locationMapMarkerView.addView(LocationMapMarkerView.LocationMapMarkerData.createData(false));
-
-        List<PointMapMarkerData> list = new ArrayList<>();
-        PointMapMarkerData data = PointMapMarkerData.createData(startData.getRes(), startData.getLatLng(), startData.getText(), 40);
-        PointMapMarkerData data1 = PointMapMarkerData.createData(endData.getRes(), endData.getLatLng(), endData.getText(), 40);
-        list.add(data);
-        list.add(data1);
-        startAndEndPointMarkerView.addView(list);
-        startAndEndPointMarkerView.moveToCamera();
-
-
-    }
-
-    public void removeMarkerViewFromMap() {
-        if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeView();
-        }
-        if (null != centerMapMarkerView) {
-            centerMapMarkerView.removeView();
-        }
-        if (null != startAndEndPointMarkerView) {
-            startAndEndPointMarkerView.removeView();
-        }
-        if (null != nearbyCarMapMarkerView) {
-            nearbyCarMapMarkerView.removeView();
-        }
-        getaMap().clear();
     }
 
 
@@ -423,11 +425,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 return false;
             }
         };
-        recyclerView_choose_car_type.addItemDecoration(new DividerItemDecoration(getContext(), GridLayoutManager.VERTICAL));
+        recyclerViewChooseCarType.addItemDecoration(new DividerItemDecoration(getContext(), GridLayoutManager.VERTICAL));
 
-        recyclerView_choose_car_type.setLayoutManager(gridLayoutManager);
+        recyclerViewChooseCarType.setLayoutManager(gridLayoutManager);
 
-        choose_car_type_adapter = new RecyclerAdapter<FastCarTypeData>(fastCarTypeListData, R.layout.adapter_fast_car_choose_type) {
+        chooseCarTypeAdapter = new RecyclerAdapter<FastCarTypeData>(fastCarTypeListData, R.layout.adapter_fast_car_choose_type) {
             @Override
             protected void onBindData(RecyclerViewHolder holder, int position, FastCarTypeData item) {
 
@@ -441,8 +443,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
             }
         };
 
-        recyclerView_choose_car_type.setAdapter(choose_car_type_adapter);
-        choose_car_type_adapter.setOnItemClickListener((position, item) -> {
+        recyclerViewChooseCarType.setAdapter(chooseCarTypeAdapter);
+        chooseCarTypeAdapter.setOnItemClickListener((position, item) -> {
             for (int i = 0; i < fastCarTypeListData.size(); i++) {
                 if (i == position) {
                     fastCarTypeListData.get(i).setIsselector(true);
@@ -451,7 +453,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 }
             }
 
-            choose_car_type_adapter.notifyDataSetChanged();
+            chooseCarTypeAdapter.notifyDataSetChanged();
 
             if (position == 0) {
                 reshPriceData(false);
@@ -468,7 +470,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     private void initPriceRecyclerView() {
 
 
-        price_adapter = new RecyclerAdapter<FastCarPriceData>(null, R.layout.adapter_fast_car_price) {
+        priceAdapter = new RecyclerAdapter<FastCarPriceData>(null, R.layout.adapter_fast_car_price) {
             @Override
             protected void onBindData(RecyclerViewHolder holder, int position, FastCarPriceData item) {
 
@@ -478,8 +480,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                     holder.setTextColor(R.id.tv_normal_car_price, colorStateList);
                     holder.setTextColor(R.id.tv_type, colorStateList);
                 } else {
-
-
                     holder.setTextColor(R.id.tv_normal_car_price, getResources().getColor(R.color.black_text));
                     holder.setTextColor(R.id.tv_type, getResources().getColor(R.color.gray_text));
                 }
@@ -507,9 +507,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
             }
         };
 
-        recyclerView_price.setAdapter(price_adapter);
+        recyclerViewPrice.setAdapter(priceAdapter);
 
-        price_adapter.setOnItemClickListener((position, item) -> {
+        priceAdapter.setOnItemClickListener((position, item) -> {
             for (int i = 0; i < fastCarPriceDataList.size(); i++) {
                 if (i == position) {
                     fastCarPriceDataList.get(i).setIsselector(true);
@@ -518,7 +518,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 }
             }
 
-            price_adapter.notifyDataSetChanged();
+            priceAdapter.notifyDataSetChanged();
 
         });
 
@@ -558,8 +558,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         }
 
 
-        recyclerView_price.setLayoutManager(gridLayoutManager);
-        price_adapter.refreshWithNewData(fastCarPriceDataList);
+        recyclerViewPrice.setLayoutManager(gridLayoutManager);
+        priceAdapter.refreshWithNewData(fastCarPriceDataList);
 
     }
 
@@ -567,8 +567,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     public boolean onBackPressedSupport() {
         if (null != endMapPointData) {
             endMapPointData = null;
-            removeMarkerViewFromMap();
-            addLoctionCenterMarkerViewToMap();
             showNoHaveDes();
             return true;
         } else {
@@ -612,16 +610,20 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 .start();
     }
 
-    // 成功回调的方法，用注解即可，这里的300就是请求时的requestCode。
+    /**
+     * 成功回调的方法，用注解即可，这里的300就是请求时的requestCode。
+     *
+     * @param grantedPermissions List<String> 权限文件
+     */
     @PermissionYes(300)
     private void getPermissionYes(List<String> grantedPermissions) {
-        // TODO 申请权限成功。
+        // 申请权限成功。
         loctionToMapView();
     }
 
     @PermissionNo(300)
     private void getPermissionNo(List<String> deniedPermissions) {
-        // TODO 申请权限失败。
+        // 申请权限失败。
 
 
         // 是否有不再提示并拒绝的权限。
@@ -643,8 +645,10 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         permissionList.add(Manifest.permission.CALL_PHONE);
         permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         switch (requestCode) {
-            case 400: { // 这个400就是你上面传入的数字。
-                // 你可以在这里检查你需要的权限是否被允许，并做相应的操作。
+            // 这个400就是你上面传入的数字。
+            // 你可以在这里检查你需要的权限是否被允许，并做相应的操作。
+            case 400: {
+
                 if (AndPermission.hasPermission(getActivity(), permissionList)) {
                     loctionToMapView();
                 } else {
@@ -653,6 +657,8 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 }
                 break;
             }
+            default:
+                break;
         }
     }
 

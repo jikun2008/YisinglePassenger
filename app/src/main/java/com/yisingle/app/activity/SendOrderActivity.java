@@ -16,6 +16,7 @@ import com.amap.api.services.route.DriveRouteResult;
 import com.map.library.DistanceUtils;
 import com.map.library.data.RouteData;
 import com.map.library.view.polyline.MapPolylineView;
+import com.yisingle.amapview.lib.view.LocationMarkerView;
 import com.yisingle.app.R;
 import com.yisingle.app.base.BasePassengerMapActivity;
 import com.yisingle.app.data.DriverData;
@@ -25,8 +26,6 @@ import com.yisingle.app.event.OrderEvent;
 import com.yisingle.app.event.PriceOrderEvent;
 import com.yisingle.app.map.view.CarMapMarkerView;
 import com.yisingle.app.map.view.CarMapMarkerView.CarMapWindowData;
-import com.yisingle.app.map.view.LocationMapMarkerView;
-import com.yisingle.app.map.view.LocationMapMarkerView.LocationMapMarkerData;
 import com.yisingle.app.map.view.PointCircleMapMarkerView;
 import com.yisingle.app.map.view.PointCircleMapMarkerView.PointMapMarkerData;
 import com.yisingle.app.mvp.ISendOrder;
@@ -71,7 +70,7 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
     @BindView(R.id.tv_driver_car_name)
     TextView tv_driver_car_name;//车型
 
-    protected LocationMapMarkerView locationMapMarkerView;
+    protected LocationMarkerView<String> locationMapMarkerView;
 
     private PointCircleMapMarkerView startPointMapMarkerView;
 
@@ -159,7 +158,7 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
             case OrderData.State.WAIT_OLD:
                 setTitle("等待应答", true);
                 showDriverView(false, orderData);
-                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+//                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
                 startPointMapMarkerView.addView(PointMapMarkerData.createData(startMapPointData.getRes(), startMapPointData.getLatLng(), startMapPointData.getText(), 40));
                 startPointMapMarkerView.initMarkInfoWindowAdapter();
                 startPointMapMarkerView.addCircleViewToMap(startMapPointData.getLatLng(), getaMap());
@@ -177,7 +176,7 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
                     carMapMarkerView.moveToCamera();
                     mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startLatLng, isshowLoadView);
                 }
-                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+//                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
                 break;
 
             case OrderData.State.DRIVER_ARRIVE:
@@ -190,7 +189,7 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
                     carMapMarkerView.moveToCamera();
                     mPresenter.drawSingleRoute(getApplicationContext(), driverlatLng, startLatLng, isshowLoadView);
                 }
-                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
+//                locationMapMarkerView.addView(LocationMapMarkerData.createData(false));
                 break;
 
             case OrderData.State.PASSENGER_IN_CAR:
@@ -214,9 +213,9 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
 
     private void createViewOnMap() {
 
-        if (null == locationMapMarkerView) {
-            locationMapMarkerView = new LocationMapMarkerView(getaMap(), getApplicationContext());
-        }
+//        if (null == locationMapMarkerView) {
+//            locationMapMarkerView = new LocationMapMarkerView(getaMap(), getApplicationContext());
+//        }
 
         if (null == startPointMapMarkerView) {
             startPointMapMarkerView = new PointCircleMapMarkerView(getaMap(), getApplicationContext());
@@ -241,10 +240,10 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
      * 移除地图上的View除了定位的Marker
      */
     private void removeViewOnMap() {
-        if (null != locationMapMarkerView) {
-            locationMapMarkerView.removeView();
-
-        }
+//        if (null != locationMapMarkerView) {
+//            locationMapMarkerView.re
+//
+//        }
 
         if (null != startPointMapMarkerView) {
             startPointMapMarkerView.removeView();

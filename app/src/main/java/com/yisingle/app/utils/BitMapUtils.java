@@ -9,13 +9,17 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.blankj.utilcode.util.ImageUtils;
+import com.yisingle.app.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jikun on 17/5/12.
@@ -117,14 +121,14 @@ public class BitMapUtils {
      *
      * @return 返回中心Marker的动画效果图片组
      */
-    public static ArrayList<BitmapDescriptor> getMultipleBitmapDescriptorList(Bitmap bitmap) {
-        ArrayList<BitmapDescriptor> list = new ArrayList<>();
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0f));
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.2f));
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.4f));
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.6f));
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.8f));
-        list.add(BitMapUtils.combineCenterBitmapDescriptor(bitmap, 0.9f));
+    public static List<Drawable> getMultipleBitmapDescriptorList(Resources resources, Bitmap bitmap) {
+        ArrayList<Drawable> list = new ArrayList<>();
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0f)));
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0.2f)));
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0.4f)));
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0.6f)));
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0.8f)));
+        list.add(new BitmapDrawable(resources, combineCenterBitmap(bitmap, 0.9f)));
         return list;
 
     }
@@ -151,6 +155,19 @@ public class BitMapUtils {
         Bitmap rouudBitmap = ImageUtils.toRound(normal);
 
         return rouudBitmap;
+    }
+
+    public static Bitmap getLoginMarkIcon(Resources resources, @DrawableRes int drawableId) {
+
+        Bitmap bitmap = BitmapFactory.decodeResource(resources,
+                R.mipmap.navi_map_gps_locked);
+        Bitmap rouudBitmap = BitMapUtils.getRoundBitMap(resources, drawableId);
+
+
+        int newBitmtWith = bitmap.getHeight() / 4;
+        Bitmap newBitmap = ImageUtils.scale(rouudBitmap, newBitmtWith, newBitmtWith);
+        Bitmap combieBitmap = BitMapUtils.combineBitmap(bitmap, newBitmap);
+        return combieBitmap;
     }
 
 }

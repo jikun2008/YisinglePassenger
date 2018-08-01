@@ -19,11 +19,14 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.navi.AMapNaviListener;
 import com.amap.api.navi.AMapNaviView;
+import com.amap.api.navi.model.AMapCalcRouteResult;
 import com.amap.api.navi.model.AMapLaneInfo;
+import com.amap.api.navi.model.AMapModelCross;
 import com.amap.api.navi.model.AMapNaviCameraInfo;
 import com.amap.api.navi.model.AMapNaviCross;
 import com.amap.api.navi.model.AMapNaviInfo;
 import com.amap.api.navi.model.AMapNaviLocation;
+import com.amap.api.navi.model.AMapNaviRouteNotifyData;
 import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
 import com.amap.api.navi.model.AMapServiceAreaInfo;
 import com.amap.api.navi.model.AimLessModeCongestionInfo;
@@ -355,6 +358,11 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
     }
 
     @Override
+    public void updateIntervalCameraInfo(AMapNaviCameraInfo aMapNaviCameraInfo, AMapNaviCameraInfo aMapNaviCameraInfo1, int i) {
+
+    }
+
+    @Override
     public void onServiceAreaUpdate(AMapServiceAreaInfo[] aMapServiceAreaInfos) {
         Log.e("测试代码", TAG + "测试代码onServiceAreaUpdate");
     }
@@ -378,6 +386,16 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
     }
 
     @Override
+    public void showModeCross(AMapModelCross aMapModelCross) {
+
+    }
+
+    @Override
+    public void hideModeCross() {
+
+    }
+
+    @Override
     public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
         for (int i = 0; i < aMapLaneInfos.length; i++) {
             Log.e("测试代码", TAG + "测试代码" + aMapLaneInfos[i].getLaneTypeIdHexString());
@@ -385,6 +403,11 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
         Log.e("测试代码", TAG + "测试代码showLaneInfo");
         driverWayView.setVisibility(View.VISIBLE);
         driverWayView.loadDriveWayBitmap(bytes, bytes1);
+    }
+
+    @Override
+    public void showLaneInfo(AMapLaneInfo aMapLaneInfo) {
+
     }
 
 
@@ -450,6 +473,21 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
     @Override
     public void onPlayRing(int i) {
         Log.e("测试代码", TAG + "测试代码onPlayRing");
+    }
+
+    @Override
+    public void onCalculateRouteSuccess(AMapCalcRouteResult aMapCalcRouteResult) {
+
+    }
+
+    @Override
+    public void onCalculateRouteFailure(AMapCalcRouteResult aMapCalcRouteResult) {
+
+    }
+
+    @Override
+    public void onNaviRouteNotify(AMapNaviRouteNotifyData aMapNaviRouteNotifyData) {
+
     }
 
 
