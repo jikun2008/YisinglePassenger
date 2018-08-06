@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.SpanUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -44,7 +47,6 @@ import com.yisingle.app.dialog.LocationNameQueryDialogFragment;
 import com.yisingle.app.event.DoLoginEvent;
 import com.yisingle.app.event.UserDataEvent;
 import com.yisingle.app.map.view.NearByCarViewGroup;
-import com.yisingle.app.map.view.NearbyCarMapListMarkerView;
 import com.yisingle.app.mvp.IFastCar;
 import com.yisingle.app.mvp.presenter.FastCarPresenterImpl;
 import com.yisingle.app.service.OrderService;
@@ -96,6 +98,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     RecyclerView recyclerViewPrice;
     List<FastCarPriceData> fastCarPriceDataList;
     RecyclerAdapter<FastCarPriceData> priceAdapter;
+
+    @BindView(R.id.fl_bottom)
+    FrameLayout fl_bottom;
 
 
     LocationNameQueryDialogFragment locationNameQueryDialogFragment;
@@ -314,11 +319,20 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
         locationMarkerView.setVisible(false);
         centerChoosPlaceView.setVisibility(View.GONE);
-        moveToCamera(startData.getLatLng(), endData.getLatLng());
+
+        llHaveChooseDes.post(new Runnable() {
+            @Override
+            public void run() {
+                Rect rect = new Rect(60, ConvertUtils.dp2px(44), 60, llHaveChooseDes.getHeight()+ConvertUtils.dp2px(10)+40);
+                moveToCamera(startData.getLatLng(), endData.getLatLng(), rect);
+            }
+        });
 
     }
 
     private void showNoHaveDes() {
+        startPointMarkerView.removeFromMap();
+        endPointMarkerView.removeFromMap();
         llHaveChooseDes.setVisibility(View.GONE);
         llNoChooseDes.setVisibility(View.VISIBLE);
         locationMarkerView.setVisible(true);

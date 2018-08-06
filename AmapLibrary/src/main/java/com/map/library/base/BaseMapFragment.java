@@ -196,13 +196,14 @@ public abstract class BaseMapFragment<T extends BasePresenter> extends BaseFragm
         builder.include(start);
         builder.include(end);
         LatLngBounds latLngBounds = builder.build();
+       // newLatLngBoundsRect(LatLngBounds latlngbounds, int paddingLeft, int paddingRight, int paddingTop, int paddingBottom)
         //newLatLngBoundsRect(LatLngBounds latlngbounds,
         //int paddingLeft,设置经纬度范围和mapView左边缘的空隙。
         //int paddingRight,设置经纬度范围和mapView右边缘的空隙
         //int paddingTop,设置经纬度范围和mapView上边缘的空隙。
         //int paddingBottom)设置经纬度范围和mapView下边缘的空隙。
         if (null != getaMap()) {
-            getaMap().animateCamera(CameraUpdateFactory.newLatLngBoundsRect(latLngBounds, rect.left, rect.top, rect.right, rect.bottom));
+            getaMap().animateCamera(CameraUpdateFactory.newLatLngBoundsRect(latLngBounds, rect.left,  rect.right,rect.top, rect.bottom));
         }
 
 
