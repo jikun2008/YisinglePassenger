@@ -76,10 +76,28 @@ public class NearByCarViewGroup {
             if (i < dataList.size()) {
                 List<LatLng> data = dataList.get(i);
                 carPointMarkerViewList.get(i).startMove(data, false);
+                carPointMarkerViewList.get(i).setVisible(true);
             }
 
 
         }
+    }
+
+
+    public void hide() {
+
+        for (PointMarkerView pointMarkerView : carPointMarkerViewList) {
+            pointMarkerView.setVisible(false);
+        }
+
+    }
+
+    public void removeFromMap() {
+
+        for (PointMarkerView pointMarkerView : carPointMarkerViewList) {
+            pointMarkerView.removeFromMap();
+        }
+
     }
 
 

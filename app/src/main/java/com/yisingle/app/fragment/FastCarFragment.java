@@ -108,6 +108,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
     private boolean isMapMove = false;
 
+    /**
+     * 是否是下单界面
+     */
+    private boolean isHaveOder = false;
+
 
     private LocationMarkerView<String> locationMarkerView;
 
@@ -192,6 +197,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
+        if (isHaveOder) {
+            return;
+        }
 
         if (!isMapMove) {
             tvStartPlace.setText("正在获取上车点");
@@ -202,6 +210,9 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
+        if (isHaveOder) {
+            return;
+        }
         isMapMove = false;
         mPresenter.getRegeocodeAddress(getContext(), cameraPosition.target, FastCarPresenterImpl.TYPE.REGEOCODE_ADDRESS);
     }
@@ -307,12 +318,14 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
 
 
     private void showHaveDes(MapPointData startData, MapPointData endData) {
-        startPointMarkerView.setPosition(startData.getLatLng());
+        isHaveOder = true;
+        startPointMarkerView.draw(startData.getLatLng());
         startPointMarkerView.setText(startData.getText());
 
-        endPointMarkerView.setPosition(endData.getLatLng());
+        endPointMarkerView.draw(endData.getLatLng());
         endPointMarkerView.setText(endData.getText());
 
+        nearByCarViewGroup.removeFromMap();
         tvDestinationPlace.setText(endData.getText());
         llHaveChooseDes.setVisibility(View.VISIBLE);
         llNoChooseDes.setVisibility(View.GONE);
@@ -323,7 +336,32 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         llHaveChooseDes.post(new Runnable() {
             @Override
             public void run() {
-                Rect rect = new Rect(60, ConvertUtils.dp2px(44), 60, llHaveChooseDes.getHeight()+ConvertUtils.dp2px(10)+40);
+                int startWidth = startPointMarkerView.getWidth();
+//                int startHeight = startPointMarkerView.getHeight();
+                int startHeight = 0;
+//                int endWidth = endPointMarkerView.getWidth();
+                int endHeight = endPointMarkerView.getHeight();
+                int endWidth = 0;
+                int height = startHeight > endHeight ? startHeight : endHeight;
+                int width = startWidth > endWidth ? startWidth : endWidth;
+                int left = width / 2;
+                int top = ConvertUtils.dp2px(44);
+                int right = width;
+                // int right = 212;
+
+                int bottom = height + llHaveChooseDes.getHeight() + ConvertUtils.dp2px(10) + 40;
+
+                StringBuilder builder = new StringBuilder();
+                builder.append("left=" + left + "\n");
+                builder.append("right=" + right + "\n");
+                builder.append("top=" + top + "\n");
+                builder.append("bottom=" + bottom + "\n");
+                builder.append("llHaveChooseDes.getHeight()=" + llHaveChooseDes.getHeight() + "\n");
+                builder.append("height=" + height + "\n");
+                builder.append("width=" + width + "\n");
+
+                Log.e("测试代码", "测试代码移动宽度" + builder.toString());
+                Rect rect = new Rect(left, top, right, bottom);
                 moveToCamera(startData.getLatLng(), endData.getLatLng(), rect);
             }
         });
@@ -331,12 +369,14 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     }
 
     private void showNoHaveDes() {
+        isHaveOder = false;
         startPointMarkerView.removeFromMap();
         endPointMarkerView.removeFromMap();
         llHaveChooseDes.setVisibility(View.GONE);
         llNoChooseDes.setVisibility(View.VISIBLE);
         locationMarkerView.setVisible(true);
         centerChoosPlaceView.setVisibility(View.VISIBLE);
+        moveToCamera(locationMarkerView.getPosition());
 
 
     }
