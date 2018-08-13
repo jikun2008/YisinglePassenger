@@ -7,13 +7,13 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Created by jikun on 17/6/27.
  */
 
 public class OrderData implements Parcelable {
-
 
 
     public DriverData getDriver() {
@@ -64,6 +64,7 @@ public class OrderData implements Parcelable {
     private int passengerRelyState;
 
     private BigDecimal orderPrice;
+
 
     public BigDecimal getOrderPrice() {
         return orderPrice;
@@ -158,6 +159,47 @@ public class OrderData implements Parcelable {
         this.orderState = orderState;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderData orderData = (OrderData) o;
+
+        if (id != orderData.id) return false;
+        if (orderState != orderData.orderState) return false;
+        if (passengerRelyState != orderData.passengerRelyState) return false;
+        if (phoneNum != null ? !phoneNum.equals(orderData.phoneNum) : orderData.phoneNum != null)
+            return false;
+        if (startLatitude != null ? !startLatitude.equals(orderData.startLatitude) : orderData.startLatitude != null)
+            return false;
+        if (startLongitude != null ? !startLongitude.equals(orderData.startLongitude) : orderData.startLongitude != null)
+            return false;
+        if (endLatitude != null ? !endLatitude.equals(orderData.endLatitude) : orderData.endLatitude != null)
+            return false;
+        if (endLongitude != null ? !endLongitude.equals(orderData.endLongitude) : orderData.endLongitude != null)
+            return false;
+        if (startPlaceName != null ? !startPlaceName.equals(orderData.startPlaceName) : orderData.startPlaceName != null)
+            return false;
+        return endPlaceName != null ? endPlaceName.equals(orderData.endPlaceName) : orderData.endPlaceName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (phoneNum != null ? phoneNum.hashCode() : 0);
+        result = 31 * result + (startLatitude != null ? startLatitude.hashCode() : 0);
+        result = 31 * result + (startLongitude != null ? startLongitude.hashCode() : 0);
+        result = 31 * result + (endLatitude != null ? endLatitude.hashCode() : 0);
+        result = 31 * result + (endLongitude != null ? endLongitude.hashCode() : 0);
+        result = 31 * result + (startPlaceName != null ? startPlaceName.hashCode() : 0);
+        result = 31 * result + (endPlaceName != null ? endPlaceName.hashCode() : 0);
+        result = 31 * result + orderState;
+        result = 31 * result + passengerRelyState;
+        return result;
+    }
+
     //添加支持注解的依赖到你的项目中，需要在build.gradle文件中的依赖块中添加：
     //dependencies { compile 'com.android.support:support-annotations:24.2.0' }
     @IntDef({State.WAIT_NEW, State.WAIT_OLD, State.HAVE_TAKE, State.DRIVER_ARRIVE, State.PASSENGER_IN_CAR, State.PASSENGER_OUT_CAR, State.HAVE_COMPLETE})
@@ -224,4 +266,6 @@ public class OrderData implements Parcelable {
             return new OrderData[size];
         }
     };
+
+
 }

@@ -58,6 +58,6 @@ dependencies {
     // TinyPinyin核心包，约80KB
     implementation project(':AmapLibrary')
     implementation project(':baselibray')
-    implementation 'com.yisingle.lib:AmapViewLibrary:0.2.3'
+    implementation 'com.yisingle.lib:AmapViewLibrary:0.2.6'
 
 }

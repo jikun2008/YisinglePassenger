@@ -17,7 +17,7 @@
         <com.yisingle.app.view.CircleTimeCountDownVIew
             android:id="@+id/view_countDownView"
             android:layout_width="40dp"
-            android:layout_height="40dp"></com.yisingle.app.view.CircleTimeCountDownVIew>
+            android:layout_height="40dp"/>
 
         <TextView
             android:id="@+id/tv_info"
@@ -74,7 +74,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dimen_6dp"
             android:layout_marginRight="@dimen/dimen_6dp"
-            android:background="@color/gray_line"></View>
+            android:background="@color/gray_line"/>
 
         <TextView
             android:id="@+id/tv_price"

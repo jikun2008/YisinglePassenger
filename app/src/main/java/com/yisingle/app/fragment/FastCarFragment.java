@@ -336,20 +336,15 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         llHaveChooseDes.post(new Runnable() {
             @Override
             public void run() {
-                int startWidth = startPointMarkerView.getWidth();
-//                int startHeight = startPointMarkerView.getHeight();
-                int startHeight = 0;
-//                int endWidth = endPointMarkerView.getWidth();
-                int endHeight = endPointMarkerView.getHeight();
-                int endWidth = 0;
-                int height = startHeight > endHeight ? startHeight : endHeight;
-                int width = startWidth > endWidth ? startWidth : endWidth;
-                int left = width / 2;
-                int top = ConvertUtils.dp2px(44);
-                int right = width;
-                // int right = 212;
 
-                int bottom = height + llHaveChooseDes.getHeight() + ConvertUtils.dp2px(10) + 40;
+                int left = getBigger(startPointMarkerView.getCameraPaddingLeft(), endPointMarkerView.getCameraPaddingLeft());
+
+                //ConvertUtils.dp2px(44) +
+                int top =  getBigger(startPointMarkerView.getCameraPaddingTop(), endPointMarkerView.getCameraPaddingTop());
+                int right = getBigger(startPointMarkerView.getCameraPaddingRight(), endPointMarkerView.getCameraPaddingRight());
+
+                //+ ConvertUtils.dp2px(10) + 40
+                int bottom = llHaveChooseDes.getHeight()  + getBigger(startPointMarkerView.getCameraPaddingBottom(), endPointMarkerView.getCameraPaddingBottom());
 
                 StringBuilder builder = new StringBuilder();
                 builder.append("left=" + left + "\n");
@@ -357,8 +352,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 builder.append("top=" + top + "\n");
                 builder.append("bottom=" + bottom + "\n");
                 builder.append("llHaveChooseDes.getHeight()=" + llHaveChooseDes.getHeight() + "\n");
-                builder.append("height=" + height + "\n");
-                builder.append("width=" + width + "\n");
+
 
                 Log.e("测试代码", "测试代码移动宽度" + builder.toString());
                 Rect rect = new Rect(left, top, right, bottom);
@@ -367,6 +361,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
         });
 
     }
+
+    private int getBigger(int index0, int index1) {
+        return index0 > index1 ? index0 : index1;
+    }
+
 
     private void showNoHaveDes() {
         isHaveOder = false;

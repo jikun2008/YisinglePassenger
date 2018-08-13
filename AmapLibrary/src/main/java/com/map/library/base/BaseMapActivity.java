@@ -1,12 +1,16 @@
 package com.map.library.base;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
 import com.yisingle.baselibray.base.BaseActivity;
 import com.yisingle.baselibray.base.BasePresenter;
 import com.yisingle.baselibray.utils.DisplayUtil;
@@ -103,6 +107,50 @@ public abstract class BaseMapActivity<T extends BasePresenter> extends BaseActiv
 
     public AMap getaMap() {
         return aMap;
+    }
+
+
+    public void moveToCamera(LatLng center) {
+        //设置缩放级别
+        float zoom = 17;
+        if (null != getaMap()) {
+            //zoom - 缩放级别，[3-20]。
+            getaMap().animateCamera(CameraUpdateFactory.newLatLngZoom(center, zoom));
+        }
+
+    }
+
+    /**
+     * 在导航的地图MapView上移动视角
+     */
+    public void moveToCamera(LatLng start, LatLng end) {
+
+        moveToCamera(start, end, new Rect(0, 0, 0, 0));
+
+    }
+
+    /**
+     * 在导航的地图MapView上移动视角
+     */
+    public void moveToCamera(LatLng start, LatLng end, Rect rect) {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+
+        builder.include(start);
+        builder.include(end);
+        LatLngBounds latLngBounds = builder.build();
+        // newLatLngBoundsRect(LatLngBounds latlngbounds, int paddingLeft, int paddingRight, int paddingTop, int paddingBottom)
+        //newLatLngBoundsRect(LatLngBounds latlngbounds,
+        //int paddingLeft,设置经纬度范围和mapView左边缘的空隙。
+        //int paddingRight,设置经纬度范围和mapView右边缘的空隙
+        //int paddingTop,设置经纬度范围和mapView上边缘的空隙。
+        //int paddingBottom)设置经纬度范围和mapView下边缘的空隙。
+        if (null != getaMap()) {
+            getaMap().animateCamera(CameraUpdateFactory.newLatLngBoundsRect(latLngBounds, rect.left,  rect.right,rect.top, rect.bottom));
+        }
+
+
     }
 
 }
