@@ -102,7 +102,7 @@ public class TestActivity extends BaseActivity {
         permissionList.add(Manifest.permission.CALL_PHONE);
         permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         switch (requestCode) {
-            case 400: { // 这个400就是你上面传入的数字。
+            case 400:  // 这个400就是你上面传入的数字。
                 // 你可以在这里检查你需要的权限是否被允许，并做相应的操作。
                 if (AndPermission.hasPermission(this, permissionList)) {
 
@@ -111,7 +111,8 @@ public class TestActivity extends BaseActivity {
 
                 }
                 break;
-            }
+            default:
+                break;
         }
     }
 }

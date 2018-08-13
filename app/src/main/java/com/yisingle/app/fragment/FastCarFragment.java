@@ -260,7 +260,7 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 centerChoosPlaceView.showError();
                 break;
             case FastCarPresenterImpl.TYPE.SEND_ORDER:
-//                ToastUtils-------------.show("发送订单错误");
+
                 break;
             default:
                 break;
@@ -340,11 +340,11 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
                 int left = getBigger(startPointMarkerView.getCameraPaddingLeft(), endPointMarkerView.getCameraPaddingLeft());
 
                 //ConvertUtils.dp2px(44) +
-                int top =  getBigger(startPointMarkerView.getCameraPaddingTop(), endPointMarkerView.getCameraPaddingTop());
+                int top = getBigger(startPointMarkerView.getCameraPaddingTop(), endPointMarkerView.getCameraPaddingTop());
                 int right = getBigger(startPointMarkerView.getCameraPaddingRight(), endPointMarkerView.getCameraPaddingRight());
 
                 //+ ConvertUtils.dp2px(10) + 40
-                int bottom = llHaveChooseDes.getHeight()  + getBigger(startPointMarkerView.getCameraPaddingBottom(), endPointMarkerView.getCameraPaddingBottom());
+                int bottom = llHaveChooseDes.getHeight() + getBigger(startPointMarkerView.getCameraPaddingBottom(), endPointMarkerView.getCameraPaddingBottom());
 
                 StringBuilder builder = new StringBuilder();
                 builder.append("left=" + left + "\n");
@@ -384,7 +384,6 @@ public class FastCarFragment extends BaseMapFragment<FastCarPresenterImpl> imple
     @OnClick(R.id.iv_location)
     public void loctionToMapView() {
         if (startMapPointData != null && endMapPointData != null) {
-//            pathPlaningView.moveToCamera();
 
         } else {
             if (null != locationMarkerView && null != locationMarkerView.getPosition()) {

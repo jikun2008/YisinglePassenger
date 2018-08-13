@@ -191,16 +191,16 @@ public class MapPolylineView {
         }
 
 
-        if (status.equals("畅通")) {
+        if ("畅通".equals(status)) {
             polylineOptions.setCustomTexture(this.smoothTraffic);
 
-        } else if (status.equals("缓行")) {
+        } else if ("缓行".equals(status)) {
             polylineOptions.setCustomTexture(this.slowTraffic);
 
-        } else if (status.equals("拥堵")) {
+        } else if ("拥堵".equals(status)) {
             polylineOptions.setCustomTexture(this.jamTraffic);
 
-        } else if (status.equals("严重拥堵")) {
+        } else if ("严重拥堵".equals(status)) {
             polylineOptions.setCustomTexture(this.veryJamTraffic);
 
         } else {

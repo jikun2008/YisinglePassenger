@@ -162,26 +162,42 @@ public class OrderData implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OrderData orderData = (OrderData) o;
 
-        if (id != orderData.id) return false;
-        if (orderState != orderData.orderState) return false;
-        if (passengerRelyState != orderData.passengerRelyState) return false;
-        if (phoneNum != null ? !phoneNum.equals(orderData.phoneNum) : orderData.phoneNum != null)
+        if (id != orderData.id) {
             return false;
-        if (startLatitude != null ? !startLatitude.equals(orderData.startLatitude) : orderData.startLatitude != null)
+        }
+        if (orderState != orderData.orderState) {
             return false;
-        if (startLongitude != null ? !startLongitude.equals(orderData.startLongitude) : orderData.startLongitude != null)
+        }
+        if (passengerRelyState != orderData.passengerRelyState) {
             return false;
-        if (endLatitude != null ? !endLatitude.equals(orderData.endLatitude) : orderData.endLatitude != null)
+        }
+        if (phoneNum != null ? !phoneNum.equals(orderData.phoneNum) : orderData.phoneNum != null) {
             return false;
-        if (endLongitude != null ? !endLongitude.equals(orderData.endLongitude) : orderData.endLongitude != null)
+        }
+        if (startLatitude != null ? !startLatitude.equals(orderData.startLatitude) : orderData.startLatitude != null) {
             return false;
-        if (startPlaceName != null ? !startPlaceName.equals(orderData.startPlaceName) : orderData.startPlaceName != null)
+        }
+        if (startLongitude != null ? !startLongitude.equals(orderData.startLongitude) : orderData.startLongitude != null) {
             return false;
+        }
+        if (endLatitude != null ? !endLatitude.equals(orderData.endLatitude) : orderData.endLatitude != null) {
+            return false;
+        }
+        if (endLongitude != null ? !endLongitude.equals(orderData.endLongitude) : orderData.endLongitude != null) {
+            return false;
+        }
+        if (startPlaceName != null ? !startPlaceName.equals(orderData.startPlaceName) : orderData.startPlaceName != null) {
+            return false;
+        }
         return endPlaceName != null ? endPlaceName.equals(orderData.endPlaceName) : orderData.endPlaceName == null;
     }
 

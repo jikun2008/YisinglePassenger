@@ -137,8 +137,9 @@ public abstract class BaseNaviFragment<T extends BasePresenter> extends BaseMapF
         // hightspeed：高速优先
         // multiple：多路径
         //不走高速与高速优先不能同时为true。  高速优先与避免收费不能同时为true。
-        // strategy = mAMapNavi.strategyConvert(false, false, false, false, isMultipath);
-        int strategy = PathPlanningStrategy.DRIVING_SHORTEST_DISTANCE;//重新写参数策略 不使用高德自己的策略
+
+        //重新写参数策略 不使用高德自己的策略
+        int strategy = PathPlanningStrategy.DRIVING_SHORTEST_DISTANCE;
 
         boolean isPostNavi = mAMapNavi.calculateDriveRoute(startList, endList, null, strategy);
 
@@ -173,8 +174,7 @@ public abstract class BaseNaviFragment<T extends BasePresenter> extends BaseMapF
 
                 setRouteLineOptions(options);
 
-
-//               getNaviView().setViewOptions(options);
+                
             }
             getNaviView().onCreate(savedInstanceState);
 

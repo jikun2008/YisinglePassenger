@@ -38,9 +38,9 @@ public final class ErrorHandler {
 
     public static ApiException handleException(Throwable e, boolean showToast) {
         ApiException exception = parseException(e);
-        if (showToast)
+        if (showToast) {
             ToastUtils.showShortSafe(exception.getMessage());
-
+        }
         return exception;
     }
 

@@ -64,8 +64,10 @@ public class AppManager {
             @Override
             public void onActivityStopped(Activity activity) {
                 activeCount--;
-                if (activeCount <= 0)
+                if (activeCount <= 0) {
                     isForground = false;
+                }
+
             }
 
             @Override
@@ -83,8 +85,9 @@ public class AppManager {
      * @return 全局context
      */
     public static Context appContext() {
-        if (sContext == null)
+        if (sContext == null) {
             throw new IllegalStateException("AppManager must be init in application!");
+        }
         return sContext;
     }
 
@@ -110,14 +113,17 @@ public class AppManager {
     private static boolean jump(Class<? extends Activity> clazz, String key, Parcelable pvalue, Serializable svalue) {
 
         Activity context = getCurrentActicity();
-        if (context == null)
+        if (context == null) {
             return false;
+        }
 
         Intent intent = new Intent(context, clazz);
-        if (svalue != null)
+        if (svalue != null) {
             intent.putExtra(key, svalue);
-        if (pvalue != null)
+        }
+        if (pvalue != null) {
             intent.putExtra(key, pvalue);
+        }
 
         context.startActivity(intent);
         return true;
@@ -160,8 +166,9 @@ public class AppManager {
         // 出栈
         private static void remove(Activity aty) {
             synchronized (ActivityStack.class) {
-                if (STACK.contains(aty))
+                if (STACK.contains(aty)) {
                     STACK.remove(aty);
+                }
             }
         }
 
@@ -171,8 +178,9 @@ public class AppManager {
 
         private static boolean isExists(Class<? extends Activity> clazz) {
             for (Activity aty : STACK) {
-                if (aty.getClass().getSimpleName().equals(clazz.getSimpleName()))
+                if (aty.getClass().getSimpleName().equals(clazz.getSimpleName())) {
                     return true;
+                }
             }
             return false;
         }
@@ -193,7 +201,9 @@ public class AppManager {
             synchronized (ActivityStack.class) {
                 List<Activity> copy = new LinkedList<>(STACK);
                 for (Activity aty : copy) {
-                    if (!aty.getClass().equals(clazz)) aty.finish();
+                    if (!aty.getClass().equals(clazz)) {
+                        aty.finish();
+                    }
                 }
                 copy.clear();
             }

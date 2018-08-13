@@ -173,7 +173,7 @@ public class RxMapManager {
      * @return Observable返回Rxjava的Observable
      */
 
-    public  Observable<RegeocodeAddress> getRegeocodeAddressObservable(Context context, double latitude, double longitude) {
+    public Observable<RegeocodeAddress> getRegeocodeAddressObservable(Context context, double latitude, double longitude) {
 
 
         if (null == geocodeSearch) {
@@ -217,8 +217,8 @@ public class RxMapManager {
     }
 
 
-    public  Observable<List<Tip>> getGeocodeAddressList(final Context context, final String key,
-                                                              final String city) {
+    public Observable<List<Tip>> getGeocodeAddressList(final Context context, final String key,
+                                                       final String city) {
         if (null == geocodeSearch) {
             geocodeSearch = new GeocodeSearch(context);
         }
@@ -251,7 +251,6 @@ public class RxMapManager {
                     }
                 });
 
-        // Observable.create(SyncOnSubscribe.createSingleState(f0,a2));
         Observable<List<Tip>> observable =
                 Observable.create(syncOnSubscribe).subscribeOn(Schedulers.computation());
 

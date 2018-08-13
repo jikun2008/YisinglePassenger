@@ -209,6 +209,8 @@ import java.util.List;
                 break;
             case MeasureSpec.UNSPECIFIED:
                 break;
+                default:
+                    break;
         }
 
         //得到合适的高度：
@@ -221,6 +223,8 @@ import java.util.List;
                 break;
             case MeasureSpec.UNSPECIFIED:
                 break;
+                default:
+                    break;
         }
 
         setMeasuredDimension(measureWidth, measureHeight);

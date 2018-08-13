@@ -216,9 +216,12 @@ public class MainActiivty extends BasePassengerActivity<RegisterPresenterImpl> i
      * @param title    标题
      * @param backFlag 是否显示返回按钮
      */
+    @Override
     @SuppressWarnings("unused")
     protected void setTitle(String title, boolean backFlag) {
-        if (findViewById(R.id.titleBar) == null) return;
+        if (findViewById(R.id.titleBar) == null) {
+            return;
+        }
         ((TextView) findViewById(R.id.tv_title)).setText(title);
         if (backFlag) {
             findViewById(R.id.ib_left).setOnClickListener(view -> finish());
@@ -232,8 +235,9 @@ public class MainActiivty extends BasePassengerActivity<RegisterPresenterImpl> i
      * @param title               标题
      * @param leftOnclickListener 点击监听器
      */
+    @Override
     protected void setTitle(String title, View.OnClickListener leftOnclickListener) {
-        if (findViewById(R.id.titleBar) == null) return;
+        if (findViewById(R.id.titleBar) == null) {return;}
         ((TextView) findViewById(R.id.tv_title)).setText(title);
 
         findViewById(R.id.ib_left).setVisibility(View.VISIBLE);

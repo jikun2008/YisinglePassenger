@@ -321,10 +321,6 @@ public class SendOrderActivity extends BasePassengerMapActivity<SendOrderPresent
             DriverData driverData = orderData.getDriver();
             tv_driver_name.setText(driverData.getDriverName());
 
-            // tv_driver_car_number.setText(driverData.get);//车牌号
-
-            //  tv_driver_car_name.setText(driverData.get);
-
         }
         ll_driver_have.setVisibility(isshow ? View.VISIBLE : View.GONE);
 

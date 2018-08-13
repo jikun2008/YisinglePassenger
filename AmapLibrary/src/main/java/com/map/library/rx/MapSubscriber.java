@@ -11,7 +11,7 @@ import rx.Subscriber;
  * 对请求进行统一的错误处理
  *
  * @author yu
- *         Create on 16/7/26.
+ * Create on 16/7/26.
  */
 public abstract class MapSubscriber<T> extends Subscriber<T> {
 
@@ -46,7 +46,9 @@ public abstract class MapSubscriber<T> extends Subscriber<T> {
     @Override
     public void onStart() {
         if (isShowLoading) {
-            if (mBaseView != null) mBaseView.showLoading(type);
+            if (mBaseView != null) {
+                mBaseView.showLoading(type);
+            }
         }
 
     }
@@ -54,7 +56,9 @@ public abstract class MapSubscriber<T> extends Subscriber<T> {
     @Override
     public void onCompleted() {
         if (isShowLoading) {
-            if (mBaseView != null) mBaseView.dismissLoading(type);
+            if (mBaseView != null) {
+                mBaseView.dismissLoading(type);
+            }
         }
     }
 
@@ -62,6 +66,7 @@ public abstract class MapSubscriber<T> extends Subscriber<T> {
     /**
      * 只要链式调用中抛出了异常都会走这个回调
      */
+    @Override
     public void onError(Throwable e) {
         e.printStackTrace();
         if (mBaseView != null) {

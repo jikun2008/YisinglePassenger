@@ -92,7 +92,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
     @Override
     public void onLocationGetSuccess(AMapLocation loc) {
 
-        //Logger.d("LocationService--onLocationGetSuccess");
+
         if (null != loc) {
             //由于当前LocationService 属于另一个进程中
             // 所以发送EventBus或者RxBus都没有作用所以只能发送广播来进行定位转发
@@ -111,7 +111,7 @@ public class LocationService extends BaseNoticService implements AMapLocationHel
 
     @Override
     public void onLocationGetFail(AMapLocation loc) {
-       // Logger.d("LocationService--onLocationGetFail");
+
         if (null != loc) {
             sendLocation(new LocationEvent(LocationEvent.Code.FAILED, loc));
         }

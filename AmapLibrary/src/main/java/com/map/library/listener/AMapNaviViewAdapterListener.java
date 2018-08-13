@@ -11,7 +11,8 @@ import com.amap.api.navi.AMapNaviViewListener;
 
 public abstract class AMapNaviViewAdapterListener implements AMapNaviViewListener {
 
-    public String TAG=AMapNaviViewAdapterListener.class.getSimpleName();
+    public String TAG = AMapNaviViewAdapterListener.class.getSimpleName();
+
     @Override
     public void onNaviSetting() {
         //底部导航设置点击回调
@@ -23,12 +24,6 @@ public abstract class AMapNaviViewAdapterListener implements AMapNaviViewListene
         //地图的模式，锁屏或锁车
 
     }
-
-//    @Override
-//    public void onNaviCancel() {
-//        //finish();
-//        Log.e(TAG, TAG + ":点击关闭按钮onNaviCancel");
-//    }
 
 
     @Override
@@ -60,7 +55,6 @@ public abstract class AMapNaviViewAdapterListener implements AMapNaviViewListene
     @Override
     public void onNaviViewLoaded() {
         Log.e(TAG, TAG + ":导航页面加载成功--onNaviViewLoaded");
-        // Log.e(TAG,TAG+":请不要使用AMapNaviView.getMap().setOnMapLoadedListener();会overwrite导航SDK内部画线逻辑");
         Log.e("wlx", "导航页面加载成功");
         Log.e("wlx", "请不要使用AMapNaviView.getMap().setOnMapLoadedListener();会overwrite导航SDK内部画线逻辑");
     }

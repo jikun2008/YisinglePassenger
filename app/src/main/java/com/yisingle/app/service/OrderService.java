@@ -51,7 +51,6 @@ public class OrderService extends BaseService<YiSinglePassengerPresenterImpl> im
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("测试代码", "测试代码--" + TAG + "onStartCommand");
-        //mPresenter.repeatFindOrder();
         mPresenter.connectSocket();
         return START_STICKY;
     }

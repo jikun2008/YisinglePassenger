@@ -210,6 +210,8 @@ public class LoginRegisterDialogFragment extends BaseDialogFragment<RegisterPres
                 break;
             case RegisterPresenterImpl.TYPE.Login:
                 break;
+            default:
+                break;
         }
     }
 

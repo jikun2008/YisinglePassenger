@@ -34,7 +34,6 @@ public class TestNearByDataUtils {
         List<LatLng> list = new ArrayList<>();
         int size = 1 + (int) (Math.random() * random);
 
-       // Log.e("测试代码", "测试代码size=" + size);
 
         for (int i = 0; i < size; i++) {
             list.add(randomArroundLatLng(center));
@@ -64,9 +63,7 @@ public class TestNearByDataUtils {
 
     private static double formatDouble2(double d, int point) {
         // 旧方法，已经不再推荐使用
-        //BigDecimal bg = new BigDecimal(d).setScale(2, BigDecimal.ROUND_HALF_UP);
-
-        // 新方法，如果不需要四舍五入，可以使用RoundingMode.DOWN
+        // 新方法，如果不需要四舍五入，可以使用RoundingMode——DOWN
         BigDecimal bg = new BigDecimal(d).setScale(point, RoundingMode.UP);
 
 

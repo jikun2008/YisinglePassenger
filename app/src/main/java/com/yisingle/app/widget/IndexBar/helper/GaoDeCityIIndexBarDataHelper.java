@@ -27,7 +27,7 @@ public class GaoDeCityIIndexBarDataHelper implements IIndexBarDataHelper {
                 String tagString = indexPinyinBean.getBaseIndexPinyin().toString().substring(0, 1).toUpperCase();
                 if (tagString.matches("[A-Z]")) {//如果是A-Z字母开头
                     indexPinyinBean.setBaseIndexTag(tagString);
-                } else if (tagString.equals("热")) {
+                } else if ("热".equals(tagString)) {
                     indexPinyinBean.setBaseIndexTag(tagString);
                 } else {//特殊字母这里统一用#处理
                     indexPinyinBean.setBaseIndexTag("#");

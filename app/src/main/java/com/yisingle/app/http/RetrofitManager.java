@@ -14,11 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author yu
- *         Create on 16/5/19.
+ * Create on 16/5/19.
  */
 public class RetrofitManager {
 
-    private static final long DEFAULT_TIMEOUT = 5000l;
+    private static final long DEFAULT_TIMEOUT = 5000L;
 
     private ApiService apiService;
     private Retrofit retrofit;
@@ -68,8 +68,9 @@ public class RetrofitManager {
     }
 
     public ApiService getApiService() {
-        if (apiService == null)
+        if (apiService == null) {
             apiService = retrofit.create(ApiService.class);
+        }
         return apiService;
     }
 

@@ -4,7 +4,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-
 import com.yisingle.baselibray.baseadapter.viewholder.ListViewHolder;
 
 import java.util.ArrayList;
@@ -20,10 +19,11 @@ public abstract class ListAdapter<D> extends BaseAdapter implements DataHelper<D
     private int[] layoutIds;
 
     public ListAdapter(List<D> data, int... layoutIds) {
-        if (data == null)
+        if (data == null) {
             this.mDataSet = new ArrayList<>();
-        else
+        } else {
             this.mDataSet = data;
+        }
         this.layoutIds = layoutIds;
     }
 
@@ -135,8 +135,9 @@ public abstract class ListAdapter<D> extends BaseAdapter implements DataHelper<D
     @Override
     public void refreshWithNewData(List<D> items) {
         mDataSet.clear();
-        if (items != null && !items.isEmpty())
+        if (items != null && !items.isEmpty()) {
             mDataSet.addAll(items);
+        }
         notifyDataSetChanged();
     }
 

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.yisingle.baselibray.baseadapter.viewholder.RecyclerViewHolder;
 
 import java.util.ArrayList;
@@ -27,10 +26,11 @@ public abstract class RecyclerAdapter<D> extends RecyclerView.Adapter<RecyclerVi
      * @param layoutIds 布局ids
      */
     public RecyclerAdapter(List<D> data, int... layoutIds) {
-        if (data == null)
+        if (data == null) {
             this.mDataSet = new ArrayList<>();
-        else
+        } else {
             this.mDataSet = data;
+        }
         this.layoutIds = layoutIds;
     }
 
@@ -146,8 +146,9 @@ public abstract class RecyclerAdapter<D> extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void refreshWithNewData(List<D> items) {
         mDataSet.clear();
-        if (items != null && !items.isEmpty())
+        if (items != null && !items.isEmpty()) {
             mDataSet.addAll(items);
+        }
         notifyDataSetChanged();
     }
 

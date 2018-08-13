@@ -27,8 +27,9 @@ public class BasePresenter<V> {
      * 所有rx订阅后，需要调用此方法，用于在detachView时取消订阅
      */
     public void addSubscription(Subscription subscribe) {
-        if (mCompositeSubscription == null)
+        if (mCompositeSubscription == null) {
             mCompositeSubscription = new CompositeSubscription();
+        }
         mCompositeSubscription.add(subscribe);
     }
 
@@ -36,7 +37,9 @@ public class BasePresenter<V> {
      * 移除某个subscribe
      */
     public void removeSubscription(Subscription subscribe) {
-        if (mCompositeSubscription == null || subscribe == null) return;
+        if (mCompositeSubscription == null || subscribe == null) {
+            return;
+        }
         mCompositeSubscription.remove(subscribe);
     }
 

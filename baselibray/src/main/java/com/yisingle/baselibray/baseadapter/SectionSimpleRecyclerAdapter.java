@@ -31,10 +31,11 @@ public abstract class SectionSimpleRecyclerAdapter<H, I, F> extends SectionedRec
     private OnItemLongClickListener mOnItemLongClickListener;
 
     public SectionSimpleRecyclerAdapter(List<GroupData<H, I, F>> groupDataList, @LayoutRes int heardLayoutId, @LayoutRes int itemLayoutId, @LayoutRes int footerLayoutId) {
-        if (groupDataList == null)
+        if (groupDataList == null) {
             this.groupDataList = new ArrayList<>();
-        else
+        } else {
             this.groupDataList = groupDataList;
+        }
 
         this.heardLayoutId = heardLayoutId;
         this.itemLayoutId = itemLayoutId;

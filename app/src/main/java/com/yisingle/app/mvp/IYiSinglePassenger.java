@@ -14,6 +14,10 @@ public interface IYiSinglePassenger {
     interface IYiSinglePassengerView extends BaseView {
 
 
+        /**
+         * 成功
+         * @param orderData OrderData
+         */
         void findOrderSuccess(OrderData orderData);
 
 
@@ -22,6 +26,9 @@ public interface IYiSinglePassenger {
     interface IYiSinglePassengerPresenter {
 
 
+        /**
+         * 连接socket成功
+         */
         void connectSocket();
 
     }

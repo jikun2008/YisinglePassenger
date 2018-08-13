@@ -321,7 +321,6 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
 
     @Override
     public void onNaviInfoUpdate(NaviInfo naviInfo) {
-        //Log.e("测试代码", TAG + "测试代码onNaviInfoUpdate");
         if (naviInfo != null) {
 
             String distance = DistanceUtils.getDistance(naviInfo.getCurStepRetainDistance());
@@ -441,6 +440,8 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
                 ib_switch.setSelected(false);
                 //因为现在在辅路所以控件显示在主路
                 break;
+            default:
+                break;
         }
 
     }
@@ -557,6 +558,8 @@ public class NaviFragment extends BaseNaviFragment<RouteNaviPresenterImpl> imple
                 break;
             case RouteNaviSettingData.TYPE.DO_TWO_ROUTE:
                 mPresenter.drawTwoRoute(getContext(), naviSettingData.getTargetLatLng(), naviSettingData.getStartLatLng(), naviSettingData.getEndLatLng());
+                break;
+            default:
                 break;
         }
 

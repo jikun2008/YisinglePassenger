@@ -47,9 +47,10 @@ public class IndexBarDataHelperImpl implements IIndexBarDataHelper {
                     //如果c不是汉字，则返回String.valueOf(c)
                     pySb.append(Pinyin.toPinyin(target.charAt(i1)).toUpperCase());
                 }
-                indexPinyinBean.setBaseIndexPinyin(pySb.toString());//设置城市名全拼音
+                //设置城市名全拼音
+                indexPinyinBean.setBaseIndexPinyin(pySb.toString());
             } else {
-                //pySb.append(indexPinyinBean.getBaseIndexPinyin());
+
             }
         }
         return this;
@@ -98,9 +99,9 @@ public class IndexBarDataHelperImpl implements IIndexBarDataHelper {
                     return 0;
                 } else if (!rhs.isNeedToPinyin()) {
                     return 0;
-                } else if (lhs.getBaseIndexTag().equals("#")) {
+                } else if ("#".equals(lhs.getBaseIndexTag())) {
                     return 1;
-                } else if (rhs.getBaseIndexTag().equals("#")) {
+                } else if ("#".equals(rhs.getBaseIndexTag())) {
                     return -1;
                 } else {
                     return lhs.getBaseIndexPinyin().compareTo(rhs.getBaseIndexPinyin());

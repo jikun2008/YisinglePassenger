@@ -121,37 +121,6 @@ public class CircleTimeCountDownVIew extends RelativeLayout {
     static String regEx = "[\u4e00-\u9fa5]";
     static Pattern pat = Pattern.compile(regEx);
 
-//    @Override
-//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-//        super.onSizeChanged(w, h, oldw, oldh);
-//
-//        boolean isHaveChinese = isContainsChinese(textView.getText().toString());
-//        int lenth = textView.getText().length();
-//        float textsize;
-//        if (lenth == 0) {
-//            lenth = 1;
-//        }
-//        if (isHaveChinese) {
-//
-//            if (lenth > 1) {
-//                lenth = lenth * 2 - 2;
-//
-//            }
-//
-//
-//        } else {
-//
-//            if (lenth > 2) {
-//                lenth = lenth - 2;
-//            }
-//
-//        }
-//        textsize = getWidth() / lenth;
-//
-//        Log.e(TAG, TAG + "onSizeChanged---textsize=" + textsize + "length=" + lenth);
-//        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textsize);
-//
-//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -229,11 +198,6 @@ public class CircleTimeCountDownVIew extends RelativeLayout {
 
     }
 
-//    public void startToAnimal(float nowCurrent) {
-//        float ratio1 = (float) ratio;
-//        startWithtoOrgitAnimation(ratio1, nowCurrent);
-//    }
-
 
     private void startWithtoOrgitAnimation(float currentheight, float toheight) {
 
@@ -248,11 +212,8 @@ public class CircleTimeCountDownVIew extends RelativeLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
 
-                //Log.e(TAG, TAG + "测试代码value=" + value + "");
-
 
                 float value = (Float) animation.getAnimatedValue();
-//                Log.e(TAG, TAG + "测试代码value=" + value + "");
                 ratio = value;
 
 

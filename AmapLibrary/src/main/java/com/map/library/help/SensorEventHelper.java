@@ -82,10 +82,12 @@ public class SensorEventHelper implements SensorEventListener {
                 float x = event.values[0];
                 x += getScreenRotationOnPhone(mContext);
                 x %= 360.0F;
-                if (x > 180.0F)
+                if (x > 180.0F) {
                     x -= 360.0F;
-                else if (x < -180.0F)
+                } else if (x < -180.0F) {
                     x += 360.0F;
+                }
+
 
                 if (Math.abs(mAngle - x) < 3.0f) {
                     break;
@@ -97,6 +99,8 @@ public class SensorEventHelper implements SensorEventListener {
 
                 lastTime = System.currentTimeMillis();
             }
+            default:
+                break;
         }
 
     }
@@ -123,6 +127,8 @@ public class SensorEventHelper implements SensorEventListener {
 
             case Surface.ROTATION_270:
                 return -90;
+            default:
+                break;
         }
         return 0;
     }

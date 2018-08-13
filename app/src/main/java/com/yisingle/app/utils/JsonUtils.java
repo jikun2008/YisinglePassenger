@@ -22,7 +22,6 @@ public class JsonUtils {
             new JsonParser().parse(json);
             return true;
         } catch (JsonParseException e) {
-            // logger.error("bad json: " + json);
             return false;
         }
     }

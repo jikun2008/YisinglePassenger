@@ -28,7 +28,6 @@ public class GaoDeErrorInfo {
     static {
         list.put(-1, "路径计算失败，在导航过程中调用calculateDriveRoute方法导致的失败，导航过程中只能用reCalculate方法进行路径计算。");
         list.put(1, "路径计算成功。");
-        //list.put(2, "网络超时或网络失败,请检查网络是否通畅，如网络没问题,查看Logcat输出是否出现鉴权错误信息，如有，说明SHA1与KEY不对应导致。");
         list.put(2, "网络超时或网络失败,请检查网络是否通畅");
         list.put(3, "路径规划起点经纬度不合法,请选择国内坐标点，确保经纬度格式正常。");
         list.put(4, "协议解析错误,请稍后再试。");

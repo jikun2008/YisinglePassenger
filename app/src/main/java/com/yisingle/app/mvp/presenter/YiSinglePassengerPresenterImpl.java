@@ -82,6 +82,8 @@ public class YiSinglePassengerPresenterImpl extends BasePresenter<IYiSinglePasse
 
                                 EventBus.getDefault().post(new PriceOrderEvent(priceSocketData.getResponse()));
                                 break;
+                            default:
+                                break;
                         }
                     } else {
 

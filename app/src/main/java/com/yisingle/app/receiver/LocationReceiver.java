@@ -23,7 +23,7 @@ public class LocationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         LocationEvent event = intent.getParcelableExtra(Extra_Broadcast_Location_Data);
 
-       // Logger.d("LocationReceiver---onReceive()---Location_Data");
+
         if (event != null) {
             EventBus.getDefault().post(event);
         }

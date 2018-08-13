@@ -30,12 +30,12 @@ public class NetUtil {
 
         boolean hasMobileCon = false;
 
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] netInfos = cm.getAllNetworkInfo();
         for (NetworkInfo net : netInfos) {
 
             String type = net.getTypeName();
-            if (type.equalsIgnoreCase("MOBILE")) {
+            if ("MOBILE".equalsIgnoreCase(type)) {
                 if (net.isConnected()) {
                     hasMobileCon = true;
                 }
@@ -54,12 +54,12 @@ public class NetUtil {
     public boolean isWifiCon(Context context) {
         boolean hasWifoCon = false;
 
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] netInfos = cm.getAllNetworkInfo();
         for (NetworkInfo net : netInfos) {
 
             String type = net.getTypeName();
-            if (type.equalsIgnoreCase("WIFI")) {
+            if ("WIFI".equalsIgnoreCase(type)) {
                 if (net.isConnected()) {
                     hasWifoCon = true;
                 }

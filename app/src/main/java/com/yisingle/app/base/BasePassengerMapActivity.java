@@ -5,7 +5,6 @@ import android.widget.TextView;
 
 import com.map.library.base.BaseMapActivity;
 import com.yisingle.app.R;
-import com.yisingle.baselibray.base.BaseActivity;
 import com.yisingle.baselibray.base.BasePresenter;
 
 /**
@@ -21,7 +20,9 @@ public abstract class BasePassengerMapActivity<P extends BasePresenter> extends 
      */
     @SuppressWarnings("unused")
     protected void setTitle(String title, boolean backFlag) {
-        if (findViewById(R.id.titleBar) == null) return;
+        if (findViewById(R.id.titleBar) == null) {
+            return;
+        }
         ((TextView) findViewById(R.id.tv_title)).setText(title);
         if (backFlag) {
             findViewById(R.id.ib_left).setOnClickListener(view -> finish());
@@ -36,7 +37,9 @@ public abstract class BasePassengerMapActivity<P extends BasePresenter> extends 
      * @param leftOnclickListener 点击监听器
      */
     protected void setTitle(String title, View.OnClickListener leftOnclickListener) {
-        if (findViewById(R.id.titleBar) == null) return;
+        if (findViewById(R.id.titleBar) == null) {
+            return;
+        }
         ((TextView) findViewById(R.id.tv_title)).setText(title);
 
         findViewById(R.id.ib_left).setVisibility(View.VISIBLE);
